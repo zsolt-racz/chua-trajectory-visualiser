@@ -8,7 +8,9 @@ MainWindow::MainWindow(QWidget *parent) :
 
     this->loadParametersFromFile("parameters.txt");
 
-    this->connect(this->ui->button_calculate, &QPushButton::clicked, this, &MainWindow::calculateAndDraw);
+    this->connect(this->ui->button_calculate, &QPushButton::clicked, this, &MainWindow::reCalculateAndReDraw);
+    this->connect(this->ui->button_animate, &QPushButton::clicked, this, &MainWindow::reCalculateAndAnimate);
+    this->connect(this->ui->button_animate_stop, &QPushButton::clicked, this, &MainWindow::stopAnimation);
     this->connect(this->ui->actionLoad_parameters, &QAction::triggered, this, &MainWindow::loadParametersAction);
     this->connect(this->ui->actionSave_parameters, &QAction::triggered, this, &MainWindow::saveParametersAction);
     this->connect(this->ui->actionExport_to_CSV, &QAction::triggered, this, &MainWindow::exportCSVAction);
@@ -18,38 +20,35 @@ MainWindow::MainWindow(QWidget *parent) :
     //TODO remove
     this->ui->input_i_0->setValue(0.000001);
 
+    this->animationTimer = new QTimer(this);
+    this->connect(this->animationTimer, &QTimer::timeout, this, &MainWindow::animationStep);
+
     this->initPlots();
-    this->calculateAndDraw();
+    this->reCalculateAndReDraw();
 }
 
 void MainWindow::initPlots(){
     QCustomPlot* iu1Plot = ui->plot_iu1;
-    QCPColorMap *iu1Map = new QCPColorMap(iu1Plot->xAxis, iu1Plot->yAxis);
-    iu1Map->setInterpolate(true);
-    iu1Map->data()->setSize(400,400);
+    QCPCurve *iu1Curve = new QCPCurve(iu1Plot->xAxis, iu1Plot->yAxis);
     iu1Plot->setInteraction(QCP::iRangeDrag, true);
     iu1Plot->setInteraction(QCP::iRangeZoom, true);
-    iu1Plot->addPlottable(iu1Map);
+    iu1Plot->addPlottable(iu1Curve);
     iu1Plot->xAxis->setLabel("u1");
     iu1Plot->yAxis->setLabel("i");
 
     QCustomPlot* iu2Plot = ui->plot_iu2;
-    QCPColorMap *iu2Map = new QCPColorMap(iu2Plot->xAxis, iu2Plot->yAxis);
-    iu2Map->setInterpolate(true);
-    iu2Map->data()->setSize(400,400);
+    QCPCurve *iu2Curve = new QCPCurve(iu2Plot->xAxis, iu2Plot->yAxis);
     iu2Plot->setInteraction(QCP::iRangeDrag, true);
     iu2Plot->setInteraction(QCP::iRangeZoom, true);
-    iu2Plot->addPlottable(iu2Map);
+    iu2Plot->addPlottable(iu2Curve);
     iu2Plot->xAxis->setLabel("u2");
     iu2Plot->yAxis->setLabel("i");
 
     QCustomPlot* u1u2Plot = ui->plot_u1u2;
-    QCPColorMap *u1u2Map = new QCPColorMap(u1u2Plot->xAxis, u1u2Plot->yAxis);
-    u1u2Map->setInterpolate(true);
-    u1u2Map->data()->setSize(400,400);
+    QCPCurve *u1u2Curve = new QCPCurve(u1u2Plot->xAxis, u1u2Plot->yAxis);
     u1u2Plot->setInteraction(QCP::iRangeDrag, true);
     u1u2Plot->setInteraction(QCP::iRangeZoom, true);
-    u1u2Plot->addPlottable(u1u2Map);
+    u1u2Plot->addPlottable(u1u2Curve);
     u1u2Plot->xAxis->setLabel("u1");
     u1u2Plot->yAxis->setLabel("u2");
 }
@@ -94,26 +93,22 @@ Point3DT MainWindow::getMaxMins(std::vector<Point3DT*>* result){
 }
 
 void MainWindow::redrawPlot(QCustomPlot* plot, std::vector<Point3DT*>* result, int xRange, int yRange ){
-     QCPColorMap* colorMap = dynamic_cast<QCPColorMap*>(plot->plottable(0));
-
-     colorMap->data()->fill(1);
-     colorMap->data()->setRange(QCPRange(-xRange, xRange), QCPRange(-yRange, yRange));
+     QCPCurve* curve = dynamic_cast<QCPCurve*>(plot->plottable(0));
+     curve->clearData();
 
      if(plot == this->ui->plot_iu1){
          for (std::vector<Point3DT*>::iterator point = result->begin(); point != result->end(); ++point) {
-             colorMap->data()->setData((*point)->u1, (*point)->i, 0);
+             curve->addData((*point)->t, (*point)->u1, (*point)->i);
          }
      }else if(plot == this->ui->plot_iu2){
          for (std::vector<Point3DT*>::iterator point = result->begin(); point != result->end(); ++point) {
-             colorMap->data()->setData((*point)->u2, (*point)->i, 0);
+             curve->addData((*point)->t, (*point)->u2, (*point)->i);
          }
      }else if(plot == this->ui->plot_u1u2){
          for (std::vector<Point3DT*>::iterator point = result->begin(); point != result->end(); ++point) {
-             colorMap->data()->setData((*point)->u1, (*point)->u2, 0);
+             curve->addData((*point)->t, (*point)->u1, (*point)->u2);
          }
      }
-
-     colorMap->rescaleDataRange(true);
 
      plot->xAxis->setRange(-xRange,xRange);
      plot->yAxis->setRange(-yRange,yRange);
@@ -129,6 +124,61 @@ void MainWindow::redrawPlots(std::vector<Point3DT*>* result){
     this->redrawPlot(this->ui->plot_iu1, result, uMaxMin, iMaxMin);
     this->redrawPlot(this->ui->plot_iu2, result, uMaxMin, iMaxMin);
     this->redrawPlot(this->ui->plot_u1u2, result, uMaxMin, uMaxMin);
+}
+
+void MainWindow::stopAnimation(){
+    this->animationTimer->stop();
+}
+
+void MainWindow::animatePlots(){
+    Point3DT maxMins = this->getMaxMins(this->currentResult);
+
+    int iMaxMin = std::ceil(maxMins.i) + 1;
+    int uMaxMin = std::max(std::ceil(maxMins.u1), std::ceil(maxMins.u2)) +1 ;
+
+    this->ui->plot_iu1->xAxis->setRange(-uMaxMin,uMaxMin);
+    this->ui->plot_iu1->yAxis->setRange(-iMaxMin,iMaxMin);
+    QCPCurve* iu1curve = dynamic_cast<QCPCurve*>(this->ui->plot_iu1->plottable(0));
+    iu1curve->clearData();
+
+    this->ui->plot_iu2->xAxis->setRange(-uMaxMin,uMaxMin);
+    this->ui->plot_iu2->yAxis->setRange(-iMaxMin,iMaxMin);
+    QCPCurve* iu2curve = dynamic_cast<QCPCurve*>(this->ui->plot_iu2->plottable(0));
+    iu2curve->clearData();
+
+    this->ui->plot_u1u2->xAxis->setRange(-uMaxMin,uMaxMin);
+    this->ui->plot_u1u2->yAxis->setRange(-uMaxMin,uMaxMin);
+    QCPCurve* u1u2curve = dynamic_cast<QCPCurve*>(this->ui->plot_u1u2->plottable(0));
+    u1u2curve->clearData();
+
+    this->nextAnimationPoint = this->currentResult->begin();
+    this->animationStart = QDateTime::currentMSecsSinceEpoch();
+    this->animationTimer->start(33);
+}
+
+void MainWindow::animationStep(){
+    if(this->nextAnimationPoint == this->currentResult->end()){
+        this->stopAnimation();
+        return;
+    }
+
+    qint64 now = QDateTime::currentMSecsSinceEpoch();
+    int timerDiff = now - this->animationStart;
+
+    QCPCurve* iu1curve = dynamic_cast<QCPCurve*>(this->ui->plot_iu1->plottable(0));
+    QCPCurve* iu2curve = dynamic_cast<QCPCurve*>(this->ui->plot_iu2->plottable(0));
+    QCPCurve* u1u2curve = dynamic_cast<QCPCurve*>(this->ui->plot_u1u2->plottable(0));
+
+    while(this->nextAnimationPoint != this->currentResult->end() && timerDiff >= (*this->nextAnimationPoint)->t * 100){
+        iu1curve->addData((*this->nextAnimationPoint)->t, (*this->nextAnimationPoint)->u1, (*this->nextAnimationPoint)->i);
+        iu2curve->addData((*this->nextAnimationPoint)->t, (*this->nextAnimationPoint)->u2, (*this->nextAnimationPoint)->i);
+        u1u2curve->addData((*this->nextAnimationPoint)->t, (*this->nextAnimationPoint)->u1, (*this->nextAnimationPoint)->u2);
+        this->nextAnimationPoint++;
+    }
+
+    this->ui->plot_iu1->replot();
+    this->ui->plot_iu2->replot();
+    this->ui->plot_u1u2->replot();
 }
 
 ChuaCalculator* MainWindow::createCalculatorFromFile(std::string filename){
@@ -188,7 +238,7 @@ void MainWindow::loadParametersAction(){
     }
 
     this->loadParametersFromFile(fileName.toStdString());
-    this->calculateAndDraw();
+    this->reCalculateAndReDraw();
 }
 
 void MainWindow::saveParametersAction(){
@@ -239,7 +289,7 @@ void MainWindow::exportPLYAction(){
     this->calculator->writeToPLY(fileName.toStdString(), this->currentResult, false);
 }
 
-void MainWindow::calculateAndDraw(){
+void MainWindow::reCalculate(){
     if(this->calculator != NULL){
         delete this->calculator;
         this->calculator = NULL;
@@ -254,11 +304,19 @@ void MainWindow::calculateAndDraw(){
     this->calculator = this->createCalculatorFromGui();
 
     this->currentResult = calculator->calculateTrajectory(this->ui->input_i_0->value(), this->ui->input_u1_0->value(), this->ui->input_u2_0->value());
-    calculator->printParameters();
+}
 
+void MainWindow::reCalculateAndReDraw(){
+    this->stopAnimation();
+    this->reCalculate();
     this->redrawPlots(this->currentResult);
 }
 
+void MainWindow::reCalculateAndAnimate(){
+    this->stopAnimation();
+    this->reCalculate();
+    this->animatePlots();
+}
 
 void MainWindow::exitAction()
 {

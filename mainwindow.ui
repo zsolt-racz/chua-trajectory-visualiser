@@ -53,14 +53,14 @@
    <widget class="QPushButton" name="button_calculate">
     <property name="geometry">
      <rect>
-      <x>1190</x>
+      <x>1189</x>
       <y>220</y>
-      <width>80</width>
+      <width>81</width>
       <height>22</height>
      </rect>
     </property>
     <property name="text">
-     <string>Vykresliť</string>
+     <string>Redraw</string>
     </property>
    </widget>
    <widget class="QWidget" name="horizontalLayoutWidget_14">
@@ -474,6 +474,32 @@
       </layout>
      </item>
     </layout>
+   </widget>
+   <widget class="QPushButton" name="button_animate">
+    <property name="geometry">
+     <rect>
+      <x>970</x>
+      <y>220</y>
+      <width>101</width>
+      <height>22</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Start animation</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="button_animate_stop">
+    <property name="geometry">
+     <rect>
+      <x>1080</x>
+      <y>220</y>
+      <width>101</width>
+      <height>22</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Stop animation</string>
+    </property>
    </widget>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>

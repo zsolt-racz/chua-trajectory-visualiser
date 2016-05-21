@@ -24,9 +24,12 @@ public:
 
 
 private:
-    Ui::MainWindow *ui;
+    Ui::MainWindow* ui;
     ChuaCalculator* calculator = NULL;
     std::vector<Point3DT*>* currentResult = NULL;
+    QTimer* animationTimer;
+    qint64 animationStart = 0;
+    std::vector<Point3DT*>::iterator nextAnimationPoint;
 
     void initPlots();
     int getMaxMin(std::vector<Point3DT*>* result);
@@ -36,7 +39,12 @@ private:
     ChuaCalculator* createCalculatorFromFile(std::string filename);
     ChuaCalculator* createCalculatorFromGui();
     void loadParametersFromFile(std::string filename);
-    void calculateAndDraw();
+    void reCalculate();
+    void animatePlots();
+    void animationStep();
+    void stopAnimation();
+    void reCalculateAndReDraw();
+    void reCalculateAndAnimate();
     void updateGuiByCalculator(ChuaCalculator* calculator);
     void loadParametersAction();
     void saveParametersAction();

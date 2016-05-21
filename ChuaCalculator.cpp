@@ -53,7 +53,7 @@ void ChuaCalculator::writeToCSV(std::string filename, std::vector<Point3DT*>* po
     output.open(filename.c_str());
 
     for (std::vector<Point3DT*>::iterator point = points->begin(); point != points->end(); ++point) {
-        output << (*point)->i << ", " << (*point)->u1 << ", " << (*point)->u2 << ", " << (*point)->t << "\n";
+        output << (*point)->i << "; " << (*point)->u1 << "; " << (*point)->u2 << "; " << (*point)->t << "\n";
     }
 
     output.close();
