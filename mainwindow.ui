@@ -17,7 +17,12 @@
    </sizepolicy>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>ChuaViz 0.1</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">QLabel {
+font-size:10.5pt;
+}</string>
   </property>
   <widget class="QWidget" name="centralWidget">
    <widget class="QCustomPlot" name="plot_iu1" native="true">
@@ -53,7 +58,7 @@
    <widget class="QPushButton" name="button_calculate">
     <property name="geometry">
      <rect>
-      <x>1189</x>
+      <x>875</x>
       <y>220</y>
       <width>81</width>
       <height>22</height>
@@ -87,7 +92,7 @@
          <item>
           <widget class="QDoubleSpinBox" name="input_C1">
            <property name="decimals">
-            <number>11</number>
+            <number>15</number>
            </property>
            <property name="minimum">
             <double>-999999.989999999990687</double>
@@ -111,7 +116,7 @@
          <item>
           <widget class="QDoubleSpinBox" name="input_C2">
            <property name="decimals">
-            <number>11</number>
+            <number>15</number>
            </property>
            <property name="minimum">
             <double>-999999.989999999990687</double>
@@ -135,7 +140,7 @@
          <item>
           <widget class="QDoubleSpinBox" name="input_R">
            <property name="decimals">
-            <number>11</number>
+            <number>15</number>
            </property>
            <property name="minimum">
             <double>-999999.989999999990687</double>
@@ -159,7 +164,7 @@
          <item>
           <widget class="QDoubleSpinBox" name="input_L">
            <property name="decimals">
-            <number>11</number>
+            <number>15</number>
            </property>
            <property name="minimum">
             <double>-999999.989999999990687</double>
@@ -183,7 +188,7 @@
          <item>
           <widget class="QDoubleSpinBox" name="input_I">
            <property name="decimals">
-            <number>11</number>
+            <number>15</number>
            </property>
            <property name="minimum">
             <double>-999999.989999999990687</double>
@@ -211,7 +216,7 @@
          <item>
           <widget class="QDoubleSpinBox" name="input_Bp">
            <property name="decimals">
-            <number>11</number>
+            <number>15</number>
            </property>
            <property name="minimum">
             <double>-999999.989999999990687</double>
@@ -235,7 +240,7 @@
          <item>
           <widget class="QDoubleSpinBox" name="input_B0">
            <property name="decimals">
-            <number>11</number>
+            <number>15</number>
            </property>
            <property name="minimum">
             <double>-999999.989999999990687</double>
@@ -259,7 +264,7 @@
          <item>
           <widget class="QDoubleSpinBox" name="input_m0">
            <property name="decimals">
-            <number>11</number>
+            <number>15</number>
            </property>
            <property name="minimum">
             <double>-999999.989999999990687</double>
@@ -283,7 +288,7 @@
          <item>
           <widget class="QDoubleSpinBox" name="input_m1">
            <property name="decimals">
-            <number>11</number>
+            <number>15</number>
            </property>
            <property name="minimum">
             <double>-999999.989999999990687</double>
@@ -307,7 +312,7 @@
          <item>
           <widget class="QDoubleSpinBox" name="input_m2">
            <property name="decimals">
-            <number>11</number>
+            <number>15</number>
            </property>
            <property name="minimum">
             <double>-999999.989999999990687</double>
@@ -322,31 +327,31 @@
       </layout>
      </item>
      <item>
-      <layout class="QHBoxLayout" name="horizontalLayout_7">
-       <item>
-        <widget class="QLabel" name="label_7">
-         <property name="text">
-          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;right&quot;&gt;ro =&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QDoubleSpinBox" name="input_ro">
-         <property name="decimals">
-          <number>11</number>
-         </property>
-         <property name="minimum">
-          <double>-999999.989999999990687</double>
-         </property>
-         <property name="maximum">
-          <double>999999.989999999990687</double>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </item>
-     <item>
       <layout class="QVBoxLayout" name="verticalLayout_4">
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_7">
+         <item>
+          <widget class="QLabel" name="label_7">
+           <property name="text">
+            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;right&quot;&gt;ro =&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QDoubleSpinBox" name="input_ro">
+           <property name="decimals">
+            <number>15</number>
+           </property>
+           <property name="minimum">
+            <double>-999999.989999999990687</double>
+           </property>
+           <property name="maximum">
+            <double>999999.989999999990687</double>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
        <item>
         <layout class="QHBoxLayout" name="horizontalLayout_12">
          <item>
@@ -359,7 +364,7 @@
          <item>
           <widget class="QDoubleSpinBox" name="input_tmax">
            <property name="decimals">
-            <number>11</number>
+            <number>15</number>
            </property>
            <property name="minimum">
             <double>-999999.989999999990687</double>
@@ -376,14 +381,62 @@
          <item>
           <widget class="QLabel" name="label_13">
            <property name="text">
-            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;right&quot;&gt;h =&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;right&quot;&gt;h&lt;span style=&quot; vertical-align:sub;&quot;&gt;0&lt;/span&gt; =&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
            </property>
           </widget>
          </item>
          <item>
-          <widget class="QDoubleSpinBox" name="input_h">
+          <widget class="QDoubleSpinBox" name="input_h0">
            <property name="decimals">
-            <number>11</number>
+            <number>15</number>
+           </property>
+           <property name="minimum">
+            <double>-999999.989999999990687</double>
+           </property>
+           <property name="maximum">
+            <double>999999.989999999990687</double>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_15">
+         <item>
+          <widget class="QLabel" name="label_17">
+           <property name="text">
+            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;right&quot;&gt;u&lt;span style=&quot; vertical-align:sub;&quot;&gt;hMax&lt;/span&gt; =&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QDoubleSpinBox" name="input_uhmax">
+           <property name="decimals">
+            <number>15</number>
+           </property>
+           <property name="minimum">
+            <double>-999999.989999999990687</double>
+           </property>
+           <property name="maximum">
+            <double>999999.989999999990687</double>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_20">
+         <item>
+          <widget class="QLabel" name="label_18">
+           <property name="text">
+            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;right&quot;&gt;i&lt;span style=&quot; vertical-align:sub;&quot;&gt;hMax&lt;/span&gt; =&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QDoubleSpinBox" name="input_ihmax">
+           <property name="decimals">
+            <number>15</number>
            </property>
            <property name="minimum">
             <double>-999999.989999999990687</double>
@@ -400,28 +453,109 @@
      <item>
       <layout class="QVBoxLayout" name="verticalLayout_6">
        <item>
-        <layout class="QHBoxLayout" name="horizontalLayout_16">
-         <item>
-          <widget class="QLabel" name="label_14">
-           <property name="text">
-            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;right&quot;&gt;i&lt;span style=&quot; vertical-align:sub;&quot;&gt;0&lt;/span&gt; =&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QDoubleSpinBox" name="input_i_0">
-           <property name="decimals">
-            <number>11</number>
-           </property>
-           <property name="minimum">
-            <double>-999999.989999999990687</double>
-           </property>
-           <property name="maximum">
-            <double>999999.989999999990687</double>
-           </property>
-          </widget>
-         </item>
-        </layout>
+        <widget class="QLabel" name="label_19">
+         <property name="text">
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;Result&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QTableWidget" name="resultTable">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>0</height>
+          </size>
+         </property>
+         <row>
+          <property name="text">
+           <string>Number of points</string>
+          </property>
+         </row>
+         <row>
+          <property name="text">
+           <string>Number of divisions</string>
+          </property>
+         </row>
+         <row>
+          <property name="text">
+           <string>Result type</string>
+          </property>
+         </row>
+         <column>
+          <property name="text">
+           <string>Value</string>
+          </property>
+         </column>
+        </widget>
+       </item>
+      </layout>
+     </item>
+    </layout>
+   </widget>
+   <widget class="QPushButton" name="button_animate">
+    <property name="geometry">
+     <rect>
+      <x>655</x>
+      <y>220</y>
+      <width>101</width>
+      <height>22</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Start animation</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="button_animate_stop">
+    <property name="geometry">
+     <rect>
+      <x>765</x>
+      <y>220</y>
+      <width>101</width>
+      <height>22</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Stop animation</string>
+    </property>
+   </widget>
+   <widget class="QWidget" name="horizontalLayoutWidget">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>210</y>
+      <width>598</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <layout class="QHBoxLayout" name="horizontalLayout_14">
+     <item>
+      <layout class="QHBoxLayout" name="horizontalLayout_16">
+       <item>
+        <widget class="QLabel" name="label_14">
+         <property name="text">
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;right&quot;&gt;i&lt;span style=&quot; vertical-align:sub;&quot;&gt;0&lt;/span&gt; =&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QDoubleSpinBox" name="input_i_0">
+         <property name="decimals">
+          <number>15</number>
+         </property>
+         <property name="minimum">
+          <double>-999999.989999999990687</double>
+         </property>
+         <property name="maximum">
+          <double>999999.989999999990687</double>
+         </property>
+        </widget>
        </item>
        <item>
         <layout class="QHBoxLayout" name="horizontalLayout_17">
@@ -435,7 +569,7 @@
          <item>
           <widget class="QDoubleSpinBox" name="input_u1_0">
            <property name="decimals">
-            <number>11</number>
+            <number>15</number>
            </property>
            <property name="minimum">
             <double>-999999.989999999990687</double>
@@ -445,61 +579,35 @@
            </property>
           </widget>
          </item>
-        </layout>
-       </item>
-       <item>
-        <layout class="QHBoxLayout" name="horizontalLayout_18">
          <item>
-          <widget class="QLabel" name="label_16">
-           <property name="text">
-            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;right&quot;&gt;u2&lt;span style=&quot; vertical-align:sub;&quot;&gt;0&lt;/span&gt; =&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QDoubleSpinBox" name="input_u2_0">
-           <property name="decimals">
-            <number>11</number>
-           </property>
-           <property name="minimum">
-            <double>-999999.989999999990687</double>
-           </property>
-           <property name="maximum">
-            <double>999999.989999999990687</double>
-           </property>
-          </widget>
+          <layout class="QHBoxLayout" name="horizontalLayout_18">
+           <item>
+            <widget class="QLabel" name="label_16">
+             <property name="text">
+              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;right&quot;&gt;u2&lt;span style=&quot; vertical-align:sub;&quot;&gt;0&lt;/span&gt; =&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QDoubleSpinBox" name="input_u2_0">
+             <property name="decimals">
+              <number>15</number>
+             </property>
+             <property name="minimum">
+              <double>-999999.989999999990687</double>
+             </property>
+             <property name="maximum">
+              <double>999999.989999999990687</double>
+             </property>
+            </widget>
+           </item>
+          </layout>
          </item>
         </layout>
        </item>
       </layout>
      </item>
     </layout>
-   </widget>
-   <widget class="QPushButton" name="button_animate">
-    <property name="geometry">
-     <rect>
-      <x>970</x>
-      <y>220</y>
-      <width>101</width>
-      <height>22</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Start animation</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="button_animate_stop">
-    <property name="geometry">
-     <rect>
-      <x>1080</x>
-      <y>220</y>
-      <width>101</width>
-      <height>22</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Stop animation</string>
-    </property>
    </widget>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>

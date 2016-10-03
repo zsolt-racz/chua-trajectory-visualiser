@@ -11,7 +11,7 @@
 #include <iomanip>
 
 namespace Ui {
-class MainWindow;
+    class MainWindow;
 }
 
 class MainWindow : public QMainWindow
@@ -26,16 +26,20 @@ public:
 private:
     Ui::MainWindow* ui;
     ChuaCalculator* calculator = NULL;
-    std::vector<Point3DT*>* currentResult = NULL;
+    ChuaResult* currentResult = NULL;
     QTimer* animationTimer;
     qint64 animationStart = 0;
-    std::vector<Point3DT*>::iterator nextAnimationPoint;
+    std::vector<Point3DT*>::const_iterator nextAnimationPoint;
 
     void initPlots();
-    int getMaxMin(std::vector<Point3DT*>* result);
-    Point3DT getMaxMins(std::vector<Point3DT*>* result);
-    void redrawPlots(std::vector<Point3DT*>* result);
-    void redrawPlot(QCustomPlot* plot, std::vector<Point3DT*>* result, int xRange, int yRange );
+    void redrawPlots(ChuaResult* result);
+    void redrawPlot(QCustomPlot* plot, ChuaResult* result, int xRange, int yRange );
+    void resetPlots(QMouseEvent* event);
+    void zoomPlot(QWheelEvent* event);
+    void movePlot1(QMouseEvent* event);
+    void movePlot2(QMouseEvent* event);
+    void movePlot3(QMouseEvent* event);
+    void redrawResultTabe(ChuaResult* result);
     ChuaCalculator* createCalculatorFromFile(std::string filename);
     ChuaCalculator* createCalculatorFromGui();
     void loadParametersFromFile(std::string filename);

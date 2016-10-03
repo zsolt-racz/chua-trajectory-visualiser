@@ -2,14 +2,16 @@
 #define CHUACALCULATOR_H
 
 #include <iostream>
+#include <iomanip>
 #include <fstream>
 #include <cmath>
 #include <vector>
 #include "Point3DT.h"
+#include "ChuaResult.h"
 
 class ChuaCalculator {
 public:
-    ChuaCalculator(double C1, double C2, double L, double Bp, double B0, double R, double ro, double I, double m0, double m1, double m2, double t_max, double h);
+    ChuaCalculator(double C1, double C2, double L, double Bp, double B0, double R, double ro, double I, double m0, double m1, double m2, double t_max, double h0, double iStepMax, double uStepMax);
     ~ChuaCalculator();
 
     const double C1;
@@ -23,14 +25,15 @@ public:
     const double m0;
     const double m1;
     const double m2;
-
     const double t_max;
-    const double h;
+    const double h0;
+    const double iStepMax;
+    const double uStepMax;
 
-    std::vector<Point3DT*>* calculateTrajectory(double i0, double u1_0, double u2_0);
+    ChuaResult* calculateTrajectory(double i0, double u1_0, double u2_0);
 
-    void writeToCSV(std::string filename, std::vector<Point3DT*>* points);
-    void writeToPLY(std::string filename, std::vector<Point3DT*>* points, bool withEdges);
+    void writeToCSV(std::string filename, ChuaResult* result);
+    void writeToPLY(std::string filename, ChuaResult* result, bool withEdges);
     void printEquations();
     void printParameters();
 

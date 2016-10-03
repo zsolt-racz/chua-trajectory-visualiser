@@ -1,68 +1,101 @@
 #include "ChuaCalculator.h"
 
-ChuaCalculator::ChuaCalculator(double C1, double C2, double L, double Bp, double B0, double R, double ro, double I, double m0, double m1, double m2, double t_max, double h) :
-    C1(C1), C2(C2), L(L), Bp(Bp), B0(B0), R(R), ro(ro), I(I), m0(m0), m1(m1), m2(m2), t_max(t_max), h(h) {
+ChuaCalculator::ChuaCalculator(double C1, double C2, double L, double Bp, double B0, double R, double ro, double I, double m0, double m1, double m2, double t_max,double h0, double iStepMax, double uStepMax) :
+    C1(C1), C2(C2), L(L), Bp(Bp), B0(B0), R(R), ro(ro), I(I), m0(m0), m1(m1), m2(m2), t_max(t_max), h0(h0), iStepMax(iStepMax), uStepMax(uStepMax) {
 }
 
 ChuaCalculator::~ChuaCalculator() {
 }
 
-std::vector<Point3DT*>* ChuaCalculator::calculateTrajectory(double i0, double u1_0, double u2_0) {
-    std::vector<Point3DT*>* result = new std::vector<Point3DT*>();
+ChuaResult* ChuaCalculator::calculateTrajectory(double i0, double u1_0, double u2_0) {
+    std::vector<Point3DT*>* points = new std::vector<Point3DT*>();
 
     double i = i0;
     double u1 = u1_0;
     double u2 = u2_0;
 
-    double a_i, a_u1, a_u2;
-    double b_i, b_u1, b_u2;
-    double c_i, c_u1, c_u2;
-    double d_i, d_u1, d_u2;
+    double h = h0;
 
-    double t;
-    for (t = 0; t <= t_max; t += h) {
-        result->push_back(new Point3DT(i, u1, u2, t));
+    int divisionCount = 0;
+    ChuaResult::ResultType resultType = ChuaResult::UNDETERMINED;
 
-        a_i = fi(u2, i);
-        a_u1 = fu1(u1, u2, i);
-        a_u2 = fu2(u1, u2, i);
+    // Save initial coordinates at t=0
+    points->push_back(new Point3DT(i0, u1_0, u2_0, 0));
+    for (double t = h; t <= t_max; t += h) {
+        double a_i = fi(u2, i);
+        double a_u1 = fu1(u1, u2, i);
+        double a_u2 = fu2(u1, u2, i);
 
-        b_i = fi(u2 + (h / 2) * a_u2, i + (h / 2) * a_i);
-        b_u1 = fu1(u1 + (h / 2) * a_u1, u2 + (h / 2) * a_u2, i + (h / 2) * a_i);
-        b_u2 = fu2(u1 + (h / 2) * a_u1, u2 + (h / 2) * a_u2, i + (h / 2) * a_i);
+        double b_i = fi(u2 + (h / 2) * a_u2, i + (h / 2) * a_i);
+        double b_u1 = fu1(u1 + (h / 2) * a_u1, u2 + (h / 2) * a_u2, i + (h / 2) * a_i);
+        double b_u2 = fu2(u1 + (h / 2) * a_u1, u2 + (h / 2) * a_u2, i + (h / 2) * a_i);
 
-        c_i = fi(u2 + (h / 2) * b_u2, i + (h / 2) * b_i);
-        c_u1 = fu1(u1 + (h / 2) * b_u1, u2 + (h / 2) * b_u2, i + (h / 2) * b_i);
-        c_u2 = fu2(u1 + (h / 2) * b_u1, u2 + (h / 2) * b_u2, i + (h / 2) * b_i);
+        double c_i = fi(u2 + (h / 2) * b_u2, i + (h / 2) * b_i);
+        double c_u1 = fu1(u1 + (h / 2) * b_u1, u2 + (h / 2) * b_u2, i + (h / 2) * b_i);
+        double c_u2 = fu2(u1 + (h / 2) * b_u1, u2 + (h / 2) * b_u2, i + (h / 2) * b_i);
 
-        d_i = fi(u2 + h * c_u2, i + h * c_i);
-        d_u1 = fu1(u1 + h * c_u1, u2 + h * c_u2, i + h * c_i);
-        d_u2 = fu2(u1 + h * c_u1, u2 + h * c_u2, i + h * c_i);
+        double d_i = fi(u2 + h * c_u2, i + h * c_i);
+        double d_u1 = fu1(u1 + h * c_u1, u2 + h * c_u2, i + h * c_i);
+        double d_u2 = fu2(u1 + h * c_u1, u2 + h * c_u2, i + h * c_i);
 
+        double iDiff = (h / 6)*(a_i + 2 * b_i + 2 * c_i + d_i);
+        double u1Diff = (h / 6)*(a_u1 + 2 * b_u1 + 2 * c_u1 + d_u1);
+        double u2Diff = (h / 6)*(a_u2 + 2 * b_u2 + 2 * c_u2 + d_u2);
 
-        i = i + (h / 6)*(a_i + 2 * b_i + 2 * c_i + d_i);
-        u1 = u1 + (h / 6)*(a_u1 + 2 * b_u1 + 2 * c_u1 + d_u1);
-        u2 = u2 + (h / 6)*(a_u2 + 2 * b_u2 + 2 * c_u2 + d_u2);
+        if(std::abs(iDiff) > iStepMax || std::abs(u1Diff) > uStepMax || std::abs(u2Diff) > uStepMax){
+            //std::cout << "Division by 2 at t = " << t << ". h = " << h << "\n";
+            t = t - h;
+
+            h = h / 2;
+            divisionCount++;
+        }else{
+            i = i + iDiff;
+            u1 = u1 + u1Diff;
+            u2 = u2 + u2Diff;
+
+            if(h != h0){
+                h = h0;
+            }
+
+            points->push_back(new Point3DT(i, u1, u2, t));
+
+            /* Test LC */
+            if (u1 > 8 || u1 < -8) {
+                resultType = ChuaResult::LC;
+            }
+
+            /* Test CHA */
+            if (i < 0. && i > -0.5 && u2 < 0.227 && u2 > -0.18 && u1 > 0.5 && u1 < 1.) {
+                resultType = ChuaResult::CHA;
+            }
+        }
     }
 
-    return result;
+
+
+    std::cout << "Division count: " << divisionCount << "\n";
+
+    return new ChuaResult(points, divisionCount, resultType);
+
 }
 
-void ChuaCalculator::writeToCSV(std::string filename, std::vector<Point3DT*>* points) {
+void ChuaCalculator::writeToCSV(std::string filename, ChuaResult* result) {
     std::ofstream output;
     output.open(filename.c_str());
 
-    for (std::vector<Point3DT*>::iterator point = points->begin(); point != points->end(); ++point) {
-        output << (*point)->i << "; " << (*point)->u1 << "; " << (*point)->u2 << "; " << (*point)->t << "\n";
+    const std::vector<Point3DT*>* points = result->points;
+    for (std::vector<Point3DT*>::const_iterator point = points->begin(); point != points->end(); ++point) {
+        output << std::setprecision(15) << (*point)->i << "; " << (*point)->u1 << "; " << (*point)->u2 << "; " << (*point)->t << "\n";
     }
 
     output.close();
 }
 
-void ChuaCalculator::writeToPLY(std::string filename, std::vector<Point3DT*>* points, bool withEdges) {
+void ChuaCalculator::writeToPLY(std::string filename, ChuaResult* result, bool withEdges) {
     std::ofstream output;
     output.open(filename.c_str());
 
+    const std::vector<Point3DT*>* points = result->points;
     output << "ply" << "\n";
     output << "format ascii 1.0" << "\n";
     output << "element vertex " << points->size() << "\n";
@@ -76,7 +109,7 @@ void ChuaCalculator::writeToPLY(std::string filename, std::vector<Point3DT*>* po
     }
     output << "end_header" << "\n";
 
-    for (std::vector<Point3DT*>::iterator point = points->begin(); point != points->end(); ++point) {
+    for (std::vector<Point3DT*>::const_iterator point = points->begin(); point != points->end(); ++point) {
         output << (*point)->i << " " << (*point)->u1 << " " << (*point)->u2 << "\n";
     }
 
@@ -108,7 +141,7 @@ void ChuaCalculator::printParameters() {
     std::cout << "m1: " << m1 << "\n";
     std::cout << "m2: " << m2 << "\n";
     std::cout << "t_max: " << t_max << "\n";
-    std::cout << "h: " << h << "\n";
+    std::cout << "h0: " << h0 << "\n";
 }
 
 double ChuaCalculator::fu1(double u1, double u2, double i) {

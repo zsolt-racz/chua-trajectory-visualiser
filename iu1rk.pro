@@ -16,12 +16,14 @@ SOURCES += main.cpp\
         mainwindow.cpp \
     qcustomplot/qcustomplot.cpp \
     ChuaCalculator.cpp \
-    Point3DT.cpp
+    Point3DT.cpp \
+    ChuaResult.cpp
 
 HEADERS  += mainwindow.h \
     qcustomplot/qcustomplot.h \
     ChuaCalculator.h \
-    Point3DT.h
+    Point3DT.h \
+    ChuaResult.h
 
 FORMS    += mainwindow.ui
 
