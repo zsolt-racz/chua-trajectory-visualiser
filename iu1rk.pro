@@ -15,17 +15,25 @@ TEMPLATE = app
 SOURCES += main.cpp\
         mainwindow.cpp \
     qcustomplot/qcustomplot.cpp \
-    ChuaCalculator.cpp \
     Point3DT.cpp \
-    ChuaResult.cpp
+    TrajectoryCalculator.cpp \
+    Trajectory.cpp \
+    widgets/trajectorywidget.cpp \
+    widgets/cutwidget.cpp \
+    circuitparameters.cpp
 
 HEADERS  += mainwindow.h \
     qcustomplot/qcustomplot.h \
-    ChuaCalculator.h \
     Point3DT.h \
-    ChuaResult.h
+    TrajectoryCalculator.h \
+    Trajectory.h \
+    widgets/trajectorywidget.h \
+    widgets/cutwidget.h \
+    circuitparameters.h
 
-FORMS    += mainwindow.ui
+FORMS    += mainwindow.ui \
+    widgets/cutwidget.ui \
+    widgets/trajectorywidget.ui
 
 DISTFILES += \
     parameters.txt
