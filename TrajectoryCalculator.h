@@ -6,11 +6,14 @@
 #include "Point3DT.h"
 #include "circuitparameters.h"
 #include "Trajectory.h"
+#include "trajectoryresulttype.h"
+#include "partiallycalculatedcut.h"
+#include "calculatedcut.h"
+#include "tbb/tbb.h"
 
-class TrajectoryCalculator {
+class TrajectoryCalculator{
+
 public:
-    enum ResultType { UNDETERMINED, LC, CHA };
-
     TrajectoryCalculator(double C1, double C2, double L, double Bp, double B0, double R, double ro, double I, double m0, double m1, double m2, double t_max, double h0, double iStepMax, double uStepMax);
     TrajectoryCalculator(CircuitParameters* parameters);
     ~TrajectoryCalculator();
@@ -32,13 +35,22 @@ public:
     const double uStepMax;
 
     Trajectory* calculateTrajectory(double i0, double u1_0, double u2_0);
-    ResultType calculateTrajectoryResult(double i0, double u1_0, double u2_0);
-    std::vector<std::vector<ResultType>*>* calculateCut(double u1Min, double u1Max, double u1Step,double u2Min, double u2Max, double u2Step, double i);
+    TrajectoryResultType::ResultType calculateTrajectoryResult(double i0, double u1_0, double u2_0);
+    CalculatedCut* calculateCut(double u1Min, double u1Max, double u1Step,double u2Min, double u2Max, double u2Step, double i);
+    CalculatedCut* parallelCalculateCut(double u1Min, double u1Max, double u1Step,double u2Min, double u2Max, double u2Step, double i);
+
+    bool hasPartialResult();
+    PartiallyCalculatedCut* partialResult();
 
 private:
-    double fu1(double u1, double u2, double i);
-    double fu2(double u1, double u2, double i);
-    double fi(double u2, double i);
+    inline double fu1(double u1, double u2, double i);
+    inline double fu2(double u1, double u2, double i);
+    inline double fi(double u2, double i);
+    inline double abs(double n);
+
+
+    PartiallyCalculatedCut* currentResult = NULL;
+
 };
 
 #endif // TAJECTORYCALCULATOR_H

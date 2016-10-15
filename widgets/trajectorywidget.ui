@@ -16,8 +16,8 @@
   <widget class="QCustomPlot" name="plot_u1u2" native="true">
    <property name="geometry">
     <rect>
-     <x>935</x>
-     <y>300</y>
+     <x>880</x>
+     <y>250</y>
      <width>400</width>
      <height>400</height>
     </rect>
@@ -26,8 +26,8 @@
   <widget class="QCustomPlot" name="plot_iu2" native="true">
    <property name="geometry">
     <rect>
-     <x>510</x>
-     <y>300</y>
+     <x>455</x>
+     <y>250</y>
      <width>400</width>
      <height>400</height>
     </rect>
@@ -36,8 +36,8 @@
   <widget class="QCustomPlot" name="plot_iu1" native="true">
    <property name="geometry">
     <rect>
-     <x>85</x>
-     <y>300</y>
+     <x>30</x>
+     <y>250</y>
      <width>400</width>
      <height>400</height>
     </rect>
@@ -46,8 +46,8 @@
   <widget class="QPushButton" name="button_animate">
    <property name="geometry">
     <rect>
-     <x>715</x>
-     <y>260</y>
+     <x>660</x>
+     <y>210</y>
      <width>101</width>
      <height>22</height>
     </rect>
@@ -59,8 +59,8 @@
   <widget class="QPushButton" name="button_calculate">
    <property name="geometry">
     <rect>
-     <x>935</x>
-     <y>260</y>
+     <x>880</x>
+     <y>210</y>
      <width>81</width>
      <height>22</height>
     </rect>
@@ -72,8 +72,8 @@
   <widget class="QWidget" name="horizontalLayoutWidget_14">
    <property name="geometry">
     <rect>
-     <x>80</x>
-     <y>50</y>
+     <x>25</x>
+     <y>0</y>
      <width>1251</width>
      <height>191</height>
     </rect>
@@ -486,7 +486,7 @@
         </row>
         <row>
          <property name="text">
-          <string>Result type</string>
+          <string>Time</string>
          </property>
         </row>
         <column>
@@ -503,8 +503,8 @@
   <widget class="QWidget" name="horizontalLayoutWidget">
    <property name="geometry">
     <rect>
-     <x>80</x>
-     <y>250</y>
+     <x>25</x>
+     <y>200</y>
      <width>598</width>
      <height>41</height>
     </rect>
@@ -587,8 +587,8 @@
   <widget class="QPushButton" name="button_animate_stop">
    <property name="geometry">
     <rect>
-     <x>825</x>
-     <y>260</y>
+     <x>770</x>
+     <y>210</y>
      <width>101</width>
      <height>22</height>
     </rect>

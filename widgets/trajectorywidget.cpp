@@ -7,9 +7,9 @@ TrajectoryWidget::TrajectoryWidget(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    this->connect(this->ui->button_calculate, &QPushButton::clicked, this, &TrajectoryWidget::reCalculateAndReDraw);
-    this->connect(this->ui->button_animate, &QPushButton::clicked, this, &TrajectoryWidget::reCalculateAndAnimate);
-    this->connect(this->ui->button_animate_stop, &QPushButton::clicked, this, &TrajectoryWidget::stopAnimation);
+    this->connect(this->ui->button_calculate, SIGNAL(clicked()), this, SLOT(reCalculateAndReDraw()));
+    this->connect(this->ui->button_animate, SIGNAL(clicked()), this, SLOT(reCalculateAndAnimate()));
+    this->connect(this->ui->button_animate_stop, SIGNAL(clicked()), this, SLOT(stopAnimation()));
 
     //TODO remove
     this->ui->input_i_0->setValue(0.000001);
@@ -47,7 +47,7 @@ void TrajectoryWidget::initPlots(){
     iu1Plot->yAxis->setLabel("i");
     this->connect(iu1Plot, &QCustomPlot::mouseDoubleClick, this, &TrajectoryWidget::resetPlots);
     this->connect(iu1Plot, &QCustomPlot::mouseWheel, this, &TrajectoryWidget::zoomPlot);
-    this->connect(iu1Plot, &QCustomPlot::mouseMove, this, &TrajectoryWidget::movePlot1);
+    this->connect(iu1Plot, SIGNAL(afterReplot()), this, SLOT(synchronizeRangeWithIU1()));
 
     QCustomPlot* iu2Plot = ui->plot_iu2;
     QCPCurve *iu2Curve = new QCPCurve(iu2Plot->xAxis, iu2Plot->yAxis);
@@ -66,7 +66,7 @@ void TrajectoryWidget::initPlots(){
     iu2Plot->yAxis->setLabel("i");
     this->connect(iu2Plot, &QCustomPlot::mouseDoubleClick, this, &TrajectoryWidget::resetPlots);
     this->connect(iu2Plot, &QCustomPlot::mouseWheel, this, &TrajectoryWidget::zoomPlot);
-    this->connect(iu2Plot, &QCustomPlot::mouseMove, this, &TrajectoryWidget::movePlot2);
+    this->connect(iu2Plot, SIGNAL(afterReplot()), this, SLOT(synchronizeRangeWithIU2()));
 
     QCustomPlot* u1u2Plot = ui->plot_u1u2;
     QCPCurve *u1u2Curve = new QCPCurve(u1u2Plot->xAxis, u1u2Plot->yAxis);
@@ -85,7 +85,7 @@ void TrajectoryWidget::initPlots(){
     u1u2Plot->yAxis->setLabel("u2");
     this->connect(u1u2Plot, &QCustomPlot::mouseDoubleClick, this, &TrajectoryWidget::resetPlots);
     this->connect(u1u2Plot, &QCustomPlot::mouseWheel, this, &TrajectoryWidget::zoomPlot);
-    this->connect(u1u2Plot, &QCustomPlot::mouseMove, this, &TrajectoryWidget::movePlot3);
+    this->connect(u1u2Plot, SIGNAL(afterReplot()), this, SLOT(synchronizeRangeWithU1U2()));
 }
 
 void TrajectoryWidget::redrawPlot(QCustomPlot* plot, Trajectory* result, int xRange, int yRange ){
@@ -174,49 +174,58 @@ void TrajectoryWidget::zoomPlot(QWheelEvent* event){
 }
 
 
-void TrajectoryWidget::movePlot1(QMouseEvent* event){
-    if(event->buttons() != Qt::LeftButton){
-        return;
-    }
-
+void TrajectoryWidget::synchronizeRangeWithIU1(){
     QCPRange rangeU1 = this->ui->plot_iu1->xAxis->range();
     QCPRange rangeI = this->ui->plot_iu1->yAxis->range();
 
-    this->ui->plot_iu2->yAxis->setRange(rangeI);
-    this->ui->plot_u1u2->xAxis->setRange(rangeU1);
+    QCustomPlot * iu2 = this->ui->plot_iu2;
+    QCustomPlot * u1u2 = this->ui->plot_u1u2;
 
-    this->ui->plot_iu2->replot();
-    this->ui->plot_u1u2->replot();
-}
-
-void TrajectoryWidget::movePlot2(QMouseEvent* event){
-    if(event->buttons() != Qt::LeftButton){
-        return;
+    if(iu2->yAxis->range() != rangeI){
+        iu2->yAxis->setRange(rangeI);
+        iu2->replot();
     }
 
+    if(u1u2->yAxis->range() != rangeU1){
+        u1u2->xAxis->setRange(rangeU1);
+        u1u2->replot();
+    }
+}
+
+void TrajectoryWidget::synchronizeRangeWithIU2(){
     QCPRange rangeU2 = this->ui->plot_iu2->xAxis->range();
     QCPRange rangeI = this->ui->plot_iu2->yAxis->range();
 
-    this->ui->plot_iu1->yAxis->setRange(rangeI);
-    this->ui->plot_u1u2->yAxis->setRange(rangeU2);
+    QCustomPlot * iu1 = this->ui->plot_iu1;
+    QCustomPlot * u1u2 = this->ui->plot_u1u2;
 
-    this->ui->plot_iu1->replot();
-    this->ui->plot_u1u2->replot();
-}
-
-void TrajectoryWidget::movePlot3(QMouseEvent* event){
-    if(event->buttons() != Qt::LeftButton){
-        return;
+    if(iu1->yAxis->range() != rangeI){
+        iu1->yAxis->setRange(rangeI);
+        iu1->replot();
     }
 
+    if(u1u2->yAxis->range() != rangeU2){
+        u1u2->yAxis->setRange(rangeU2);
+        u1u2->replot();
+    }
+}
+
+void TrajectoryWidget::synchronizeRangeWithU1U2(){
     QCPRange rangeU1 = this->ui->plot_u1u2->xAxis->range();
     QCPRange rangeU2 = this->ui->plot_u1u2->yAxis->range();
 
-    this->ui->plot_iu1->xAxis->setRange(rangeU1);
-    this->ui->plot_iu2->xAxis->setRange(rangeU2);
+    QCustomPlot * iu1 = this->ui->plot_iu1;
+    QCustomPlot * iu2 = this->ui->plot_iu2;
 
-    this->ui->plot_iu1->replot();
-    this->ui->plot_iu2->replot();
+    if(iu1->xAxis->range() != rangeU1){
+        iu1->xAxis->setRange(rangeU1);
+        iu1->replot();
+    }
+
+    if(iu2->xAxis->range() != rangeU2){
+        iu2->xAxis->setRange(rangeU2);
+        iu2->replot();
+    }
 }
 
 void TrajectoryWidget::resetPlots(QMouseEvent* event){
@@ -239,7 +248,7 @@ void TrajectoryWidget::resetPlots(QMouseEvent* event){
     this->ui->plot_u1u2->replot();
 }
 
-void TrajectoryWidget::redrawResultTabe(Trajectory* result){
+void TrajectoryWidget::redrawResultTabe(Trajectory* result, int time){
     QTableWidgetItem *points = new QTableWidgetItem;
 
     points->setText(QString::number(result->points->size()));
@@ -248,6 +257,7 @@ void TrajectoryWidget::redrawResultTabe(Trajectory* result){
     divisions->setText(QString::number(result->divisionCount));
 
     QTableWidgetItem *type = new QTableWidgetItem;
+    type->setText(QString("%1 ms").arg(time));
 
     this->ui->resultTable->setItem(0,0, points);
     this->ui->resultTable->setItem(0,1, divisions);
@@ -309,26 +319,25 @@ void TrajectoryWidget::animationStep(){
     this->ui->plot_u1u2->replot();
 }
 
-TrajectoryCalculator* TrajectoryWidget::createCalculatorFromGui(){
-    return new TrajectoryCalculator(this->ui->input_C1->value(),
-                              this->ui->input_C2->value(),
-                              this->ui->input_L->value(),
-                              this->ui->input_Bp->value(),
-                              this->ui->input_B0->value(),
-                              this->ui->input_R->value(),
-                              this->ui->input_ro->value(),
-                              this->ui->input_I->value(),
-                              this->ui->input_m0->value(),
-                              this->ui->input_m1->value(),
-                              this->ui->input_m2->value(),
-                              this->ui->input_tmax->value(),
-                              this->ui->input_h0->value(),
-                              this->ui->input_ihmax->value(),
-                              this->ui->input_uhmax->value()
-                              );
+void TrajectoryWidget::updateParametersByGui(){
+    this->parameters->C1 = this->ui->input_C1->value();
+    this->parameters->C2 = this->ui->input_C2->value();
+    this->parameters->L = this->ui->input_L->value();
+    this->parameters->Bp = this->ui->input_Bp->value();
+    this->parameters->B0 = this->ui->input_B0->value();
+    this->parameters->R = this->ui->input_R->value();
+    this->parameters->ro = this->ui->input_ro->value();
+    this->parameters->I = this->ui->input_I->value();
+    this->parameters->m0 = this->ui->input_m0->value();
+    this->parameters->m1 = this->ui->input_m1->value();
+    this->parameters->m2 = this->ui->input_m2->value();
+    this->parameters->t_max = this->ui->input_tmax->value();
+    this->parameters->h0 = this->ui->input_h0->value();
+    this->parameters->iStepMax =this->ui->input_ihmax->value();
+    this->parameters->uStepMax = this->ui->input_uhmax->value();
 }
 
-void TrajectoryWidget::updateParameters(CircuitParameters* parameters){
+void TrajectoryWidget::updateGuiByParameters(){
     this->ui->input_C1->setValue(parameters->C1);
     this->ui->input_C2->setValue(parameters->C2);
     this->ui->input_L->setValue(parameters->L);
@@ -346,21 +355,25 @@ void TrajectoryWidget::updateParameters(CircuitParameters* parameters){
     this->ui->input_uhmax->setValue(parameters->uStepMax);
 }
 
-void TrajectoryWidget::reCalculate(){
+int TrajectoryWidget::reCalculate(){
+    this->updateParametersByGui();
     if(this->currentResult != NULL){
         delete this->currentResult;
         this->currentResult = NULL;
     }
+    QTime clock;
+    clock.start();
     TrajectoryCalculator calculator = TrajectoryCalculator(this->parameters);
 
     this->currentResult = calculator.calculateTrajectory(this->ui->input_i_0->value(), this->ui->input_u1_0->value(), this->ui->input_u2_0->value());
+    return clock.elapsed();
 }
 
 void TrajectoryWidget::reCalculateAndReDraw(){
     this->stopAnimation();
-    this->reCalculate();
+    int time = this->reCalculate();
     this->redrawPlots(this->currentResult);
-    this->redrawResultTabe(this->currentResult);
+    this->redrawResultTabe(this->currentResult, time);
 }
 
 void TrajectoryWidget::reCalculateAndAnimate(){

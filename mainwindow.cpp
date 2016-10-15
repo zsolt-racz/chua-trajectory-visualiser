@@ -6,9 +6,10 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    this->parameters = new CircuitParameters();
+    this->parameters = new CircuitParameters("parameters.txt");
     this->ui->trajectory->setParameters(this->parameters);
-    this->loadParametersFromFile("parameters.txt");
+    this->ui->cutwidget->setParameters(this->parameters);
+    this->ui->trajectory->updateGuiByParameters();
 
     this->connect(this->ui->actionLoad_parameters, &QAction::triggered, this, &MainWindow::loadParametersAction);
     this->connect(this->ui->actionSave_parameters, &QAction::triggered, this, &MainWindow::saveParametersAction);
@@ -23,8 +24,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
 void MainWindow::loadParametersFromFile(std::string filename){
     this->parameters->loadFromFile(filename);
-
-    this->ui->trajectory->updateParameters(this->parameters);
+    this->ui->trajectory->updateGuiByParameters();
 }
 
 
@@ -81,6 +81,7 @@ void MainWindow::switchToTrajectoryAction(){
 
 void MainWindow::switchToCutAction(){
     this->ui->stackedWidget->setCurrentIndex(1);
+    this->ui->cutwidget->updateGuiByParameters();
 }
 
 MainWindow::~MainWindow()

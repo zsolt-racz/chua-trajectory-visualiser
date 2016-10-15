@@ -21,7 +21,6 @@ Trajectory* TrajectoryCalculator::calculateTrajectory(double i0, double u1_0, do
     double h = h0;
 
     int divisionCount = 0;
-    ResultType resultType = UNDETERMINED;
 
     // Save initial coordinates at t=0
     points->push_back(new Point3DT(i0, u1_0, u2_0, 0));
@@ -29,137 +28,218 @@ Trajectory* TrajectoryCalculator::calculateTrajectory(double i0, double u1_0, do
         double a_i = fi(u2, i);
         double a_u1 = fu1(u1, u2, i);
         double a_u2 = fu2(u1, u2, i);
+        double hdiv2 = 0.5 * h;
+        double hdiv6 = h/6;
 
-        double b_i = fi(u2 + (h / 2) * a_u2, i + (h / 2) * a_i);
-        double b_u1 = fu1(u1 + (h / 2) * a_u1, u2 + (h / 2) * a_u2, i + (h / 2) * a_i);
-        double b_u2 = fu2(u1 + (h / 2) * a_u1, u2 + (h / 2) * a_u2, i + (h / 2) * a_i);
+        double b_i = fi(u2 + hdiv2 * a_u2, i + hdiv2 * a_i);
+        double b_u1 = fu1(u1 + hdiv2 * a_u1, u2 + hdiv2 * a_u2, i + hdiv2 * a_i);
+        double b_u2 = fu2(u1 + hdiv2 * a_u1, u2 + hdiv2 * a_u2, i + hdiv2 * a_i);
 
-        double c_i = fi(u2 + (h / 2) * b_u2, i + (h / 2) * b_i);
-        double c_u1 = fu1(u1 + (h / 2) * b_u1, u2 + (h / 2) * b_u2, i + (h / 2) * b_i);
-        double c_u2 = fu2(u1 + (h / 2) * b_u1, u2 + (h / 2) * b_u2, i + (h / 2) * b_i);
+        double c_i = fi(u2 + hdiv2* b_u2, i + hdiv2 * b_i);
+        double c_u1 = fu1(u1 + hdiv2 * b_u1, u2 + hdiv2 * b_u2, i + hdiv2 * b_i);
+        double c_u2 = fu2(u1 + hdiv2 * b_u1, u2 + hdiv2 * b_u2, i + hdiv2 * b_i);
 
         double d_i = fi(u2 + h * c_u2, i + h * c_i);
         double d_u1 = fu1(u1 + h * c_u1, u2 + h * c_u2, i + h * c_i);
         double d_u2 = fu2(u1 + h * c_u1, u2 + h * c_u2, i + h * c_i);
 
-        double iDiff = (h / 6)*(a_i + 2 * b_i + 2 * c_i + d_i);
-        double u1Diff = (h / 6)*(a_u1 + 2 * b_u1 + 2 * c_u1 + d_u1);
-        double u2Diff = (h / 6)*(a_u2 + 2 * b_u2 + 2 * c_u2 + d_u2);
+        double iDiff = hdiv6*(a_i + 2 * b_i + 2 * c_i + d_i);
+        double u1Diff = hdiv6*(a_u1 + 2 * b_u1 + 2 * c_u1 + d_u1);
+        double u2Diff = hdiv6*(a_u2 + 2 * b_u2 + 2 * c_u2 + d_u2);
 
-        if(std::abs(iDiff) > iStepMax || std::abs(u1Diff) > uStepMax || std::abs(u2Diff) > uStepMax){
+        if(this->abs(iDiff) > iStepMax || this->abs(u1Diff) > uStepMax || this->abs(u2Diff) > uStepMax){
             //std::cout << "Division by 2 at t = " << t << ". h = " << h << "\n";
             t = t - h;
 
-            h = h / 2;
-            divisionCount++;
+            h = hdiv2;
+            ++divisionCount;
         }else{
             i = i + iDiff;
             u1 = u1 + u1Diff;
             u2 = u2 + u2Diff;
 
             if(h != h0){
-                h = h0;
+                h = h * 2;
             }
 
             points->push_back(new Point3DT(i, u1, u2, t));
-
-            /* Test LC */
-            if (u1 > 8 || u1 < -8) {
-                resultType = LC;
-            }
-
-            /* Test CHA */
-            if (i < 0. && i > -0.5 && u2 < 0.227 && u2 > -0.18 && u1 > 0.5 && u1 < 1.) {
-                resultType = CHA;
-            }
         }
     }
-
 
     return new Trajectory(points, divisionCount);
 }
 
-TrajectoryCalculator::ResultType TrajectoryCalculator::calculateTrajectoryResult(double i0, double u1_0, double u2_0) {
+TrajectoryResultType::ResultType TrajectoryCalculator::calculateTrajectoryResult(double i0, double u1_0, double u2_0) {
     double i = i0;
     double u1 = u1_0;
     double u2 = u2_0;
 
     double h = h0;
 
-    ResultType resultType = UNDETERMINED;
-
     for (double t = h; t <= t_max; t += h) {
         double a_i = fi(u2, i);
         double a_u1 = fu1(u1, u2, i);
         double a_u2 = fu2(u1, u2, i);
+        double hdiv2 = h/2;
+        double hdiv6 = h/6;
 
-        double b_i = fi(u2 + (h / 2) * a_u2, i + (h / 2) * a_i);
-        double b_u1 = fu1(u1 + (h / 2) * a_u1, u2 + (h / 2) * a_u2, i + (h / 2) * a_i);
-        double b_u2 = fu2(u1 + (h / 2) * a_u1, u2 + (h / 2) * a_u2, i + (h / 2) * a_i);
+        double b_i = fi(u2 + hdiv2 * a_u2, i + hdiv2 * a_i);
+        double b_u1 = fu1(u1 + hdiv2 * a_u1, u2 + hdiv2 * a_u2, i + hdiv2 * a_i);
+        double b_u2 = fu2(u1 + hdiv2 * a_u1, u2 + hdiv2 * a_u2, i + hdiv2 * a_i);
 
-        double c_i = fi(u2 + (h / 2) * b_u2, i + (h / 2) * b_i);
-        double c_u1 = fu1(u1 + (h / 2) * b_u1, u2 + (h / 2) * b_u2, i + (h / 2) * b_i);
-        double c_u2 = fu2(u1 + (h / 2) * b_u1, u2 + (h / 2) * b_u2, i + (h / 2) * b_i);
+        double c_i = fi(u2 + hdiv2 * b_u2, i + hdiv2 * b_i);
+        double c_u1 = fu1(u1 + hdiv2 * b_u1, u2 + hdiv2 * b_u2, i + hdiv2 * b_i);
+        double c_u2 = fu2(u1 + hdiv2 * b_u1, u2 + hdiv2 * b_u2, i + hdiv2 * b_i);
 
         double d_i = fi(u2 + h * c_u2, i + h * c_i);
         double d_u1 = fu1(u1 + h * c_u1, u2 + h * c_u2, i + h * c_i);
         double d_u2 = fu2(u1 + h * c_u1, u2 + h * c_u2, i + h * c_i);
 
-        double iDiff = (h / 6)*(a_i + 2 * b_i + 2 * c_i + d_i);
-        double u1Diff = (h / 6)*(a_u1 + 2 * b_u1 + 2 * c_u1 + d_u1);
-        double u2Diff = (h / 6)*(a_u2 + 2 * b_u2 + 2 * c_u2 + d_u2);
+        double iDiff = hdiv6*(a_i + 2 * b_i + 2 * c_i + d_i);
+        double u1Diff = hdiv6*(a_u1 + 2 * b_u1 + 2 * c_u1 + d_u1);
+        double u2Diff = hdiv6*(a_u2 + 2 * b_u2 + 2 * c_u2 + d_u2);
 
-        if(std::abs(iDiff) > iStepMax || std::abs(u1Diff) > uStepMax || std::abs(u2Diff) > uStepMax){
+        if(this->abs(iDiff) > iStepMax || this->abs(u1Diff) > uStepMax || this->abs(u2Diff) > uStepMax){
             //std::cout << "Division by 2 at t = " << t << ". h = " << h << "\n";
             t = t - h;
 
-            h = h / 2;
+            h = hdiv2;
         }else{
             i = i + iDiff;
             u1 = u1 + u1Diff;
             u2 = u2 + u2Diff;
 
             if(h != h0){
-                h = h0;
+                h = h * 2;
             }
 
-            /* Test LC */
-            if (u1 > 8 || u1 < -8) {
-                resultType = LC;
-            }
+            if(t > 50){
+                /* Test LC */
+                if (i > 30 || i < -30) {
+                    return TrajectoryResultType::LC;
+                }
 
-            /* Test CHA */
-            if (i < 0. && i > -0.5 && u2 < 0.227 && u2 > -0.18 && u1 > 0.5 && u1 < 1.) {
-                resultType = CHA;
+                /* Test CHA */
+                if (u2 < -4.75 && u2 > -5.25 && u1 < 0.25 && u1 > -0.25 && i < 5 && i > -5) {
+                    return TrajectoryResultType::CHA;
+                }
             }
         }
     }
 
-    return resultType;
+    return TrajectoryResultType::UNDETERMINED;
+
 }
 
-std::vector<std::vector<TrajectoryCalculator::ResultType>*>* TrajectoryCalculator::calculateCut(double u1Min, double u1Max, double u1Step,double u2Min, double u2Max, double u2Step, double i){
-    std::vector<std::vector<TrajectoryCalculator::ResultType>*>* result = new std::vector<std::vector<TrajectoryCalculator::ResultType>*>();
+CalculatedCut* TrajectoryCalculator::calculateCut(double u1Min, double u1Max, double u1Step,double u2Min, double u2Max, double u2Step, double i){
+    this->currentResult = new PartiallyCalculatedCut(i, u1Min, u1Max, u1Step, u2Min, u2Max, u2Step);
+
+    std::vector<std::vector<CalculatedCut::TrajectoryResult>>::iterator vector_iterator = currentResult->begin();
     for(double u1 = u1Min; u1<=u1Max; u1+=u1Step){
-        std::vector<TrajectoryCalculator::ResultType>* row = new std::vector<TrajectoryCalculator::ResultType>;
+        std::vector<CalculatedCut::TrajectoryResult>::iterator result_iterator = vector_iterator->begin();
         for(double u2 = u2Min; u2<=u2Max; u2+=u2Step){
-            row->push_back(this->calculateTrajectoryResult(i, u1, u2));
+            result_iterator->u1 = u1;
+            result_iterator->u2 = u2;
+            result_iterator->t = -1;
+            result_iterator->result = this->calculateTrajectoryResult(i, u1, u2);
+            ++result_iterator;
         }
-        result->push_back(row);
+        currentResult->addU1Column(vector_iterator.base());
+        ++vector_iterator;
     }
+
+    CalculatedCut* result = this->currentResult->createCalculatedCut();
+
+    delete this->currentResult;
+    this->currentResult = NULL;
 
     return result;
 }
 
-double TrajectoryCalculator::fu1(double u1, double u2, double i) {
-    return ((u2 - u1) / R - (m2 * u1 + 0.5 * (m1 - m0)*(std::abs(u1 - Bp) - std::abs(u1 + Bp)) + 0.5 * (m2 - m1)*(std::abs(u1 - B0) - std::abs(u1 + B0))) - I) / C1;
+class TBBCalculateCut {
+private:
+    double u1Min;
+    double u1Max;
+    double u1Step;
+    double u2Min;
+    double u2Max;
+    double u2Step;
+    double i;
+    TrajectoryCalculator* calculator;
+    tbb::atomic<PartiallyCalculatedCut*> currentResult;
+
+public:
+    void operator()(const tbb::blocked_range<size_t>& r) const {
+        size_t idx = r.begin();
+
+        std::vector<std::vector<CalculatedCut::TrajectoryResult>>::iterator vector_iterator = currentResult->begin() + idx;
+        for(idx = r.begin(); idx != r.end(); ++idx){
+            double u1 = u1Min + (idx * u1Step);
+            std::vector<CalculatedCut::TrajectoryResult>::iterator result_iterator = vector_iterator->begin();
+            for(double u2 = u2Min; u2<=u2Max; u2+=this->u2Step){
+                result_iterator->u1 = u1;
+                result_iterator->u2 = u2;
+                result_iterator->t = -1;
+                result_iterator->result = this->calculator->calculateTrajectoryResult(this->i, u1, u2);
+                ++result_iterator;
+            }
+            currentResult->addU1Column(vector_iterator.base());
+            ++vector_iterator;
+        }
+    }
+
+    TBBCalculateCut(double u1Min, double u1Max, double u1Step, double u2Min, double u2Max, double u2Step, double i, TrajectoryCalculator* calculator, PartiallyCalculatedCut* currentResult):
+        u1Min(u1Min),
+        u1Max(u1Max),
+        u1Step(u1Step),
+        u2Min(u2Min),
+        u2Max(u2Max),
+        u2Step(u2Step),
+        i(i),
+        calculator(calculator),
+        currentResult(currentResult)  {
+    }
+};
+
+CalculatedCut* TrajectoryCalculator::parallelCalculateCut(double u1Min, double u1Max, double u1Step,double u2Min, double u2Max, double u2Step, double i){
+    this->currentResult = new PartiallyCalculatedCut(i, u1Min, u1Max, u1Step, u2Min, u2Max, u2Step);
+
+    tbb::parallel_for(tbb::blocked_range<size_t>(0, this->currentResult->u1Size), TBBCalculateCut(u1Min, u1Max, u1Step, u2Min, u2Max, u2Step, i, this, this->currentResult));
+
+    CalculatedCut* result = this->currentResult->createCalculatedCut();
+
+    delete this->currentResult;
+    this->currentResult = NULL;
+
+    return result;
 }
 
-double TrajectoryCalculator::fu2(double u1, double u2, double i) {
+
+
+inline double TrajectoryCalculator::fu1(double u1, double u2, double i) {
+    return ((u2 - u1) / R - (m2 * u1 + 0.5 * (m1 - m0)*(this->abs(u1 - Bp) - this->abs(u1 + Bp)) + 0.5 * (m2 - m1)*(this->abs(u1 - B0) - this->abs(u1 + B0))) - I) / C1;
+}
+
+inline double TrajectoryCalculator::fu2(double u1, double u2, double i) {
     return ((u1 - u2) / R + i) / C2;
 }
 
-double TrajectoryCalculator::fi(double u2, double i) {
+inline double TrajectoryCalculator::fi(double u2, double i) {
     return (-u2 - ro * i) / L;
 }
 
+inline double TrajectoryCalculator::abs(double n){
+    if(n < 0){
+       return -n;
+    }
+    return n;
+}
+
+
+bool TrajectoryCalculator::hasPartialResult(){
+    return this->currentResult != NULL;
+}
+
+PartiallyCalculatedCut* TrajectoryCalculator::partialResult(){
+    return this->currentResult;
+}

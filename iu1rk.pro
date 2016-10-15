@@ -20,7 +20,9 @@ SOURCES += main.cpp\
     Trajectory.cpp \
     widgets/trajectorywidget.cpp \
     widgets/cutwidget.cpp \
-    circuitparameters.cpp
+    circuitparameters.cpp \
+    calculatedcut.cpp \
+    partiallycalculatedcut.cpp
 
 HEADERS  += mainwindow.h \
     qcustomplot/qcustomplot.h \
@@ -29,7 +31,10 @@ HEADERS  += mainwindow.h \
     Trajectory.h \
     widgets/trajectorywidget.h \
     widgets/cutwidget.h \
-    circuitparameters.h
+    circuitparameters.h \
+    trajectoryresulttype.h \
+    calculatedcut.h \
+    partiallycalculatedcut.h
 
 FORMS    += mainwindow.ui \
     widgets/cutwidget.ui \
@@ -37,3 +42,5 @@ FORMS    += mainwindow.ui \
 
 DISTFILES += \
     parameters.txt
+
+LIBS += -ltbb

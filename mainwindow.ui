@@ -20,8 +20,8 @@
    <string>ChuaViz 0.1</string>
   </property>
   <property name="styleSheet">
-   <string notr="true">QLabel {
-font-size:10.5pt;
+   <string notr="true">QGroupBox,QLabel {
+font-size:11pt;
 }</string>
   </property>
   <widget class="QWidget" name="centralWidget">

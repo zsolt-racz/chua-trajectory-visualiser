@@ -2,6 +2,7 @@
 #define TRAJECTORYWIDGET_H
 
 #include <QWidget>
+#include <QTime>
 #include "TrajectoryCalculator.h"
 #include "circuitparameters.h"
 #include "qcustomplot/qcustomplot.h"
@@ -25,9 +26,16 @@ public:
     std::vector<Point3DT*>::const_iterator nextAnimationPoint;
 
     void setParameters(CircuitParameters* parameters);
-    void updateParameters(CircuitParameters* parameters);
-    void reCalculateAndReDraw();
+    void updateGuiByParameters();
+    void updateParametersByGui();
 
+private slots:
+    void reCalculateAndReDraw();
+    void stopAnimation();
+    void reCalculateAndAnimate();
+    void synchronizeRangeWithIU1();
+    void synchronizeRangeWithIU2();
+    void synchronizeRangeWithU1U2();
 
 private:
     Ui::TrajectoryWidget *ui;
@@ -37,19 +45,12 @@ private:
     void redrawPlot(QCustomPlot* plot, Trajectory* result, int xRange, int yRange );
     void resetPlots(QMouseEvent* event);
     void zoomPlot(QWheelEvent* event);
-    void movePlot1(QMouseEvent* event);
-    void movePlot2(QMouseEvent* event);
-    void movePlot3(QMouseEvent* event);
-    void redrawResultTabe(Trajectory* result);
+    void redrawResultTabe(Trajectory* result, int time);
 
-    void reCalculate();
+    int reCalculate();
     void animatePlots();
     void animationStep();
-    void stopAnimation();
-    void reCalculateAndAnimate();
 
-
-    TrajectoryCalculator* createCalculatorFromGui();
 };
 
 #endif // TRAJECTORYWIDGET_H
