@@ -1,5 +1,6 @@
 #ifndef TRAJECTORYWIDGET_H
 #define TRAJECTORYWIDGET_H
+#define NOMINMAX
 
 #include <QWidget>
 #include <QTime>

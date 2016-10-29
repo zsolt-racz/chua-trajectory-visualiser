@@ -31,7 +31,7 @@ private:
     void exportPLYAction();
     void exitAction();
     void switchToTrajectoryAction();
-    void switchToCutAction();
+    void switchToCrossSectionAction();
     void loadParametersAction();
     void saveParametersAction();
 };

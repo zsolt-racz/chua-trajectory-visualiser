@@ -82,15 +82,19 @@ void CutWidget::reCalculate(bool parallel){
     }else{
         future = QtConcurrent::run(std::bind(&TrajectoryCalculator::calculateCut, this->calculator, u1Min, u1Max, u1Step, u2Min, u2Max, u2Step, i));
     }
+    this->FutureWatcher.setFuture(future);
+    this->clock.start();
 
     this->colorMap->data()->clear();
     this->ui->button_cancel->setEnabled(true);
     this->ui->button_calculate->setDisabled(true);
     this->ui->button_calculate_parallel->setDisabled(true);
+
+    this->ui->time->setDisabled(false);
+    this->ui->resultTable->setDisabled(true);
     this->ui->progressBar->setEnabled(true);
-    this->FutureWatcher.setFuture(future);
+
     this->updateProgressTimer.start(50);
-    this->clock.start();
     this->lastProgress = 0;
 
 }
@@ -125,18 +129,29 @@ std::tuple<double, double, double> CutWidget::map(std::tuple<double, double, dou
 
 
 void CutWidget::calculationFinished(){
+    int time = this->clock.elapsed();
+
     CalculatedCut* cut = this->FutureWatcher.result();
+    this->updateProgressTimer.stop();
+
     this->ui->button_cancel->setDisabled(true);
     this->ui->button_calculate->setEnabled(true);
     this->ui->button_calculate_parallel->setEnabled(true);
+
     this->ui->progressBar->setValue(0);
     this->ui->progressBar->setDisabled(true);
 
-    cut->writeToCSV("cut.txt");
+    this->ui->time->setDisabled(true);
+    this->ui->time->setText("0:00");
+
+
     this->initForCut(cut);
     this->reDraw(cut);
 
-    this->updateProgressTimer.stop();
+    this->updateResultTabe(cut, time);
+    this->ui->resultTable->setEnabled(true);
+
+    cut->writeToCSV("cut.txt");
 
     delete cut;
     delete this->calculator;
@@ -195,8 +210,65 @@ void CutWidget::reDrawPartial(PartiallyCalculatedCut* cut){
     customPlot->replot();
 }
 
+void CutWidget::updateResultTabe(CalculatedCut* cut, int timeInMs){
+    int chaosPoints = 0;
+    int lcPoints = 0;
+    int undPoints = 0;
+    for (std::vector<std::vector<CalculatedCut::TrajectoryResult>>::const_iterator vector_iterator = cut->cbegin(); vector_iterator != cut->cend(); ++vector_iterator) {
+        for (std::vector<CalculatedCut::TrajectoryResult>::const_iterator result_iterator = vector_iterator->cbegin(); result_iterator != vector_iterator->cend(); ++result_iterator) {
+            switch(result_iterator->result){
+            case TrajectoryResultType::CHA:
+                ++chaosPoints;
+                break;
+            case TrajectoryResultType::LC:
+                ++lcPoints;
+                break;
+            case TrajectoryResultType::UNDETERMINED:
+                ++undPoints;
+                break;
+            }
+        }
+    }
+
+    QTableWidgetItem *resolution = new QTableWidgetItem;
+    resolution->setText(QString("%1 x %2").arg(cut->u1Size).arg(cut->u2Size));
+
+    QTableWidgetItem *time = new QTableWidgetItem;
+    time->setText(this->formatTime(timeInMs));
+
+    int allPoints = cut->u1Size * cut->u2Size;
+
+    float chaosPercent = ((float)chaosPoints / (float)allPoints) * 100;
+    QTableWidgetItem *chaos = new QTableWidgetItem;
+    chaos->setText(QString("%1% (%2)").arg(chaosPercent, 0, 'f', 2).arg(chaosPoints));
+
+    float lcPercent = ((float)lcPoints / (float)allPoints) * 100;
+    QTableWidgetItem *lc = new QTableWidgetItem;
+    lc->setText(QString("%1% (%2)").arg(lcPercent, 0, 'f', 2).arg(lcPoints));
+
+    float undPercent = ((float)undPoints / (float)allPoints) * 100;
+    QTableWidgetItem *und = new QTableWidgetItem;
+    und->setText(QString("%1% (%2)").arg(undPercent, 0, 'f', 2).arg(undPoints));
+
+    this->ui->resultTable->setItem(0,0, resolution);
+    this->ui->resultTable->setItem(0,1, time);
+    this->ui->resultTable->setItem(0,2, chaos);
+    this->ui->resultTable->setItem(0,3, lc);
+    this->ui->resultTable->setItem(0,4, und);
+}
+
+QString CutWidget::formatTime(int timeInMs){
+    int elapsedMins = timeInMs/1000/60;
+    int elapsedSeconds = timeInMs/1000 - std::floor(timeInMs/1000/60)*60;
+    return QString("%1:%2").arg(elapsedMins).arg(elapsedSeconds,2, 10, QChar('0'));
+}
+
 void CutWidget::updateProgressBar()
 {
+    int elapsed = this->clock.elapsed();
+    QString formattedTime = this->formatTime(elapsed);
+    this->ui->time->setText(formattedTime);
+
     if(!this->calculator->hasPartialResult()){
         return;
     }
@@ -210,8 +282,6 @@ void CutWidget::updateProgressBar()
     double rawProgress = cut->progress();
     int progress = std::round(rawProgress * 100);
     this->ui->progressBar->setValue(progress);
-    int elapsed = this->clock.elapsed();
-    this->ui->time->setText(QString("%1:%2").arg(elapsed/1000/60).arg(elapsed/1000,2, 10, QChar('0')));
 
     this->initForCut(cut);
     this->reDrawPartial(cut);

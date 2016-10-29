@@ -43,6 +43,8 @@ private:
     void initForCut(CalculatedCut* cut);
     void reDraw(CalculatedCut* cut);
     void reDrawPartial(PartiallyCalculatedCut* cut);
+    void updateResultTabe(CalculatedCut* cut, int timeInMs);
+    QString formatTime(int timeInMs);
     QFutureWatcher<CalculatedCut*> FutureWatcher;
     QTimer updateProgressTimer;
     QTime clock;

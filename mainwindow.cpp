@@ -17,7 +17,7 @@ MainWindow::MainWindow(QWidget *parent) :
     this->connect(this->ui->actionExport_to_PLY, &QAction::triggered, this, &MainWindow::exportPLYAction);
     this->connect(this->ui->actionExit, &QAction::triggered, this, &MainWindow::exitAction);
     this->connect(this->ui->actionTrajectory, &QAction::triggered, this, &MainWindow::switchToTrajectoryAction);
-    this->connect(this->ui->actionCut, &QAction::triggered, this, &MainWindow::switchToCutAction);
+    this->connect(this->ui->actionCrossSection, &QAction::triggered, this, &MainWindow::switchToCrossSectionAction);
 }
 
 
@@ -79,7 +79,7 @@ void MainWindow::switchToTrajectoryAction(){
     this->ui->stackedWidget->setCurrentIndex(0);
 }
 
-void MainWindow::switchToCutAction(){
+void MainWindow::switchToCrossSectionAction(){
     this->ui->stackedWidget->setCurrentIndex(1);
     this->ui->cutwidget->updateGuiByParameters();
 }
