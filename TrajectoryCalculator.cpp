@@ -135,16 +135,20 @@ CalculatedCut* TrajectoryCalculator::calculateCut(double u1Min, double u1Max, do
     this->currentResult = new PartiallyCalculatedCut(i, u1Min, u1Max, u1Step, u2Min, u2Max, u2Step);
 
     std::vector<std::vector<CalculatedCut::TrajectoryResult>>::iterator vector_iterator = currentResult->begin();
-    for(double u1 = u1Min; u1<=u1Max; u1+=u1Step){
+    int u1Size = this->currentResult->u1Size;
+    double u1 = u1Min;
+    int u2Size = this->currentResult->u2Size;
+    for(int i = 0; i < u1Size; ++i, u1+=u1Step){
         std::vector<CalculatedCut::TrajectoryResult>::iterator result_iterator = vector_iterator->begin();
-        for(double u2 = u2Min; u2<=u2Max; u2+=u2Step){
+        double u2 = u2Min;
+        for(int j = 0; j < u2Size; ++j, u2+=u2Step){
             result_iterator->u1 = u1;
             result_iterator->u2 = u2;
             result_iterator->t = -1;
             result_iterator->result = this->calculateTrajectoryResult(i, u1, u2);
             ++result_iterator;
         }
-        currentResult->addU1Column(vector_iterator.base());
+        currentResult->addU1Column(&(*(vector_iterator)));
         ++vector_iterator;
     }
 
@@ -173,17 +177,19 @@ public:
         size_t idx = r.begin();
 
         std::vector<std::vector<CalculatedCut::TrajectoryResult>>::iterator vector_iterator = currentResult->begin() + idx;
+        int u2Size = this->currentResult->u2Size;
         for(idx = r.begin(); idx != r.end(); ++idx){
             double u1 = u1Min + (idx * u1Step);
             std::vector<CalculatedCut::TrajectoryResult>::iterator result_iterator = vector_iterator->begin();
-            for(double u2 = u2Min; u2<=u2Max; u2+=this->u2Step){
+            double u2 = u2Min;
+            for(int j = 0; j < u2Size; ++j, u2+=u2Step){
                 result_iterator->u1 = u1;
                 result_iterator->u2 = u2;
                 result_iterator->t = -1;
                 result_iterator->result = this->calculator->calculateTrajectoryResult(this->i, u1, u2);
                 ++result_iterator;
             }
-            currentResult->addU1Column(vector_iterator.base());
+            currentResult->addU1Column(&(*(vector_iterator)));
             ++vector_iterator;
         }
     }
