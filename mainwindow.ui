@@ -17,7 +17,7 @@
    </sizepolicy>
   </property>
   <property name="windowTitle">
-   <string>ChuaViz 0.1</string>
+   <string>ChuaViz 0.2</string>
   </property>
   <property name="styleSheet">
    <string notr="true">QGroupBox,QLabel {
@@ -51,7 +51,7 @@ font-size:11pt;
      <x>0</x>
      <y>0</y>
      <width>1300</width>
-     <height>21</height>
+     <height>19</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuS_bo">

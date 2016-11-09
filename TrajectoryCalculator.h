@@ -10,6 +10,7 @@
 #include "partiallycalculatedcut.h"
 #include "calculatedcut.h"
 #include "tbb/tbb.h"
+#include "crosssectiontype.h"
 
 class TrajectoryCalculator{
 
@@ -36,8 +37,8 @@ public:
 
     Trajectory* calculateTrajectory(double i0, double u1_0, double u2_0);
     TrajectoryResultType::ResultType calculateTrajectoryResult(double i0, double u1_0, double u2_0);
-    CalculatedCut* calculateCut(double u1Min, double u1Max, double u1Step,double u2Min, double u2Max, double u2Step, double i);
-    CalculatedCut* parallelCalculateCut(double u1Min, double u1Max, double u1Step,double u2Min, double u2Max, double u2Step, double i);
+    CalculatedCut* calculateCut(CrossSectionType type, double xMin, double xMax, double xStep, double yMin, double yMax, double yStep, double z);
+    CalculatedCut* parallelCalculateCut(CrossSectionType type, double xMin, double xMax, double xStep, double yMin, double yMax, double yStep, double z);
 
     bool hasPartialResult();
     PartiallyCalculatedCut* partialResult();

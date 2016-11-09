@@ -34,7 +34,8 @@ HEADERS  += mainwindow.h \
     circuitparameters.h \
     trajectoryresulttype.h \
     calculatedcut.h \
-    partiallycalculatedcut.h
+    partiallycalculatedcut.h \
+    crosssectiontype.h
 
 FORMS    += mainwindow.ui \
     widgets/cutwidget.ui \

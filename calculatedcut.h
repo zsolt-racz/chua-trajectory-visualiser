@@ -6,13 +6,14 @@
 #include <iomanip>
 #include <iostream>
 #include <fstream>
+#include "crosssectiontype.h"
 #include "trajectoryresulttype.h"
 
 class CalculatedCut
 {
 
 public:
-    CalculatedCut(double i, double u1Min, double u1Max, double u1Step, double u2Min, double u2Max, double u2Step);
+    CalculatedCut(CrossSectionType type, double i, double u1Min, double u1Max, double u1Step, double u2Min, double u2Max, double u2Step);
 
     struct TrajectoryResult{
         double u1;
@@ -22,6 +23,7 @@ public:
         TrajectoryResultType::ResultType result;
     };
 
+    CrossSectionType type;
     const double i;
     const int u1Size;
     const int u2Size;
@@ -39,7 +41,7 @@ public:
     std::vector<std::vector<TrajectoryResult>>::const_iterator cbegin();
     std::vector<std::vector<TrajectoryResult>>::const_iterator cend();
 
-    CalculatedCut(double i, double u1Min, double u1Max, double u1Size, double u2Min, double u2Max, double u2Size, std::vector<std::vector<TrajectoryResult>> results);
+    CalculatedCut(CrossSectionType type, double i, double u1Min, double u1Max, double u1Size, double u2Min, double u2Max, double u2Size, std::vector<std::vector<TrajectoryResult>> results);
 protected:
     std::vector<std::vector<TrajectoryResult>> results;
 };

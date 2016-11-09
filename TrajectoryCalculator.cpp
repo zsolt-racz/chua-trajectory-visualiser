@@ -131,21 +131,33 @@ TrajectoryResultType::ResultType TrajectoryCalculator::calculateTrajectoryResult
 
 }
 
-CalculatedCut* TrajectoryCalculator::calculateCut(double u1Min, double u1Max, double u1Step,double u2Min, double u2Max, double u2Step, double i){
-    this->currentResult = new PartiallyCalculatedCut(i, u1Min, u1Max, u1Step, u2Min, u2Max, u2Step);
+CalculatedCut* TrajectoryCalculator::calculateCut(CrossSectionType type, double xMin, double xMax, double xStep,double yMin, double yMax, double yStep, double z){
+    this->currentResult = new PartiallyCalculatedCut(type, z, xMin, xMax, xStep, yMin, yMax, yStep);
 
     std::vector<std::vector<CalculatedCut::TrajectoryResult>>::iterator vector_iterator = currentResult->begin();
-    int u1Size = this->currentResult->u1Size;
-    double u1 = u1Min;
-    int u2Size = this->currentResult->u2Size;
-    for(int i = 0; i < u1Size; ++i, u1+=u1Step){
+    int xSize = this->currentResult->u1Size;
+    double x = xMin;
+    int ySize = this->currentResult->u2Size;
+    for(int j = 0; j < xSize; ++j, x+=xStep){
         std::vector<CalculatedCut::TrajectoryResult>::iterator result_iterator = vector_iterator->begin();
-        double u2 = u2Min;
-        for(int j = 0; j < u2Size; ++j, u2+=u2Step){
-            result_iterator->u1 = u1;
-            result_iterator->u2 = u2;
+        double y = yMin;
+        for(int k = 0; k < ySize; ++k, y+=yStep){
+            result_iterator->u1 = x;
+            result_iterator->u2 = y;
             result_iterator->t = -1;
-            result_iterator->result = this->calculateTrajectoryResult(i, u1, u2);
+
+            switch (type) {
+            case U1_I:
+                result_iterator->result = this->calculateTrajectoryResult(y, x, z);
+                break;
+            case U2_I:
+                result_iterator->result = this->calculateTrajectoryResult(y, z, x);
+                break;
+            case U1_U2:
+                result_iterator->result = this->calculateTrajectoryResult(z, x, y);
+                break;
+            }
+
             ++result_iterator;
         }
         currentResult->addU1Column(&(*(vector_iterator)));
@@ -160,15 +172,46 @@ CalculatedCut* TrajectoryCalculator::calculateCut(double u1Min, double u1Max, do
     return result;
 }
 
+/*CalculatedCut* TrajectoryCalculator::calculateCut(double u1Min, double u1Max, double u1Step,double u2Min, double u2Max, double u2Step, double i){
+    this->currentResult = new PartiallyCalculatedCut(i, u1Min, u1Max, u1Step, u2Min, u2Max, u2Step);
+
+    std::vector<std::vector<CalculatedCut::TrajectoryResult>>::iterator vector_iterator = currentResult->begin();
+    int u1Size = this->currentResult->u1Size;
+    double u1 = u1Min;
+    int u2Size = this->currentResult->u2Size;
+    for(int j = 0; j < u1Size; ++j, u1+=u1Step){
+        std::vector<CalculatedCut::TrajectoryResult>::iterator result_iterator = vector_iterator->begin();
+        double u2 = u2Min;
+        for(int k = 0; k < u2Size; ++k, u2+=u2Step){
+            result_iterator->u1 = u1;
+            result_iterator->u2 = u2;
+            result_iterator->t = -1;
+
+            result_iterator->result = this->calculateTrajectoryResult(i, u1, u2);
+            ++result_iterator;
+        }
+        currentResult->addU1Column(&(*(vector_iterator)));
+        ++vector_iterator;
+    }
+
+    CalculatedCut* result = this->currentResult->createCalculatedCut();
+
+    delete this->currentResult;
+    this->currentResult = NULL;
+
+    return result;
+}*/
+
 class TBBCalculateCut {
 private:
-    double u1Min;
-    double u1Max;
-    double u1Step;
-    double u2Min;
-    double u2Max;
-    double u2Step;
-    double i;
+    CrossSectionType type;
+    double xMin;
+    double xMax;
+    double xStep;
+    double yMin;
+    double yMax;
+    double yStep;
+    double z;
     TrajectoryCalculator* calculator;
     tbb::atomic<PartiallyCalculatedCut*> currentResult;
 
@@ -177,16 +220,26 @@ public:
         size_t idx = r.begin();
 
         std::vector<std::vector<CalculatedCut::TrajectoryResult>>::iterator vector_iterator = currentResult->begin() + idx;
-        int u2Size = this->currentResult->u2Size;
+        int ySize = this->currentResult->u2Size;
         for(idx = r.begin(); idx != r.end(); ++idx){
-            double u1 = u1Min + (idx * u1Step);
+            double x = xMin + (idx * xStep);
             std::vector<CalculatedCut::TrajectoryResult>::iterator result_iterator = vector_iterator->begin();
-            double u2 = u2Min;
-            for(int j = 0; j < u2Size; ++j, u2+=u2Step){
-                result_iterator->u1 = u1;
-                result_iterator->u2 = u2;
+            double y = yMin;
+            for(int j = 0; j < ySize; ++j, y+=yStep){
+                result_iterator->u1 = x;
+                result_iterator->u2 = y;
                 result_iterator->t = -1;
-                result_iterator->result = this->calculator->calculateTrajectoryResult(this->i, u1, u2);
+                switch (this->type) {
+                case U1_I:
+                    result_iterator->result = this->calculator->calculateTrajectoryResult(y, x, z);
+                    break;
+                case U2_I:
+                    result_iterator->result = this->calculator->calculateTrajectoryResult(y, z, x);
+                    break;
+                case U1_U2:
+                    result_iterator->result = this->calculator->calculateTrajectoryResult(z, x, y);
+                    break;
+                }
                 ++result_iterator;
             }
             currentResult->addU1Column(&(*(vector_iterator)));
@@ -194,23 +247,24 @@ public:
         }
     }
 
-    TBBCalculateCut(double u1Min, double u1Max, double u1Step, double u2Min, double u2Max, double u2Step, double i, TrajectoryCalculator* calculator, PartiallyCalculatedCut* currentResult):
-        u1Min(u1Min),
-        u1Max(u1Max),
-        u1Step(u1Step),
-        u2Min(u2Min),
-        u2Max(u2Max),
-        u2Step(u2Step),
-        i(i),
+    TBBCalculateCut(CrossSectionType type, double xMin, double xMax, double xStep, double yMin, double yMax, double yStep, double z, TrajectoryCalculator* calculator, PartiallyCalculatedCut* currentResult):
+        type(type),
+        xMin(xMin),
+        xMax(xMax),
+        xStep(xStep),
+        yMin(yMin),
+        yMax(yMax),
+        yStep(yStep),
+        z(z),
         calculator(calculator),
         currentResult(currentResult)  {
     }
 };
 
-CalculatedCut* TrajectoryCalculator::parallelCalculateCut(double u1Min, double u1Max, double u1Step,double u2Min, double u2Max, double u2Step, double i){
-    this->currentResult = new PartiallyCalculatedCut(i, u1Min, u1Max, u1Step, u2Min, u2Max, u2Step);
+CalculatedCut* TrajectoryCalculator::parallelCalculateCut(CrossSectionType type, double xMin, double xMax, double xStep,double yMin, double yMax, double yStep, double z){
+    this->currentResult = new PartiallyCalculatedCut(type, z, xMin, xMax, xStep, yMin, yMax, yStep);
 
-    tbb::parallel_for(tbb::blocked_range<size_t>(0, this->currentResult->u1Size), TBBCalculateCut(u1Min, u1Max, u1Step, u2Min, u2Max, u2Step, i, this, this->currentResult));
+    tbb::parallel_for(tbb::blocked_range<size_t>(0, this->currentResult->u1Size), TBBCalculateCut(type, xMin, xMax, xStep, yMin, yMax, yStep, z, this, this->currentResult));
 
     CalculatedCut* result = this->currentResult->createCalculatedCut();
 

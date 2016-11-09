@@ -1,6 +1,7 @@
 #include "calculatedcut.h"
 
-CalculatedCut::CalculatedCut(double i, double u1Min, double u1Max, double u1Step, double u2Min, double u2Max, double u2Step):
+CalculatedCut::CalculatedCut(CrossSectionType type, double i, double u1Min, double u1Max, double u1Step, double u2Min, double u2Max, double u2Step):
+    type(type),
     i(i),
     u1Min(u1Min),
     u1Max(u1Max),
@@ -11,7 +12,8 @@ CalculatedCut::CalculatedCut(double i, double u1Min, double u1Max, double u1Step
     this->results = std::vector<std::vector<TrajectoryResult>>(u1Size, std::vector<TrajectoryResult>(u2Size));
 }
 
-CalculatedCut::CalculatedCut(double i, double u1Min, double u1Max, double u1Size, double u2Min, double u2Max, double u2Size, std::vector<std::vector<TrajectoryResult>> results):
+CalculatedCut::CalculatedCut(CrossSectionType type, double i, double u1Min, double u1Max, double u1Size, double u2Min, double u2Max, double u2Size, std::vector<std::vector<TrajectoryResult>> results):
+    type(type),
     i(i),
     u1Min(u1Min),
     u1Max(u1Max),

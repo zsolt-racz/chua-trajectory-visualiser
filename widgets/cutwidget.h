@@ -11,6 +11,7 @@
 #include <QFutureWatcher>
 #include <QtConcurrent/QtConcurrent>
 #include <QProgressDialog>
+#include <QSignalMapper>
 #include <functional>
 #include "qcustomplot/qcustomplot.h"
 #include "TrajectoryCalculator.h"
@@ -48,15 +49,15 @@ private:
     QFutureWatcher<CalculatedCut*> FutureWatcher;
     QTimer updateProgressTimer;
     QTime clock;
+    QSignalMapper* signalMapper;
     double lastProgress;
 
 signals:
     void reCalculated(CalculatedCut* cut);
 
 private slots:
-    void reCalculateSerial();
-    void reCalculateParallel();
-    void reCalculate(bool parallel);
+    void calculateButtonPressed(QWidget* button);
+    void reCalculate(CrossSectionType type, bool parallel);
     void cancelCalculation();
     void calculationFinished();
     void updateProgressBar();

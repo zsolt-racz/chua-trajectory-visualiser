@@ -9,9 +9,32 @@ CutWidget::CutWidget(QWidget *parent) :
 
     this->ui->progressBar->setDisabled(true);
 
-    this->connect(this->ui->button_calculate, SIGNAL(clicked()), this, SLOT(reCalculateSerial()));
-    this->connect(this->ui->button_calculate_parallel, SIGNAL(clicked()), this, SLOT(reCalculateParallel()));
-    this->connect(this->ui->button_cancel, SIGNAL(clicked()), this, SLOT(cancelCalculation()));
+    this->signalMapper = new QSignalMapper(this);
+
+    this->connect(this->signalMapper, SIGNAL(mapped(QWidget*)), this, SLOT(calculateButtonPressed(QWidget*)));
+
+    this->signalMapper->setMapping(this->ui->button_calculate_u1i, this->ui->button_calculate_u1i);
+    this->connect(this->ui->button_calculate_u1i, SIGNAL(clicked()), this->signalMapper, SLOT(map()));
+
+    this->signalMapper->setMapping(this->ui->button_calculate_parallel_u1i, this->ui->button_calculate_parallel_u1i);
+    this->connect(this->ui->button_calculate_parallel_u1i, SIGNAL(clicked()), this->signalMapper, SLOT(map()));
+
+    this->signalMapper->setMapping(this->ui->button_calculate_u2i, this->ui->button_calculate_u2i);
+    this->connect(this->ui->button_calculate_u2i, SIGNAL(clicked()), this->signalMapper, SLOT(map()));
+
+    this->signalMapper->setMapping(this->ui->button_calculate_parallel_u2i, this->ui->button_calculate_parallel_u2i);
+    this->connect(this->ui->button_calculate_parallel_u2i, SIGNAL(clicked()), this->signalMapper, SLOT(map()));
+
+    this->signalMapper->setMapping(this->ui->button_calculate_u1u2, this->ui->button_calculate_u1u2);
+    this->connect(this->ui->button_calculate_u1u2, SIGNAL(clicked()), this->signalMapper, SLOT(map()));
+
+    this->signalMapper->setMapping(this->ui->button_calculate_parallel_u1u2, this->ui->button_calculate_parallel_u1u2);
+    this->connect(this->ui->button_calculate_parallel_u1u2, SIGNAL(clicked()), this->signalMapper, SLOT(map()));
+
+    this->connect(this->ui->button_cancel_u1i, SIGNAL(clicked()), this, SLOT(cancelCalculation()));
+    this->connect(this->ui->button_cancel_u2i, SIGNAL(clicked()), this, SLOT(cancelCalculation()));
+    this->connect(this->ui->button_cancel_u1u2, SIGNAL(clicked()), this, SLOT(cancelCalculation()));
+
     this->connect(&this->updateProgressTimer, SIGNAL(timeout()), this, SLOT(updateProgressBar()));
     this->connect(&this->FutureWatcher, SIGNAL (finished()), this, SLOT (calculationFinished()));
     this->initPlot();
@@ -20,6 +43,10 @@ CutWidget::CutWidget(QWidget *parent) :
 CutWidget::~CutWidget()
 {
     delete ui;
+    delete parameters;
+    delete calculator;
+    delete colorMap;
+    delete signalMapper;
 }
 
 void CutWidget::setParameters(CircuitParameters* parameters){
@@ -47,8 +74,6 @@ void CutWidget::updateGuiByParameters(){
 
 void CutWidget::initPlot(){
     QCustomPlot* customPlot = this->ui->plot_cut;
-    customPlot->xAxis->setLabel("u1");
-    customPlot->yAxis->setLabel("u2");
     this->colorMap = new QCPColorMap(customPlot->xAxis, customPlot->yAxis);
 
     colorMap->setGradient(QCPColorGradient::gpHot);
@@ -57,38 +82,79 @@ void CutWidget::initPlot(){
     colorMap->setDataRange(QCPRange(0,100));
 }
 
-
-void CutWidget::reCalculateSerial(){
-    this->reCalculate(false);
+void CutWidget::calculateButtonPressed(QWidget* button){
+    if(button == ui->button_calculate_u1i){
+        this->reCalculate(U1_I, false);
+    }else if(button == ui->button_calculate_parallel_u1i){
+        this->reCalculate(U1_I, true);
+    }else if(button == ui->button_calculate_u2i){
+        this->reCalculate(U2_I, false);
+    }else if(button == ui->button_calculate_parallel_u2i){
+        this->reCalculate(U2_I, true);
+    }else if(button == ui->button_calculate_u1u2){
+        this->reCalculate(U1_U2, false);
+    }else if(button == ui->button_calculate_parallel_u1u2){
+        this->reCalculate(U1_U2, true);
+    }
 }
 
-void CutWidget::reCalculateParallel(){
-    this->reCalculate(true);
-}
-
-void CutWidget::reCalculate(bool parallel){
+void CutWidget::reCalculate(CrossSectionType type, bool parallel){
     this->calculator = new TrajectoryCalculator(this->parameters);
-    double u1Min = this->ui->input_u1_from->value();
-    double u1Max = this->ui->input_u1_to->value();
-    double u1Step = this->ui->input_u1_step->value();
-    double u2Min = this->ui->input_u2_from->value();
-    double u2Max = this->ui->input_u2_to->value();
-    double u2Step = this->ui->input_u2_step->value();
-    double i = this->ui->input_i->value();
+
+    double xMin, xMax, xStep, yMin, yMax, yStep, z;
+    switch (type) {
+    case U1_I:
+        xMin = this->ui->input_u1_from_u1i->value();
+        xMax = this->ui->input_u1_to_u1i->value();
+        xStep = this->ui->input_u1_step_u1i->value();
+        yMin = this->ui->input_i_from_u1i->value();
+        yMax = this->ui->input_i_to_u1i->value();
+        yStep = this->ui->input_i_step_u1i->value();
+        z = this->ui->input_u2_u1i->value();
+
+        this->ui->button_cancel_u1i->setEnabled(true);
+        break;
+    case U2_I:
+        xMin = this->ui->input_u2_from_u2i->value();
+        xMax = this->ui->input_u2_to_u2i->value();
+        xStep = this->ui->input_u2_step_u2i->value();
+        yMin = this->ui->input_i_from_u2i->value();
+        yMax = this->ui->input_i_to_u2i->value();
+        yStep = this->ui->input_i_step_u2i->value();
+        z = this->ui->input_u1_u2i->value();
+
+        this->ui->button_cancel_u2i->setEnabled(true);
+        break;
+    case U1_U2:
+        xMin = this->ui->input_u1_from_u1u2->value();
+        xMax = this->ui->input_u1_to_u1u2->value();
+        xStep = this->ui->input_u1_step_u1u2->value();
+        yMin = this->ui->input_u2_from_u1u2->value();
+        yMax = this->ui->input_u2_to_u1u2->value();
+        yStep = this->ui->input_u2_step_u1u2->value();
+        z = this->ui->input_i_u1u2->value();
+
+        this->ui->button_cancel_u1u2->setEnabled(true);
+        break;
+    }
 
     QFuture<CalculatedCut*> future;
     if(parallel){
-        future = QtConcurrent::run(std::bind(&TrajectoryCalculator::parallelCalculateCut, this->calculator, u1Min, u1Max, u1Step, u2Min, u2Max, u2Step, i));
+        future = QtConcurrent::run(std::bind(&TrajectoryCalculator::parallelCalculateCut, this->calculator, type, xMin, xMax, xStep, yMin, yMax, yStep, z));
     }else{
-        future = QtConcurrent::run(std::bind(&TrajectoryCalculator::calculateCut, this->calculator, u1Min, u1Max, u1Step, u2Min, u2Max, u2Step, i));
+        future = QtConcurrent::run(std::bind(&TrajectoryCalculator::calculateCut, this->calculator, type, xMin, xMax, xStep, yMin, yMax, yStep, z));
     }
     this->FutureWatcher.setFuture(future);
     this->clock.start();
 
     this->colorMap->data()->clear();
-    this->ui->button_cancel->setEnabled(true);
-    this->ui->button_calculate->setDisabled(true);
-    this->ui->button_calculate_parallel->setDisabled(true);
+
+    this->ui->button_calculate_u1i->setDisabled(true);
+    this->ui->button_calculate_parallel_u1i->setDisabled(true);
+    this->ui->button_calculate_u2i->setDisabled(true);
+    this->ui->button_calculate_parallel_u2i->setDisabled(true);
+    this->ui->button_calculate_u1u2->setDisabled(true);
+    this->ui->button_calculate_parallel_u1u2->setDisabled(true);
 
     this->ui->time->setDisabled(false);
     this->ui->resultTable->setDisabled(true);
@@ -102,7 +168,8 @@ void CutWidget::reCalculate(bool parallel){
 void CutWidget::cancelCalculation(){
     this->ui->progressBar->setValue(0);
     this->ui->progressBar->setDisabled(true);
-    this->ui->button_cancel->setDisabled(true);
+    this->ui->button_cancel_u1u2->setDisabled(true);
+
 }
 
 std::tuple<double, double, double> CutWidget::map(std::tuple<double, double, double> &parameters){
@@ -134,9 +201,16 @@ void CutWidget::calculationFinished(){
     CalculatedCut* cut = this->FutureWatcher.result();
     this->updateProgressTimer.stop();
 
-    this->ui->button_cancel->setDisabled(true);
-    this->ui->button_calculate->setEnabled(true);
-    this->ui->button_calculate_parallel->setEnabled(true);
+    this->ui->button_cancel_u1i->setDisabled(true);
+    this->ui->button_cancel_u2i->setDisabled(true);
+    this->ui->button_cancel_u1u2->setDisabled(true);
+    this->ui->button_calculate_u1i->setEnabled(true);
+
+    this->ui->button_calculate_parallel_u1i->setEnabled(true);
+    this->ui->button_calculate_u2i->setEnabled(true);
+    this->ui->button_calculate_parallel_u2i->setEnabled(true);
+    this->ui->button_calculate_u1u2->setEnabled(true);
+    this->ui->button_calculate_parallel_u1u2->setEnabled(true);
 
     this->ui->progressBar->setValue(0);
     this->ui->progressBar->setDisabled(true);
@@ -160,6 +234,17 @@ void CutWidget::calculationFinished(){
 
 void CutWidget::initForCut(CalculatedCut* cut){
     QCustomPlot* customPlot = this->ui->plot_cut;
+    if(cut->type == U1_I){
+        customPlot->xAxis->setLabel("u1");
+        customPlot->yAxis->setLabel("i");
+    }else if(cut->type == U2_I){
+        customPlot->xAxis->setLabel("u2");
+        customPlot->yAxis->setLabel("i");
+    }else if(cut->type == U1_U2){
+        customPlot->xAxis->setLabel("u1");
+        customPlot->yAxis->setLabel("u2");
+    }
+
     this->colorMap->data()->setSize(cut->u1Size, cut->u2Size);
     this->colorMap->data()->setRange(QCPRange(cut->u1Min, cut->u1Max), QCPRange(cut->u2Min, cut->u2Max)); // and span the coordinate range -4..4 in both key (x) and value (y) dimensions
     customPlot->xAxis->setRange(cut->u1Min, cut->u1Max);
