@@ -24,7 +24,7 @@ public:
     Trajectory* currentResult = NULL;
     QTimer* animationTimer;
     qint64 animationStart = 0;
-    std::vector<Point3DT*>::const_iterator nextAnimationPoint;
+    std::vector<Point3DT>::const_iterator nextAnimationPoint;
 
     void setParameters(CircuitParameters* parameters);
     void updateGuiByParameters();

@@ -2,8 +2,9 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include "ui_mainwindow.h"
+
 #include "Point3DT.h"
+#include "ui_mainwindow.h"
 #include "circuitparameters.h"
 #include <cmath>
 #include <vector>

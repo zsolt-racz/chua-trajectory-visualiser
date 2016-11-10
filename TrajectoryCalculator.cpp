@@ -12,7 +12,7 @@ TrajectoryCalculator::~TrajectoryCalculator() {
 }
 
 Trajectory* TrajectoryCalculator::calculateTrajectory(double i0, double u1_0, double u2_0) {
-    std::vector<Point3DT*>* points = new std::vector<Point3DT*>();
+    std::vector<Point3DT>* points = new std::vector<Point3DT>();
 
     double i = i0;
     double u1 = u1_0;
@@ -23,7 +23,7 @@ Trajectory* TrajectoryCalculator::calculateTrajectory(double i0, double u1_0, do
     int divisionCount = 0;
 
     // Save initial coordinates at t=0
-    points->push_back(new Point3DT(i0, u1_0, u2_0, 0));
+    points->push_back(Point3DT(i0, u1_0, u2_0, 0));
     for (double t = h; t <= t_max; t += h) {
         double a_i = fi(u2, i);
         double a_u1 = fu1(u1, u2, i);
@@ -62,7 +62,7 @@ Trajectory* TrajectoryCalculator::calculateTrajectory(double i0, double u1_0, do
                 h = h * 2;
             }
 
-            points->push_back(new Point3DT(i, u1, u2, t));
+            points->push_back(Point3DT(i, u1, u2, t));
         }
     }
 

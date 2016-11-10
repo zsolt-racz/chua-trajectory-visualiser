@@ -94,42 +94,42 @@ void TrajectoryWidget::redrawPlot(QCustomPlot* plot, Trajectory* result, int xRa
      QCPGraph* endPoint = dynamic_cast<QCPGraph*>(plot->plottable(2));
      curve->clearData();
 
-     const std::vector<Point3DT*>* points = result->points;
+     const std::vector<Point3DT>* points = result->points;
 
      if(plot == this->ui->plot_iu1){
-         for (std::vector<Point3DT*>::const_iterator point = points->begin(); point != points->end(); ++point) {
+         for (std::vector<Point3DT>::const_iterator point = points->begin(); point != points->end(); ++point) {
              if(point == points->begin()){
                  startPoint->data()->clear();
-                 startPoint->addData((*point)->u1, (*point)->i);
+                 startPoint->addData(point->u1, point->i);
              }
-             curve->addData((*point)->t, (*point)->u1, (*point)->i);
+             curve->addData(point->t, point->u1, point->i);
              if(point == points->end() -1 ){
                  endPoint->data()->clear();
-                 endPoint->addData((*point)->u1, (*point)->i);
+                 endPoint->addData(point->u1, point->i);
              }
          }
      }else if(plot == this->ui->plot_iu2){
-         for (std::vector<Point3DT*>::const_iterator point = points->begin(); point != points->end(); ++point) {
+         for (std::vector<Point3DT>::const_iterator point = points->begin(); point != points->end(); ++point) {
              if(point == points->begin()){
                  startPoint->data()->clear();
-                 startPoint->addData((*point)->u2, (*point)->i);
+                 startPoint->addData(point->u2, point->i);
              }
-             curve->addData((*point)->t, (*point)->u2, (*point)->i);
+             curve->addData(point->t, point->u2, point->i);
              if(point == points->end() -1 ){
                  endPoint->data()->clear();
-                 endPoint->addData((*point)->u2, (*point)->i);
+                 endPoint->addData(point->u2, point->i);
              }
          }
      }else if(plot == this->ui->plot_u1u2){
-         for (std::vector<Point3DT*>::const_iterator point = points->begin(); point != points->end(); ++point) {
+         for (std::vector<Point3DT>::const_iterator point = points->begin(); point != points->end(); ++point) {
              if(point == points->begin()){
                  startPoint->data()->clear();
-                 startPoint->addData((*point)->u1, (*point)->u2);
+                 startPoint->addData(point->u1, point->u2);
              }
-             curve->addData((*point)->t, (*point)->u1, (*point)->u2);
+             curve->addData(point->t, point->u1, point->u2);
              if(point == points->end() -1 ){
                  endPoint->data()->clear();
-                 endPoint->addData((*point)->u1, (*point)->u2);
+                 endPoint->addData(point->u1, point->u2);
              }
          }
      }
@@ -307,10 +307,10 @@ void TrajectoryWidget::animationStep(){
     QCPCurve* iu2curve = dynamic_cast<QCPCurve*>(this->ui->plot_iu2->plottable(0));
     QCPCurve* u1u2curve = dynamic_cast<QCPCurve*>(this->ui->plot_u1u2->plottable(0));
 
-    while(this->nextAnimationPoint != this->currentResult->points->end() && timerDiff >= (*this->nextAnimationPoint)->t * 100){
-        iu1curve->addData((*this->nextAnimationPoint)->t, (*this->nextAnimationPoint)->u1, (*this->nextAnimationPoint)->i);
-        iu2curve->addData((*this->nextAnimationPoint)->t, (*this->nextAnimationPoint)->u2, (*this->nextAnimationPoint)->i);
-        u1u2curve->addData((*this->nextAnimationPoint)->t, (*this->nextAnimationPoint)->u1, (*this->nextAnimationPoint)->u2);
+    while(this->nextAnimationPoint != this->currentResult->points->end() && timerDiff >= this->nextAnimationPoint->t * 100){
+        iu1curve->addData(this->nextAnimationPoint->t, this->nextAnimationPoint->u1, this->nextAnimationPoint->i);
+        iu2curve->addData(this->nextAnimationPoint->t, this->nextAnimationPoint->u2, this->nextAnimationPoint->i);
+        u1u2curve->addData(this->nextAnimationPoint->t, this->nextAnimationPoint->u1, this->nextAnimationPoint->u2);
         this->nextAnimationPoint++;
     }
 
