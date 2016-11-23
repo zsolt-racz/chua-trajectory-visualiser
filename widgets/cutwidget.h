@@ -17,6 +17,7 @@
 #include "TrajectoryCalculator.h"
 #include "circuitparameters.h"
 #include "trajectoryresulttype.h"
+#include "exprtk/exprtk.hpp"
 
 namespace Ui {
 class CutWidget;
@@ -42,6 +43,7 @@ private:
 
     void initPlot();
     void initForCut(CalculatedCut* cut);
+    void reCalculate(CrossSectionType type, bool parallel);
     void reDraw(CalculatedCut* cut);
     void reDrawPartial(PartiallyCalculatedCut* cut);
     void updateResultTabe(CalculatedCut* cut, int timeInMs);
@@ -49,7 +51,8 @@ private:
     QFutureWatcher<CalculatedCut*> FutureWatcher;
     QTimer updateProgressTimer;
     QTime clock;
-    QSignalMapper* signalMapper;
+    QSignalMapper* calculatButtonSignalMapper;
+    QSignalMapper* testChangedSignalMapper;
     double lastProgress;
 
 signals:
@@ -57,10 +60,10 @@ signals:
 
 private slots:
     void calculateButtonPressed(QWidget* button);
-    void reCalculate(CrossSectionType type, bool parallel);
     void cancelCalculation();
     void calculationFinished();
     void updateProgressBar();
+    void testExpressionChanged(QWidget* textEdit);
 };
 
 #endif // CUT_H

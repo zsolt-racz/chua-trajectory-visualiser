@@ -9,27 +9,37 @@ CutWidget::CutWidget(QWidget *parent) :
 
     this->ui->progressBar->setDisabled(true);
 
-    this->signalMapper = new QSignalMapper(this);
+    this->calculatButtonSignalMapper = new QSignalMapper(this);
 
-    this->connect(this->signalMapper, SIGNAL(mapped(QWidget*)), this, SLOT(calculateButtonPressed(QWidget*)));
+    this->connect(this->calculatButtonSignalMapper, SIGNAL(mapped(QWidget*)), this, SLOT(calculateButtonPressed(QWidget*)));
 
-    this->signalMapper->setMapping(this->ui->button_calculate_u1i, this->ui->button_calculate_u1i);
-    this->connect(this->ui->button_calculate_u1i, SIGNAL(clicked()), this->signalMapper, SLOT(map()));
+    this->calculatButtonSignalMapper->setMapping(this->ui->button_calculate_u1i, this->ui->button_calculate_u1i);
+    this->connect(this->ui->button_calculate_u1i, SIGNAL(clicked()), this->calculatButtonSignalMapper, SLOT(map()));
 
-    this->signalMapper->setMapping(this->ui->button_calculate_parallel_u1i, this->ui->button_calculate_parallel_u1i);
-    this->connect(this->ui->button_calculate_parallel_u1i, SIGNAL(clicked()), this->signalMapper, SLOT(map()));
+    this->calculatButtonSignalMapper->setMapping(this->ui->button_calculate_parallel_u1i, this->ui->button_calculate_parallel_u1i);
+    this->connect(this->ui->button_calculate_parallel_u1i, SIGNAL(clicked()), this->calculatButtonSignalMapper, SLOT(map()));
 
-    this->signalMapper->setMapping(this->ui->button_calculate_u2i, this->ui->button_calculate_u2i);
-    this->connect(this->ui->button_calculate_u2i, SIGNAL(clicked()), this->signalMapper, SLOT(map()));
+    this->calculatButtonSignalMapper->setMapping(this->ui->button_calculate_u2i, this->ui->button_calculate_u2i);
+    this->connect(this->ui->button_calculate_u2i, SIGNAL(clicked()), this->calculatButtonSignalMapper, SLOT(map()));
 
-    this->signalMapper->setMapping(this->ui->button_calculate_parallel_u2i, this->ui->button_calculate_parallel_u2i);
-    this->connect(this->ui->button_calculate_parallel_u2i, SIGNAL(clicked()), this->signalMapper, SLOT(map()));
+    this->calculatButtonSignalMapper->setMapping(this->ui->button_calculate_parallel_u2i, this->ui->button_calculate_parallel_u2i);
+    this->connect(this->ui->button_calculate_parallel_u2i, SIGNAL(clicked()), this->calculatButtonSignalMapper, SLOT(map()));
 
-    this->signalMapper->setMapping(this->ui->button_calculate_u1u2, this->ui->button_calculate_u1u2);
-    this->connect(this->ui->button_calculate_u1u2, SIGNAL(clicked()), this->signalMapper, SLOT(map()));
+    this->calculatButtonSignalMapper->setMapping(this->ui->button_calculate_u1u2, this->ui->button_calculate_u1u2);
+    this->connect(this->ui->button_calculate_u1u2, SIGNAL(clicked()), this->calculatButtonSignalMapper, SLOT(map()));
 
-    this->signalMapper->setMapping(this->ui->button_calculate_parallel_u1u2, this->ui->button_calculate_parallel_u1u2);
-    this->connect(this->ui->button_calculate_parallel_u1u2, SIGNAL(clicked()), this->signalMapper, SLOT(map()));
+    this->calculatButtonSignalMapper->setMapping(this->ui->button_calculate_parallel_u1u2, this->ui->button_calculate_parallel_u1u2);
+    this->connect(this->ui->button_calculate_parallel_u1u2, SIGNAL(clicked()), this->calculatButtonSignalMapper, SLOT(map()));
+
+    this->testChangedSignalMapper = new QSignalMapper(this);
+
+    this->connect(this->testChangedSignalMapper, SIGNAL(mapped(QWidget*)), this, SLOT(testExpressionChanged(QWidget*)));
+
+    this->testChangedSignalMapper->setMapping(this->ui->test_chaos, this->ui->test_chaos);
+    this->connect(this->ui->test_chaos, SIGNAL(textChanged()), this->testChangedSignalMapper, SLOT(map()));
+
+    this->testChangedSignalMapper->setMapping(this->ui->test_lc, this->ui->test_lc);
+    this->connect(this->ui->test_lc, SIGNAL(textChanged()), this->testChangedSignalMapper, SLOT(map()));
 
     this->connect(this->ui->button_cancel_u1i, SIGNAL(clicked()), this, SLOT(cancelCalculation()));
     this->connect(this->ui->button_cancel_u2i, SIGNAL(clicked()), this, SLOT(cancelCalculation()));
@@ -46,7 +56,7 @@ CutWidget::~CutWidget()
     delete parameters;
     delete calculator;
     delete colorMap;
-    delete signalMapper;
+    delete calculatButtonSignalMapper;
 }
 
 void CutWidget::setParameters(CircuitParameters* parameters){
@@ -160,6 +170,9 @@ void CutWidget::reCalculate(CrossSectionType type, bool parallel){
     this->ui->resultTable->setDisabled(true);
     this->ui->progressBar->setEnabled(true);
 
+    this->ui->plot_cut->setInteraction(QCP::iRangeDrag, false);
+    this->ui->plot_cut->setInteraction(QCP::iRangeZoom, false);
+
     this->updateProgressTimer.start(50);
     this->lastProgress = 0;
 
@@ -222,6 +235,9 @@ void CutWidget::calculationFinished(){
     this->initForCut(cut);
     this->reDraw(cut);
 
+    this->ui->plot_cut->setInteraction(QCP::iRangeDrag, true);
+    this->ui->plot_cut->setInteraction(QCP::iRangeZoom, true);
+
     this->updateResultTabe(cut, time);
     this->ui->resultTable->setEnabled(true);
 
@@ -230,6 +246,57 @@ void CutWidget::calculationFinished(){
     delete cut;
     delete this->calculator;
     this->calculator = NULL;
+}
+
+void CutWidget::testExpressionChanged(QWidget* textEdit){
+    QString expressionString;
+    QLabel* validityLabel;
+    if(textEdit == this->ui->test_chaos){
+        expressionString = this->ui->test_chaos->toPlainText();
+        validityLabel = this->ui->test_chaos_validity;
+    }else{
+        expressionString = this->ui->test_lc->toPlainText();
+        validityLabel = this->ui->test_lc_validity;
+    }
+
+    if(expressionString.isEmpty()){
+        validityLabel->setDisabled(true);
+        validityLabel->setText(QString("empty"));
+
+        return;
+    }
+
+    exprtk::parser<double> parser;
+    exprtk::symbol_table<double> symbolTable;
+    exprtk::expression<double> expression;
+
+    double x = 0;
+    double y = 0;
+
+    symbolTable.add_variable("x", x);
+    symbolTable.add_variable("y", y);
+
+    expression.register_symbol_table(symbolTable);
+
+    if(parser.compile(expressionString.toStdString(), expression)){
+        validityLabel->setEnabled(true);
+        validityLabel->setText(QString("valid"));
+
+        if(textEdit == this->ui->test_chaos){
+
+        }else{
+
+        }
+    }else{
+        validityLabel->setEnabled(true);
+        validityLabel->setText(QString("invalid"));
+
+        if(textEdit == this->ui->test_chaos){
+
+        }else{
+
+        }
+    }
 }
 
 void CutWidget::initForCut(CalculatedCut* cut){

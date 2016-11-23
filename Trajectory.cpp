@@ -6,7 +6,6 @@ Trajectory::Trajectory(std::vector<Point3DT>* points, int divisionCount): points
 }
 
 Trajectory::~Trajectory(){
-    std::cout << "destructing trajectory\n";
     delete points;
 }
 
@@ -36,16 +35,16 @@ Point3DT Trajectory::getMaxMins(){
     const std::vector<Point3DT>* points = this->points;
     for (std::vector<Point3DT>::const_iterator point = points->begin(); point != points->end(); ++point) {
         if(iMaxMin < std::abs(point->i)){
-            iMaxMin = std::abs(point->i);
+            iMaxMin = (int) std::ceil(std::abs(point->i));
         }
         if(u1MaxMin < std::abs(point->u1)){
-            u1MaxMin = std::abs(point->u1);
+            u1MaxMin = (int) std::ceil(std::abs(point->u1));
         }
         if(u2MaxMin < std::abs(point->u2)){
-            u2MaxMin = std::abs(point->u2);
+            u2MaxMin = (int) std::ceil(std::abs(point->u2));
         }
         if(tMaxMin < std::abs(point->t)){
-            tMaxMin = std::abs(point->t);
+            tMaxMin = (int) std::ceil(std::abs(point->t));
         }
     }
     return Point3DT(iMaxMin, u1MaxMin, u2MaxMin, tMaxMin);

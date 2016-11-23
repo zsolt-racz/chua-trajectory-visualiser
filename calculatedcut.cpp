@@ -5,10 +5,10 @@ CalculatedCut::CalculatedCut(CrossSectionType type, double i, double u1Min, doub
     i(i),
     u1Min(u1Min),
     u1Max(u1Max),
-    u1Size(std::floor(std::abs(u1Max - u1Min) / u1Step) + 1),
+    u1Size((int) std::floor(std::abs(u1Max - u1Min) / u1Step) + 1),
     u2Min(u2Min),
     u2Max(u2Max),
-    u2Size(std::floor(std::abs(u2Max - u2Min) / u2Step) + 1){
+    u2Size((int) std::floor(std::abs(u2Max - u2Min) / u2Step) + 1){
     this->results = std::vector<std::vector<TrajectoryResult>>(u1Size, std::vector<TrajectoryResult>(u2Size));
 }
 

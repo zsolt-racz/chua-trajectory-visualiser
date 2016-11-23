@@ -25,12 +25,12 @@ public:
 
     CrossSectionType type;
     const double i;
-    const int u1Size;
-    const int u2Size;
     const double u1Min;
     const double u1Max;
+    const int u1Size;
     const double u2Min;
     const double u2Max;
+    const int u2Size;
 
     void writeToCSV(std::string filename);
     void writeToPLY(std::string filename);
