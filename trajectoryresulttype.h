@@ -4,7 +4,7 @@
 
 struct TrajectoryResultType
 {
-    enum ResultType { UNDETERMINED, LC, CHA };
+    enum ResultType { UNDETERMINED = 6, LC = 0, CHA = 1 };
 };
 
 #endif // TRAJECTORYRESULTTYPE_H

@@ -95,7 +95,7 @@ void CutWidget::initPlot(){
 void CutWidget::calculateButtonPressed(QWidget* button){
     if(button == ui->button_calculate_u1i){
         this->reCalculate(U1_I, false);
-    }else if(button == ui->button_calculate_`_u1i){
+    }else if(button == ui->button_calculate_parallel_u1i){
         this->reCalculate(U1_I, true);
     }else if(button == ui->button_calculate_u2i){
         this->reCalculate(U2_I, false);
@@ -148,12 +148,12 @@ void CutWidget::reCalculate(CrossSectionType type, bool parallel){
         break;
     }
 
-    std::string chaosTest = this->ui->test_chaos->toPlainText();
-    std::string lcTest = this->ui->test_lc->toPlainText();
+    std::string chaosTest = this->ui->test_chaos->toPlainText().toStdString();
+    std::string lcTest = this->ui->test_lc->toPlainText().toStdString();
 
     QFuture<CalculatedCut*> future;
     if(parallel){
-        future = QtConcurrent::run(std::bind(&TrajectoryCalculator::parallelCalculateCut, this->calculator, type, xMin, xMax, xStep, yMin, yMax, yStep, z));
+        future = QtConcurrent::run(std::bind(&TrajectoryCalculator::parallelCalculateCut, this->calculator, type, xMin, xMax, xStep, yMin, yMax, yStep, z, chaosTest, lcTest));
     }else{
         future = QtConcurrent::run(std::bind(&TrajectoryCalculator::calculateCut, this->calculator, type, xMin, xMax, xStep, yMin, yMax, yStep, z, chaosTest, lcTest));
     }
@@ -187,29 +187,6 @@ void CutWidget::cancelCalculation(){
     this->ui->button_cancel_u1u2->setDisabled(true);
 
 }
-
-std::tuple<double, double, double> CutWidget::map(std::tuple<double, double, double> &parameters){
-    double u1 = std::get<0>(parameters);
-    double u2 = std::get<1>(parameters);
-    double i = std::get<2>(parameters);
-
-    TrajectoryResultType::ResultType result = this->calculator->calculateTrajectoryResult(i, u1, u2);
-    QCPColorMap* colorMap = dynamic_cast<QCPColorMap*>(this->ui->plot_cut->plottable(0));
-    switch(result){
-        case TrajectoryResultType::CHA:
-            colorMap->data()->setData(u1, u2, 0);
-            break;
-        case TrajectoryResultType::LC:
-            colorMap->data()->setData(u1, u2, 50);
-            break;
-        case TrajectoryResultType::UNDETERMINED:
-            colorMap->data()->setData(u1, u2, 100);
-            break;
-    }
-
-    return parameters;
-}
-
 
 void CutWidget::calculationFinished(){
     int time = this->clock.elapsed();

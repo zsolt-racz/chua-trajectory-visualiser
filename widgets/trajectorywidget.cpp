@@ -1,5 +1,4 @@
 #include "trajectorywidget.h"
-#include "ui_trajectorywidget.h"
 
 TrajectoryWidget::TrajectoryWidget(QWidget *parent) :
     QWidget(parent),

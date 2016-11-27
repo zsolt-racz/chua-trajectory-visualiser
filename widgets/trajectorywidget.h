@@ -2,6 +2,7 @@
 #define TRAJECTORYWIDGET_H
 #define NOMINMAX
 
+#include "ui_trajectorywidget.h"
 #include <QWidget>
 #include <QTime>
 #include "TrajectoryCalculator.h"
