@@ -3,6 +3,7 @@
 
 #include <cmath>
 #include <vector>
+#include <QTime>
 #include "Point3DT.h"
 #include "circuitparameters.h"
 #include "Trajectory.h"
@@ -36,12 +37,12 @@ public:
     const double iStepMax;
     const double uStepMax;
 
-    exprtk::parser<double> parser;
+    //exprtk::parser<double> parser;
 
     Trajectory* calculateTrajectory(double i0, double u1_0, double u2_0);
-    TrajectoryResultType::ResultType calculateTrajectoryResult(double i0, double u1_0, double u2_0, , std::string chaosExpressionString, std::string LCExpressionString);
-    CalculatedCut* calculateCut(CrossSectionType type, double xMin, double xMax, double xStep, double yMin, double yMax, double yStep, double z, , std::string chaosExpressionString, std::string LCExpressionString);
-    CalculatedCut* parallelCalculateCut(CrossSectionType type, double xMin, double xMax, double xStep, double yMin, double yMax, double yStep, double z);
+    TrajectoryResultType::ResultType calculateTrajectoryResult(double i0, double u1_0, double u2_0, std::string chaosExpressionString, std::string LCExpressionString);
+    CalculatedCut* calculateCut(CrossSectionType type, double xMin, double xMax, double xStep, double yMin, double yMax, double yStep, double z, std::string chaosExpressionString, std::string LCExpressionString);
+    CalculatedCut* parallelCalculateCut(CrossSectionType type, double xMin, double xMax, double xStep, double yMin, double yMax, double yStep, double z, std::string chaosExpressionString, std::string LCExpressionString);
 
     bool hasPartialResult();
     PartiallyCalculatedCut* partialResult();

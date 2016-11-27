@@ -85,7 +85,8 @@ exprtk::expression<double> TrajectoryCalculator::createExpression(double* i, dou
 exprtk::expression<double> TrajectoryCalculator::createCompiledExpression(double* i, double* u1, double* u2, std::string expressionString){
     exprtk::expression<double> expression = this->createExpression(i,u1,u2);
 
-    this->parser.compile(expressionString, expression);
+    exprtk::parser<double> parser;
+    parser.compile(expressionString, expression);
 
     return expression;
 }
@@ -94,7 +95,8 @@ bool TrajectoryCalculator::isExpressionValid(std::string expressionString){
     double i, u1, u2;
     exprtk::expression<double> expression = this->createExpression(&i,&u1,&u2);
 
-    return this->parser.compile(expressionString, expression);
+    exprtk::parser<double> parser;
+    return parser.compile(expressionString, expression);
 }
 
 TrajectoryResultType::ResultType TrajectoryCalculator::calculateTrajectoryResult(double i0, double u1_0, double u2_0, std::string chaosExpressionString, std::string LCExpressionString) {
@@ -190,7 +192,7 @@ CalculatedCut* TrajectoryCalculator::calculateCut(CrossSectionType type, double 
         for(int k = 0; k < ySize; ++k, y+=yStep){
             result_iterator->u1 = x;
             result_iterator->u2 = y;
-            result_iterator->t = -1;
+            QTime clock;
 
             switch (type) {
             case U1_I:
@@ -203,7 +205,7 @@ CalculatedCut* TrajectoryCalculator::calculateCut(CrossSectionType type, double 
                 result_iterator->result = this->calculateTrajectoryResult(z, x, y, chaosExpressionString, LCExpressionString);
                 break;
             }
-
+            result_iterator->t = clock.elapsed();
             ++result_iterator;
         }
         currentResult->addU1Column(&(*(vector_iterator)));
@@ -258,6 +260,8 @@ private:
     double yMax;
     double yStep;
     double z;
+    std::string chaosExpressionString;
+    std::string LCExpressionString;
     TrajectoryCalculator* calculator;
     tbb::atomic<PartiallyCalculatedCut*> currentResult;
 
@@ -278,13 +282,13 @@ public:
                 switch (this->type) {
                 case U1_I:
                     // TODO
-                    result_iterator->result = this->calculator->calculateTrajectoryResult(y, x, z, "true", "true");
+                    result_iterator->result = this->calculator->calculateTrajectoryResult(y, x, z, this->chaosExpressionString, this->LCExpressionString);
                     break;
                 case U2_I:
-                    result_iterator->result = this->calculator->calculateTrajectoryResult(y, z, x, "true", "true");
+                    result_iterator->result = this->calculator->calculateTrajectoryResult(y, z, x, this->chaosExpressionString, this->LCExpressionString);
                     break;
                 case U1_U2:
-                    result_iterator->result = this->calculator->calculateTrajectoryResult(z, x, y, "true", "true");
+                    result_iterator->result = this->calculator->calculateTrajectoryResult(z, x, y, this->chaosExpressionString, this->LCExpressionString);
                     break;
                 }
                 ++result_iterator;
@@ -294,7 +298,7 @@ public:
         }
     }
 
-    TBBCalculateCut(CrossSectionType type, double xMin, double xMax, double xStep, double yMin, double yMax, double yStep, double z, TrajectoryCalculator* calculator, PartiallyCalculatedCut* currentResult):
+    TBBCalculateCut(CrossSectionType type, double xMin, double xMax, double xStep, double yMin, double yMax, double yStep, double z, std::string chaosExpressionString, std::string LCExpressionString, TrajectoryCalculator* calculator, PartiallyCalculatedCut* currentResult):
         type(type),
         xMin(xMin),
         xMax(xMax),
@@ -303,15 +307,17 @@ public:
         yMax(yMax),
         yStep(yStep),
         z(z),
+        chaosExpressionString(chaosExpressionString),
+        LCExpressionString(LCExpressionString),
         calculator(calculator),
         currentResult(currentResult)  {
     }
 };
 
-CalculatedCut* TrajectoryCalculator::parallelCalculateCut(CrossSectionType type, double xMin, double xMax, double xStep,double yMin, double yMax, double yStep, double z){
+CalculatedCut* TrajectoryCalculator::parallelCalculateCut(CrossSectionType type, double xMin, double xMax, double xStep,double yMin, double yMax, double yStep, double z, std::string chaosExpressionString, std::string LCExpressionString){
     this->currentResult = new PartiallyCalculatedCut(type, z, xMin, xMax, xStep, yMin, yMax, yStep);
 
-    tbb::parallel_for(tbb::blocked_range<size_t>(0, this->currentResult->u1Size), TBBCalculateCut(type, xMin, xMax, xStep, yMin, yMax, yStep, z, this, this->currentResult));
+    tbb::parallel_for(tbb::blocked_range<size_t>(0, this->currentResult->u1Size), TBBCalculateCut(type, xMin, xMax, xStep, yMin, yMax, yStep, z, chaosExpressionString, LCExpressionString, this, this->currentResult));
 
     CalculatedCut* result = this->currentResult->createCalculatedCut();
 
