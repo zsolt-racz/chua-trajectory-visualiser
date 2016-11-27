@@ -69,10 +69,41 @@ Trajectory* TrajectoryCalculator::calculateTrajectory(double i0, double u1_0, do
     return new Trajectory(points, divisionCount);
 }
 
-TrajectoryResultType::ResultType TrajectoryCalculator::calculateTrajectoryResult(double i0, double u1_0, double u2_0) {
+exprtk::expression<double> TrajectoryCalculator::createExpression(double* i, double* u1, double* u2){
+    exprtk::symbol_table<double> symbolTable;
+    exprtk::expression<double> result;
+
+    symbolTable.add_variable("i", *i);
+    symbolTable.add_variable("u1", *u1);
+    symbolTable.add_variable("u2", *u2);
+
+    result.register_symbol_table(symbolTable);
+
+    return result;
+}
+
+exprtk::expression<double> TrajectoryCalculator::createCompiledExpression(double* i, double* u1, double* u2, std::string expressionString){
+    exprtk::expression<double> expression = this->createExpression(i,u1,u2);
+
+    this->parser.compile(expressionString, expression);
+
+    return expression;
+}
+
+bool TrajectoryCalculator::isExpressionValid(std::string expressionString){
+    double i, u1, u2;
+    exprtk::expression<double> expression = this->createExpression(&i,&u1,&u2);
+
+    return this->parser.compile(expressionString, expression);
+}
+
+TrajectoryResultType::ResultType TrajectoryCalculator::calculateTrajectoryResult(double i0, double u1_0, double u2_0, std::string chaosExpressionString, std::string LCExpressionString) {
     double i = i0;
     double u1 = u1_0;
     double u2 = u2_0;
+
+    exprtk::expression<double> chaosExpression = this->createCompiledExpression(&i, &u1, &u2, chaosExpressionString);
+    exprtk::expression<double> LCExpression = this->createCompiledExpression(&i, &u1, &u2, LCExpressionString);
 
     double h = h0;
 
@@ -114,16 +145,31 @@ TrajectoryResultType::ResultType TrajectoryCalculator::calculateTrajectoryResult
             }
 
             if(t > 50){
-                /* Test LC */
+                // Test LC
+                if (LCExpression.value()) {
+                    return TrajectoryResultType::LC;
+                }
+
+                // Test CHA
+                if (chaosExpression.value()) {
+                    return TrajectoryResultType::CHA;
+                }
+            }
+
+            /*
+            if(t > 50){
+                // Test LC
                 if (i > 30 || i < -30) {
                     return TrajectoryResultType::LC;
                 }
 
-                /* Test CHA */
+                // Test CHA
                 if (u2 < -4.75 && u2 > -5.25 && u1 < 0.25 && u1 > -0.25 && i < 5 && i > -5) {
                     return TrajectoryResultType::CHA;
                 }
-            }
+            }*/
+
+
         }
     }
 
@@ -131,7 +177,7 @@ TrajectoryResultType::ResultType TrajectoryCalculator::calculateTrajectoryResult
 
 }
 
-CalculatedCut* TrajectoryCalculator::calculateCut(CrossSectionType type, double xMin, double xMax, double xStep,double yMin, double yMax, double yStep, double z){
+CalculatedCut* TrajectoryCalculator::calculateCut(CrossSectionType type, double xMin, double xMax, double xStep,double yMin, double yMax, double yStep, double z, std::string chaosExpressionString, std::string LCExpressionString){
     this->currentResult = new PartiallyCalculatedCut(type, z, xMin, xMax, xStep, yMin, yMax, yStep);
 
     std::vector<std::vector<CalculatedCut::TrajectoryResult>>::iterator vector_iterator = currentResult->begin();
@@ -148,13 +194,13 @@ CalculatedCut* TrajectoryCalculator::calculateCut(CrossSectionType type, double 
 
             switch (type) {
             case U1_I:
-                result_iterator->result = this->calculateTrajectoryResult(y, x, z);
+                result_iterator->result = this->calculateTrajectoryResult(y, x, z, chaosExpressionString, LCExpressionString);
                 break;
             case U2_I:
-                result_iterator->result = this->calculateTrajectoryResult(y, z, x);
+                result_iterator->result = this->calculateTrajectoryResult(y, z, x, chaosExpressionString, LCExpressionString);
                 break;
             case U1_U2:
-                result_iterator->result = this->calculateTrajectoryResult(z, x, y);
+                result_iterator->result = this->calculateTrajectoryResult(z, x, y, chaosExpressionString, LCExpressionString);
                 break;
             }
 
@@ -231,13 +277,14 @@ public:
                 result_iterator->t = -1;
                 switch (this->type) {
                 case U1_I:
-                    result_iterator->result = this->calculator->calculateTrajectoryResult(y, x, z);
+                    // TODO
+                    result_iterator->result = this->calculator->calculateTrajectoryResult(y, x, z, "true", "true");
                     break;
                 case U2_I:
-                    result_iterator->result = this->calculator->calculateTrajectoryResult(y, z, x);
+                    result_iterator->result = this->calculator->calculateTrajectoryResult(y, z, x, "true", "true");
                     break;
                 case U1_U2:
-                    result_iterator->result = this->calculator->calculateTrajectoryResult(z, x, y);
+                    result_iterator->result = this->calculator->calculateTrajectoryResult(z, x, y, "true", "true");
                     break;
                 }
                 ++result_iterator;

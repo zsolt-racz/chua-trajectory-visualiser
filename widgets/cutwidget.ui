@@ -1501,10 +1501,10 @@
   <widget class="QPlainTextEdit" name="test_chaos">
    <property name="geometry">
     <rect>
-     <x>300</x>
+     <x>310</x>
      <y>310</y>
-     <width>521</width>
-     <height>41</height>
+     <width>501</width>
+     <height>51</height>
     </rect>
    </property>
   </widget>
@@ -1525,7 +1525,7 @@
    <property name="geometry">
     <rect>
      <x>300</x>
-     <y>360</y>
+     <y>370</y>
      <width>71</width>
      <height>16</height>
     </rect>
@@ -1537,10 +1537,10 @@
   <widget class="QPlainTextEdit" name="test_lc">
    <property name="geometry">
     <rect>
-     <x>300</x>
-     <y>380</y>
-     <width>521</width>
-     <height>41</height>
+     <x>310</x>
+     <y>390</y>
+     <width>501</width>
+     <height>51</height>
     </rect>
    </property>
   </widget>
@@ -1550,7 +1550,7 @@
    </property>
    <property name="geometry">
     <rect>
-     <x>760</x>
+     <x>750</x>
      <y>290</y>
      <width>59</width>
      <height>14</height>
@@ -1572,8 +1572,8 @@
    </property>
    <property name="geometry">
     <rect>
-     <x>760</x>
-     <y>360</y>
+     <x>750</x>
+     <y>370</y>
      <width>59</width>
      <height>14</height>
     </rect>

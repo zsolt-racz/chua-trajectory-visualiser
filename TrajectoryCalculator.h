@@ -11,6 +11,7 @@
 #include "calculatedcut.h"
 #include "tbb/tbb.h"
 #include "crosssectiontype.h"
+#include "exprtk/exprtk.hpp"
 
 class TrajectoryCalculator{
 
@@ -35,13 +36,19 @@ public:
     const double iStepMax;
     const double uStepMax;
 
+    exprtk::parser<double> parser;
+
     Trajectory* calculateTrajectory(double i0, double u1_0, double u2_0);
-    TrajectoryResultType::ResultType calculateTrajectoryResult(double i0, double u1_0, double u2_0);
-    CalculatedCut* calculateCut(CrossSectionType type, double xMin, double xMax, double xStep, double yMin, double yMax, double yStep, double z);
+    TrajectoryResultType::ResultType calculateTrajectoryResult(double i0, double u1_0, double u2_0, , std::string chaosExpressionString, std::string LCExpressionString);
+    CalculatedCut* calculateCut(CrossSectionType type, double xMin, double xMax, double xStep, double yMin, double yMax, double yStep, double z, , std::string chaosExpressionString, std::string LCExpressionString);
     CalculatedCut* parallelCalculateCut(CrossSectionType type, double xMin, double xMax, double xStep, double yMin, double yMax, double yStep, double z);
 
     bool hasPartialResult();
     PartiallyCalculatedCut* partialResult();
+
+    exprtk::expression<double> createExpression(double* i, double* u1, double* u2);
+    exprtk::expression<double> createCompiledExpression(double* i, double* u1, double* u2, std::string expressionString);
+    bool isExpressionValid(std::string expressionString);
 
 private:
     inline double fu1(double u1, double u2, double i);

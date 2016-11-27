@@ -95,7 +95,7 @@ void CutWidget::initPlot(){
 void CutWidget::calculateButtonPressed(QWidget* button){
     if(button == ui->button_calculate_u1i){
         this->reCalculate(U1_I, false);
-    }else if(button == ui->button_calculate_parallel_u1i){
+    }else if(button == ui->button_calculate_`_u1i){
         this->reCalculate(U1_I, true);
     }else if(button == ui->button_calculate_u2i){
         this->reCalculate(U2_I, false);
@@ -148,11 +148,14 @@ void CutWidget::reCalculate(CrossSectionType type, bool parallel){
         break;
     }
 
+    std::string chaosTest = this->ui->test_chaos->toPlainText();
+    std::string lcTest = this->ui->test_lc->toPlainText();
+
     QFuture<CalculatedCut*> future;
     if(parallel){
         future = QtConcurrent::run(std::bind(&TrajectoryCalculator::parallelCalculateCut, this->calculator, type, xMin, xMax, xStep, yMin, yMax, yStep, z));
     }else{
-        future = QtConcurrent::run(std::bind(&TrajectoryCalculator::calculateCut, this->calculator, type, xMin, xMax, xStep, yMin, yMax, yStep, z));
+        future = QtConcurrent::run(std::bind(&TrajectoryCalculator::calculateCut, this->calculator, type, xMin, xMax, xStep, yMin, yMax, yStep, z, chaosTest, lcTest));
     }
     this->FutureWatcher.setFuture(future);
     this->clock.start();
@@ -266,19 +269,7 @@ void CutWidget::testExpressionChanged(QWidget* textEdit){
         return;
     }
 
-    exprtk::parser<double> parser;
-    exprtk::symbol_table<double> symbolTable;
-    exprtk::expression<double> expression;
-
-    double x = 0;
-    double y = 0;
-
-    symbolTable.add_variable("x", x);
-    symbolTable.add_variable("y", y);
-
-    expression.register_symbol_table(symbolTable);
-
-    if(parser.compile(expressionString.toStdString(), expression)){
+    if(this->calculator->isExpressionValid(expressionString.toStdString())){
         validityLabel->setEnabled(true);
         validityLabel->setText(QString("valid"));
 
