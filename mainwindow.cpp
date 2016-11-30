@@ -7,9 +7,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
 
     this->parameters = new CircuitParameters("parameters.txt");
-    this->ui->trajectory->setParameters(this->parameters);
-    this->ui->cutwidget->setParameters(this->parameters);
-    this->ui->trajectory->updateGuiByParameters();
+    this->ui->trajectory->updateParameters(this->parameters);
+    this->ui->cutwidget->updateParameters(this->parameters);
 
     this->connect(this->ui->actionLoad_parameters, &QAction::triggered, this, &MainWindow::loadParametersAction);
     this->connect(this->ui->actionSave_parameters, &QAction::triggered, this, &MainWindow::saveParametersAction);
@@ -18,13 +17,26 @@ MainWindow::MainWindow(QWidget *parent) :
     this->connect(this->ui->actionExit, &QAction::triggered, this, &MainWindow::exitAction);
     this->connect(this->ui->actionTrajectory, &QAction::triggered, this, &MainWindow::switchToTrajectoryAction);
     this->connect(this->ui->actionCrossSection, &QAction::triggered, this, &MainWindow::switchToCrossSectionAction);
+
+    this->connect(this->ui->trajectory, SIGNAL(parametersChanged(CircuitParameters*)), this, SLOT(parametersChangedInTrajectory(CircuitParameters*)));
 }
 
 
 
+void MainWindow::parametersChangedInTrajectory(CircuitParameters* parameters){
+    if(this->parameters != parameters){
+        delete this->parameters;
+        this->parameters = parameters;
+    }
+
+    this->ui->cutwidget->updateParameters(this->parameters);
+}
+
 void MainWindow::loadParametersFromFile(std::string filename){
     this->parameters->loadFromFile(filename);
-    this->ui->trajectory->updateGuiByParameters();
+
+    this->ui->trajectory->updateParameters(this->parameters);
+    this->ui->cutwidget->updateParameters(this->parameters);
 }
 
 
@@ -81,7 +93,6 @@ void MainWindow::switchToTrajectoryAction(){
 
 void MainWindow::switchToCrossSectionAction(){
     this->ui->stackedWidget->setCurrentIndex(1);
-    this->ui->cutwidget->updateGuiByParameters();
 }
 
 MainWindow::~MainWindow()

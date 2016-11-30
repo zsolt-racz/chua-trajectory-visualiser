@@ -16,8 +16,8 @@ public:
     CalculatedCut(CrossSectionType type, double i, double u1Min, double u1Max, double u1Step, double u2Min, double u2Max, double u2Step);
 
     struct TrajectoryResult{
-        double u1;
-        double u2;
+        double x;
+        double y;
         double t;
 
         TrajectoryResultType::ResultType result;

@@ -17,6 +17,9 @@ class TrajectoryWidget : public QWidget
 {
     Q_OBJECT
 
+signals:
+    void parametersChanged(CircuitParameters* parameters);
+
 public:
     explicit TrajectoryWidget(QWidget *parent = 0);
     ~TrajectoryWidget();
@@ -27,9 +30,7 @@ public:
     qint64 animationStart = 0;
     std::vector<Point3DT>::const_iterator nextAnimationPoint;
 
-    void setParameters(CircuitParameters* parameters);
-    void updateGuiByParameters();
-    void updateParametersByGui();
+    void updateParameters(CircuitParameters* parameters);
 
 private slots:
     void reCalculateAndReDraw();
@@ -38,10 +39,12 @@ private slots:
     void synchronizeRangeWithIU1();
     void synchronizeRangeWithIU2();
     void synchronizeRangeWithU1U2();
+    void updateParametersByGui();
 
 private:
     Ui::TrajectoryWidget *ui;
     CircuitParameters* parameters = NULL;
+    bool updatingParameters = false;
     void initPlots();
     void redrawPlots(Trajectory* result);
     void redrawPlot(QCustomPlot* plot, Trajectory* result, int xRange, int yRange );

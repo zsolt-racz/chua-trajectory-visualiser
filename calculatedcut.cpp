@@ -30,20 +30,7 @@ void CalculatedCut::writeToCSV(std::string filename) {
 
     for (std::vector<std::vector<TrajectoryResult>>::const_iterator vector_iterator = this->cbegin(); vector_iterator != this->cend(); ++vector_iterator) {
         for (std::vector<TrajectoryResult>::const_iterator result_iterator = vector_iterator->cbegin(); result_iterator != vector_iterator->cend(); ++result_iterator) {
-            output << std::setprecision(15) << this->i << "; " << result_iterator->u1 << "; " << result_iterator->u2 << "; ";
-            switch(result_iterator->result){
-            case TrajectoryResultType::CHA:
-                  output << "CH";
-                break;
-            case TrajectoryResultType::LC:
-                output << "LC";
-                break;
-            case TrajectoryResultType::UNDETERMINED:
-                output << "UN";
-                break;
-            }
-
-            output << "; " << result_iterator->t << "\n";
+            output << std::setprecision(15) << this->i << "\t" << result_iterator->x << "\t" << result_iterator->y << "\t" << result_iterator->result << "\t" << result_iterator->t << "\n";
         }
     }
 
@@ -65,7 +52,7 @@ void CalculatedCut::writeToPLY(std::string filename) {
     for (std::vector<std::vector<TrajectoryResult>>::const_iterator vector_iterator = this->cbegin(); vector_iterator != this->cend(); ++vector_iterator) {
         for (std::vector<TrajectoryResult>::const_iterator result_iterator = vector_iterator->cbegin(); result_iterator != vector_iterator->cend(); ++result_iterator) {
             if(result_iterator->result == TrajectoryResultType::CHA){
-                output << this->i << " " << result_iterator->u1 << " " << result_iterator->u2 << "\n";
+                output << this->i << " " << result_iterator->x << " " << result_iterator->y << "\n";
             }
         }
     }

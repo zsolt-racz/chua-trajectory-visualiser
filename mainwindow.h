@@ -21,6 +21,8 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
+private slots:
+    void parametersChangedInTrajectory(CircuitParameters* parameters);
 
 private:
     Ui::MainWindow* ui;

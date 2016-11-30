@@ -12,6 +12,8 @@
 #include <QtConcurrent/QtConcurrent>
 #include <QProgressDialog>
 #include <QSignalMapper>
+#include <QPoint>
+#include <QFileDialog>
 #include <functional>
 #include "qcustomplot/qcustomplot.h"
 #include "TrajectoryCalculator.h"
@@ -31,13 +33,13 @@ public:
     explicit CutWidget(QWidget *parent = 0);
     ~CutWidget();
 
-    void setParameters(CircuitParameters* parameters);
-    void updateGuiByParameters();
+    void updateParameters(CircuitParameters* parameters);
 
 private:
     Ui::CutWidget *ui;
     CircuitParameters* parameters = NULL;
     TrajectoryCalculator* calculator = NULL;
+    CalculatedCut* currentResult = NULL;
     QCPColorMap *colorMap = NULL;
     std::tuple<double, double, double> map(std::tuple<double, double, double> &parameters);
 
@@ -46,7 +48,7 @@ private:
     void reCalculate(CrossSectionType type, bool parallel);
     void reDraw(CalculatedCut* cut);
     void reDrawPartial(PartiallyCalculatedCut* cut);
-    void updateResultTabe(CalculatedCut* cut, int timeInMs);
+    void updateResultTable(CalculatedCut* cut, int timeInMs);
     QString formatTime(int timeInMs);
     QFutureWatcher<CalculatedCut*> FutureWatcher;
     QTimer updateProgressTimer;
@@ -64,6 +66,9 @@ private slots:
     void calculationFinished();
     void updateProgressBar();
     void testExpressionChanged(QWidget* textEdit);
+    void contextMenuRequest(QPoint pos);
+    void saveCurrentResultToPng();
+    void exportCurrentResultToCsv();
 };
 
 #endif // CUT_H

@@ -10,6 +10,24 @@ TrajectoryWidget::TrajectoryWidget(QWidget *parent) :
     this->connect(this->ui->button_animate, SIGNAL(clicked()), this, SLOT(reCalculateAndAnimate()));
     this->connect(this->ui->button_animate_stop, SIGNAL(clicked()), this, SLOT(stopAnimation()));
 
+
+    // Update parameters if one of the inputs is changed
+    this->connect(this->ui->input_C1, SIGNAL(editingFinished()), this, SLOT(updateParametersByGui()));
+    this->connect(this->ui->input_C2, SIGNAL(editingFinished()), this, SLOT(updateParametersByGui()));
+    this->connect(this->ui->input_L, SIGNAL(editingFinished()), this, SLOT(updateParametersByGui()));
+    this->connect(this->ui->input_Bp, SIGNAL(editingFinished()), this, SLOT(updateParametersByGui()));
+    this->connect(this->ui->input_B0, SIGNAL(editingFinished()), this, SLOT(updateParametersByGui()));
+    this->connect(this->ui->input_R, SIGNAL(editingFinished()), this, SLOT(updateParametersByGui()));
+    this->connect(this->ui->input_ro, SIGNAL(editingFinished()), this, SLOT(updateParametersByGui()));
+    this->connect(this->ui->input_I, SIGNAL(editingFinished()), this, SLOT(updateParametersByGui()));
+    this->connect(this->ui->input_m0, SIGNAL(editingFinished()), this, SLOT(updateParametersByGui()));
+    this->connect(this->ui->input_m1, SIGNAL(editingFinished()), this, SLOT(updateParametersByGui()));
+    this->connect(this->ui->input_m2, SIGNAL(editingFinished()), this, SLOT(updateParametersByGui()));
+    this->connect(this->ui->input_tmax, SIGNAL(editingFinished()), this, SLOT(updateParametersByGui()));
+    this->connect(this->ui->input_h0, SIGNAL(editingFinished()), this, SLOT(updateParametersByGui()));
+    this->connect(this->ui->input_ihmax, SIGNAL(editingFinished()), this, SLOT(updateParametersByGui()));
+    this->connect(this->ui->input_uhmax, SIGNAL(editingFinished()), this, SLOT(updateParametersByGui()));
+
     //TODO remove
     this->ui->input_i_0->setValue(0.000001);
 
@@ -24,8 +42,52 @@ TrajectoryWidget::~TrajectoryWidget()
     delete ui;
 }
 
-void TrajectoryWidget::setParameters(CircuitParameters* parameters){
+void TrajectoryWidget::updateParameters(CircuitParameters* parameters){
+    this->updatingParameters = true;
+
     this->parameters = parameters;
+
+    this->ui->input_C1->setValue(parameters->C1);
+    this->ui->input_C2->setValue(parameters->C2);
+    this->ui->input_L->setValue(parameters->L);
+    this->ui->input_Bp->setValue(parameters->Bp);
+    this->ui->input_B0->setValue(parameters->B0);
+    this->ui->input_R->setValue(parameters->R);
+    this->ui->input_ro->setValue(parameters->ro);
+    this->ui->input_I->setValue(parameters->I);
+    this->ui->input_m0->setValue(parameters->m0);
+    this->ui->input_m1->setValue(parameters->m1);
+    this->ui->input_m2->setValue(parameters->m2);
+    this->ui->input_tmax->setValue(parameters->t_max);
+    this->ui->input_h0->setValue(parameters->h0);
+    this->ui->input_ihmax->setValue(parameters->iStepMax);
+    this->ui->input_uhmax->setValue(parameters->uStepMax);
+
+    this->updatingParameters = false;
+}
+
+void TrajectoryWidget::updateParametersByGui(){
+    if(this->updatingParameters){
+        return;
+    }
+
+    this->parameters->C1 = this->ui->input_C1->value();
+    this->parameters->C2 = this->ui->input_C2->value();
+    this->parameters->L = this->ui->input_L->value();
+    this->parameters->Bp = this->ui->input_Bp->value();
+    this->parameters->B0 = this->ui->input_B0->value();
+    this->parameters->R = this->ui->input_R->value();
+    this->parameters->ro = this->ui->input_ro->value();
+    this->parameters->I = this->ui->input_I->value();
+    this->parameters->m0 = this->ui->input_m0->value();
+    this->parameters->m1 = this->ui->input_m1->value();
+    this->parameters->m2 = this->ui->input_m2->value();
+    this->parameters->t_max = this->ui->input_tmax->value();
+    this->parameters->h0 = this->ui->input_h0->value();
+    this->parameters->iStepMax =this->ui->input_ihmax->value();
+    this->parameters->uStepMax = this->ui->input_uhmax->value();
+
+    emit parametersChanged(this->parameters);
 }
 
 void TrajectoryWidget::initPlots(){
@@ -318,44 +380,9 @@ void TrajectoryWidget::animationStep(){
     this->ui->plot_u1u2->replot();
 }
 
-void TrajectoryWidget::updateParametersByGui(){
-    this->parameters->C1 = this->ui->input_C1->value();
-    this->parameters->C2 = this->ui->input_C2->value();
-    this->parameters->L = this->ui->input_L->value();
-    this->parameters->Bp = this->ui->input_Bp->value();
-    this->parameters->B0 = this->ui->input_B0->value();
-    this->parameters->R = this->ui->input_R->value();
-    this->parameters->ro = this->ui->input_ro->value();
-    this->parameters->I = this->ui->input_I->value();
-    this->parameters->m0 = this->ui->input_m0->value();
-    this->parameters->m1 = this->ui->input_m1->value();
-    this->parameters->m2 = this->ui->input_m2->value();
-    this->parameters->t_max = this->ui->input_tmax->value();
-    this->parameters->h0 = this->ui->input_h0->value();
-    this->parameters->iStepMax =this->ui->input_ihmax->value();
-    this->parameters->uStepMax = this->ui->input_uhmax->value();
-}
 
-void TrajectoryWidget::updateGuiByParameters(){
-    this->ui->input_C1->setValue(parameters->C1);
-    this->ui->input_C2->setValue(parameters->C2);
-    this->ui->input_L->setValue(parameters->L);
-    this->ui->input_Bp->setValue(parameters->Bp);
-    this->ui->input_B0->setValue(parameters->B0);
-    this->ui->input_R->setValue(parameters->R);
-    this->ui->input_ro->setValue(parameters->ro);
-    this->ui->input_I->setValue(parameters->I);
-    this->ui->input_m0->setValue(parameters->m0);
-    this->ui->input_m1->setValue(parameters->m1);
-    this->ui->input_m2->setValue(parameters->m2);
-    this->ui->input_tmax->setValue(parameters->t_max);
-    this->ui->input_h0->setValue(parameters->h0);
-    this->ui->input_ihmax->setValue(parameters->iStepMax);
-    this->ui->input_uhmax->setValue(parameters->uStepMax);
-}
 
 int TrajectoryWidget::reCalculate(){
-    this->updateParametersByGui();
     if(this->currentResult != NULL){
         delete this->currentResult;
         this->currentResult = NULL;

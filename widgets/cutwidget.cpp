@@ -47,6 +47,8 @@ CutWidget::CutWidget(QWidget *parent) :
 
     this->connect(&this->updateProgressTimer, SIGNAL(timeout()), this, SLOT(updateProgressBar()));
     this->connect(&this->FutureWatcher, SIGNAL (finished()), this, SLOT (calculationFinished()));
+
+    this->connect(this->ui->plot_cut, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(contextMenuRequest(QPoint)));
     this->initPlot();
 }
 
@@ -59,12 +61,9 @@ CutWidget::~CutWidget()
     delete calculatButtonSignalMapper;
 }
 
-void CutWidget::setParameters(CircuitParameters* parameters){
+void CutWidget::updateParameters(CircuitParameters* parameters){
     this->parameters = parameters;
-}
 
-
-void CutWidget::updateGuiByParameters(){
     this->ui->value_c1->setText(QString::number(parameters->C1));
     this->ui->value_c2->setText(QString::number(parameters->C2));
     this->ui->value_l->setText(QString::number(parameters->L));
@@ -80,6 +79,39 @@ void CutWidget::updateGuiByParameters(){
     this->ui->value_h0->setText(QString::number(parameters->h0));
     this->ui->value_ihmax->setText(QString::number(parameters->iStepMax));
     this->ui->value_uhmax->setText(QString::number(parameters->uStepMax));
+}
+
+void CutWidget::saveCurrentResultToPng()
+{
+    QString fileName = QFileDialog::getSaveFileName(this, QString("Save result to PNG"), QString(), QString("PNG files (*.png)"));
+
+    if(fileName.isEmpty()){
+        return;
+    }
+
+    this->ui->plot_cut->savePng(fileName, 0, 0, 1.0, -1);
+}
+
+void CutWidget::exportCurrentResultToCsv()
+{
+    QString fileName = QFileDialog::getSaveFileName(this, QString("Save result to CSV"), QString(), QString("CSV files (*.csv)"));
+
+    if(fileName.isEmpty()){
+        return;
+    }
+
+    this->currentResult->writeToCSV(fileName.toStdString());
+}
+
+void CutWidget::contextMenuRequest(QPoint pos)
+{
+    if(this->currentResult != NULL){
+        QMenu *menu = new QMenu(this);
+        menu->setAttribute(Qt::WA_DeleteOnClose);
+        menu->addAction("Save as an image", this, SLOT(saveCurrentResultToPng()));
+        menu->addAction("Export to TSV", this, SLOT(exportCurrentResultToCsv()));
+        menu->popup(ui->plot_cut->mapToGlobal(pos));
+    }
 }
 
 void CutWidget::initPlot(){
@@ -179,6 +211,11 @@ void CutWidget::reCalculate(CrossSectionType type, bool parallel){
     this->updateProgressTimer.start(50);
     this->lastProgress = 0;
 
+    if(this->currentResult != NULL){
+        delete this->currentResult;
+    }
+    this->currentResult = NULL;
+
 }
 
 void CutWidget::cancelCalculation(){
@@ -218,12 +255,14 @@ void CutWidget::calculationFinished(){
     this->ui->plot_cut->setInteraction(QCP::iRangeDrag, true);
     this->ui->plot_cut->setInteraction(QCP::iRangeZoom, true);
 
-    this->updateResultTabe(cut, time);
+    this->updateResultTable(cut, time);
     this->ui->resultTable->setEnabled(true);
 
-    cut->writeToCSV("cut.txt");
+    if(this->currentResult != NULL){
+        delete this->currentResult;
+    }
 
-    delete cut;
+    this->currentResult = cut;
     delete this->calculator;
     this->calculator = NULL;
 }
@@ -293,13 +332,13 @@ void CutWidget::reDraw(CalculatedCut* cut){
         for (std::vector<CalculatedCut::TrajectoryResult>::const_iterator result_iterator = vector_iterator->cbegin(); result_iterator != vector_iterator->cend(); ++result_iterator) {
             switch(result_iterator->result){
             case TrajectoryResultType::CHA:
-                this->colorMap->data()->setData(result_iterator->u1, result_iterator->u2, 100);
+                this->colorMap->data()->setData(result_iterator->x, result_iterator->y, 100);
                 break;
             case TrajectoryResultType::LC:
-                this->colorMap->data()->setData(result_iterator->u1, result_iterator->u2, 60);
+                this->colorMap->data()->setData(result_iterator->x, result_iterator->y, 60);
                 break;
             case TrajectoryResultType::UNDETERMINED:
-                this->colorMap->data()->setData(result_iterator->u1, result_iterator->u2, 20);
+                this->colorMap->data()->setData(result_iterator->x, result_iterator->y, 20);
                 break;
             }
         }
@@ -315,13 +354,13 @@ void CutWidget::reDrawPartial(PartiallyCalculatedCut* cut){
         for (std::vector<CalculatedCut::TrajectoryResult>::const_iterator result_iterator = (*vector_iterator)->cbegin(); result_iterator != (*vector_iterator)->cend(); ++result_iterator) {
             switch(result_iterator->result){
             case TrajectoryResultType::CHA:
-                this->colorMap->data()->setData(result_iterator->u1, result_iterator->u2, 100);
+                this->colorMap->data()->setData(result_iterator->x, result_iterator->y, 100);
                 break;
             case TrajectoryResultType::LC:
-                this->colorMap->data()->setData(result_iterator->u1, result_iterator->u2, 60);
+                this->colorMap->data()->setData(result_iterator->x, result_iterator->y, 60);
                 break;
             case TrajectoryResultType::UNDETERMINED:
-                this->colorMap->data()->setData(result_iterator->u1, result_iterator->u2, 20);
+                this->colorMap->data()->setData(result_iterator->x, result_iterator->y, 20);
                 break;
             }
         }
@@ -330,7 +369,7 @@ void CutWidget::reDrawPartial(PartiallyCalculatedCut* cut){
     customPlot->replot();
 }
 
-void CutWidget::updateResultTabe(CalculatedCut* cut, int timeInMs){
+void CutWidget::updateResultTable(CalculatedCut* cut, int timeInMs){
     int chaosPoints = 0;
     int lcPoints = 0;
     int undPoints = 0;

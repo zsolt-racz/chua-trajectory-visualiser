@@ -21,7 +21,7 @@
   </property>
   <property name="styleSheet">
    <string notr="true">QGroupBox,QLabel {
-font-size:11pt;
+font-size:10.5pt;
 }</string>
   </property>
   <widget class="QWidget" name="centralWidget">

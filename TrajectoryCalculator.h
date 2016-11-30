@@ -3,7 +3,7 @@
 
 #include <cmath>
 #include <vector>
-#include <QTime>
+#include <QElapsedTimer>
 #include "Point3DT.h"
 #include "circuitparameters.h"
 #include "Trajectory.h"

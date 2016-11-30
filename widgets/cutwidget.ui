@@ -18,7 +18,7 @@
     <rect>
      <x>10</x>
      <y>40</y>
-     <width>261</width>
+     <width>231</width>
      <height>501</height>
     </rect>
    </property>
@@ -28,9 +28,9 @@
    <widget class="QWidget" name="horizontalLayoutWidget_2">
     <property name="geometry">
      <rect>
-      <x>20</x>
+      <x>10</x>
       <y>30</y>
-      <width>221</width>
+      <width>211</width>
       <height>451</height>
      </rect>
     </property>
@@ -411,6 +411,9 @@
      <height>400</height>
     </rect>
    </property>
+   <property name="contextMenuPolicy">
+    <enum>Qt::CustomContextMenu</enum>
+   </property>
   </widget>
   <widget class="QTableWidget" name="resultTable">
    <property name="enabled">
@@ -435,6 +438,9 @@
      <width>0</width>
      <height>0</height>
     </size>
+   </property>
+   <property name="contextMenuPolicy">
+    <enum>Qt::DefaultContextMenu</enum>
    </property>
    <attribute name="horizontalHeaderStretchLastSection">
     <bool>true</bool>
@@ -476,14 +482,14 @@
   <widget class="QTabWidget" name="tabWidget">
    <property name="geometry">
     <rect>
-     <x>290</x>
+     <x>260</x>
      <y>30</y>
-     <width>551</width>
+     <width>581</width>
      <height>251</height>
     </rect>
    </property>
    <property name="currentIndex">
-    <number>1</number>
+    <number>0</number>
    </property>
    <widget class="QWidget" name="tab_u1i">
     <attribute name="title">
@@ -494,7 +500,7 @@
       <rect>
        <x>10</x>
        <y>10</y>
-       <width>521</width>
+       <width>551</width>
        <height>191</height>
       </rect>
      </property>
@@ -506,7 +512,7 @@
        <rect>
         <x>10</x>
         <y>30</y>
-        <width>501</width>
+        <width>531</width>
         <height>111</height>
        </rect>
       </property>
@@ -543,7 +549,7 @@
               <double>1.000000000000000</double>
              </property>
              <property name="value">
-              <double>-20.000000000000000</double>
+              <double>-25.000000000000000</double>
              </property>
             </widget>
            </item>
@@ -576,7 +582,7 @@
               <double>1000.000000000000000</double>
              </property>
              <property name="value">
-              <double>20.000000000000000</double>
+              <double>25.000000000000000</double>
              </property>
             </widget>
            </item>
@@ -625,7 +631,7 @@
             <widget class="QLabel" name="label_68">
              <property name="maximumSize">
               <size>
-               <width>60</width>
+               <width>45</width>
                <height>16777215</height>
               </size>
              </property>
@@ -660,9 +666,15 @@
           <layout class="QHBoxLayout" name="horizontalLayout_61">
            <item>
             <widget class="QLabel" name="label_58">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="MinimumExpanding" vsizetype="Ignored">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
              <property name="maximumSize">
               <size>
-               <width>60</width>
+               <width>45</width>
                <height>16777215</height>
               </size>
              </property>
@@ -683,7 +695,7 @@
               <double>1000.000000000000000</double>
              </property>
              <property name="value">
-              <double>-20.000000000000000</double>
+              <double>-25.000000000000000</double>
              </property>
             </widget>
            </item>
@@ -716,7 +728,7 @@
               <double>1000.000000000000000</double>
              </property>
              <property name="value">
-              <double>20.000000000000000</double>
+              <double>25.000000000000000</double>
              </property>
             </widget>
            </item>
@@ -762,7 +774,7 @@
      <widget class="QPushButton" name="button_calculate_parallel_u1i">
       <property name="geometry">
        <rect>
-        <x>310</x>
+        <x>340</x>
         <y>150</y>
         <width>111</width>
         <height>22</height>
@@ -778,7 +790,7 @@
       </property>
       <property name="geometry">
        <rect>
-        <x>430</x>
+        <x>460</x>
         <y>150</y>
         <width>80</width>
         <height>22</height>
@@ -791,7 +803,7 @@
      <widget class="QPushButton" name="button_calculate_u1i">
       <property name="geometry">
        <rect>
-        <x>220</x>
+        <x>250</x>
         <y>150</y>
         <width>80</width>
         <height>22</height>
@@ -812,7 +824,7 @@
       <rect>
        <x>10</x>
        <y>10</y>
-       <width>521</width>
+       <width>551</width>
        <height>191</height>
       </rect>
      </property>
@@ -824,7 +836,7 @@
        <rect>
         <x>10</x>
         <y>30</y>
-        <width>501</width>
+        <width>531</width>
         <height>111</height>
        </rect>
       </property>
@@ -837,7 +849,7 @@
             <widget class="QLabel" name="label_75">
              <property name="maximumSize">
               <size>
-               <width>60</width>
+               <width>45</width>
                <height>16777215</height>
               </size>
              </property>
@@ -874,7 +886,7 @@
             <widget class="QLabel" name="label_72">
              <property name="maximumSize">
               <size>
-               <width>60</width>
+               <width>45</width>
                <height>16777215</height>
               </size>
              </property>
@@ -898,7 +910,7 @@
               <double>1.000000000000000</double>
              </property>
              <property name="value">
-              <double>0.000000000000000</double>
+              <double>-25.000000000000000</double>
              </property>
             </widget>
            </item>
@@ -931,7 +943,7 @@
               <double>1000.000000000000000</double>
              </property>
              <property name="value">
-              <double>20.000000000000000</double>
+              <double>25.000000000000000</double>
              </property>
             </widget>
            </item>
@@ -978,9 +990,15 @@
           <layout class="QHBoxLayout" name="horizontalLayout_72">
            <item>
             <widget class="QLabel" name="label_69">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="MinimumExpanding" vsizetype="Ignored">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
              <property name="maximumSize">
               <size>
-               <width>60</width>
+               <width>45</width>
                <height>16777215</height>
               </size>
              </property>
@@ -1001,7 +1019,7 @@
               <double>1000.000000000000000</double>
              </property>
              <property name="value">
-              <double>-20.000000000000000</double>
+              <double>-25.000000000000000</double>
              </property>
             </widget>
            </item>
@@ -1034,7 +1052,7 @@
               <double>1000.000000000000000</double>
              </property>
              <property name="value">
-              <double>0.000000000000000</double>
+              <double>25.000000000000000</double>
              </property>
             </widget>
            </item>
@@ -1080,7 +1098,7 @@
      <widget class="QPushButton" name="button_calculate_parallel_u2i">
       <property name="geometry">
        <rect>
-        <x>310</x>
+        <x>340</x>
         <y>150</y>
         <width>111</width>
         <height>22</height>
@@ -1096,7 +1114,7 @@
       </property>
       <property name="geometry">
        <rect>
-        <x>430</x>
+        <x>460</x>
         <y>150</y>
         <width>80</width>
         <height>22</height>
@@ -1109,7 +1127,7 @@
      <widget class="QPushButton" name="button_calculate_u2i">
       <property name="geometry">
        <rect>
-        <x>220</x>
+        <x>250</x>
         <y>150</y>
         <width>80</width>
         <height>22</height>
@@ -1130,7 +1148,7 @@
       <rect>
        <x>10</x>
        <y>10</y>
-       <width>521</width>
+       <width>551</width>
        <height>191</height>
       </rect>
      </property>
@@ -1142,7 +1160,7 @@
        <rect>
         <x>10</x>
         <y>30</y>
-        <width>501</width>
+        <width>531</width>
         <height>111</height>
        </rect>
       </property>
@@ -1176,7 +1194,7 @@
               <double>1000.000000000000000</double>
              </property>
              <property name="value">
-              <double>-20.000000000000000</double>
+              <double>-25.000000000000000</double>
              </property>
             </widget>
            </item>
@@ -1209,7 +1227,7 @@
               <double>1000.000000000000000</double>
              </property>
              <property name="value">
-              <double>0.000000000000000</double>
+              <double>25.000000000000000</double>
              </property>
             </widget>
            </item>
@@ -1282,7 +1300,7 @@
               <double>1.000000000000000</double>
              </property>
              <property name="value">
-              <double>0.000000000000000</double>
+              <double>-25.000000000000000</double>
              </property>
             </widget>
            </item>
@@ -1315,7 +1333,7 @@
               <double>1000.000000000000000</double>
              </property>
              <property name="value">
-              <double>20.000000000000000</double>
+              <double>25.000000000000000</double>
              </property>
             </widget>
            </item>
@@ -1362,9 +1380,15 @@
           <layout class="QHBoxLayout" name="horizontalLayout_69">
            <item>
             <widget class="QLabel" name="label_66">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Fixed" vsizetype="Ignored">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
              <property name="maximumSize">
               <size>
-               <width>60</width>
+               <width>45</width>
                <height>16777215</height>
               </size>
              </property>
@@ -1398,7 +1422,7 @@
      <widget class="QPushButton" name="button_calculate_parallel_u1u2">
       <property name="geometry">
        <rect>
-        <x>310</x>
+        <x>340</x>
         <y>150</y>
         <width>111</width>
         <height>22</height>
@@ -1414,7 +1438,7 @@
       </property>
       <property name="geometry">
        <rect>
-        <x>430</x>
+        <x>460</x>
         <y>150</y>
         <width>80</width>
         <height>22</height>
@@ -1427,7 +1451,7 @@
      <widget class="QPushButton" name="button_calculate_u1u2">
       <property name="geometry">
        <rect>
-        <x>220</x>
+        <x>250</x>
         <y>150</y>
         <width>80</width>
         <height>22</height>
@@ -1443,9 +1467,9 @@
   <widget class="QGroupBox" name="groupBox_5">
    <property name="geometry">
     <rect>
-     <x>300</x>
+     <x>280</x>
      <y>450</y>
-     <width>521</width>
+     <width>541</width>
      <height>101</height>
     </rect>
    </property>
@@ -1501,9 +1525,9 @@
   <widget class="QPlainTextEdit" name="test_chaos">
    <property name="geometry">
     <rect>
-     <x>310</x>
+     <x>280</x>
      <y>310</y>
-     <width>501</width>
+     <width>531</width>
      <height>51</height>
     </rect>
    </property>
@@ -1514,7 +1538,7 @@
   <widget class="QLabel" name="label_2">
    <property name="geometry">
     <rect>
-     <x>300</x>
+     <x>280</x>
      <y>290</y>
      <width>121</width>
      <height>16</height>
@@ -1527,7 +1551,7 @@
   <widget class="QLabel" name="label_3">
    <property name="geometry">
     <rect>
-     <x>300</x>
+     <x>280</x>
      <y>370</y>
      <width>101</width>
      <height>16</height>
@@ -1540,9 +1564,9 @@
   <widget class="QPlainTextEdit" name="test_lc">
    <property name="geometry">
     <rect>
-     <x>310</x>
+     <x>280</x>
      <y>390</y>
-     <width>501</width>
+     <width>531</width>
      <height>51</height>
     </rect>
    </property>

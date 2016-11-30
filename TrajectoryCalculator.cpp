@@ -186,14 +186,15 @@ CalculatedCut* TrajectoryCalculator::calculateCut(CrossSectionType type, double 
     int xSize = this->currentResult->u1Size;
     double x = xMin;
     int ySize = this->currentResult->u2Size;
+    QElapsedTimer clock;
     for(int j = 0; j < xSize; ++j, x+=xStep){
         std::vector<CalculatedCut::TrajectoryResult>::iterator result_iterator = vector_iterator->begin();
         double y = yMin;
         for(int k = 0; k < ySize; ++k, y+=yStep){
-            result_iterator->u1 = x;
-            result_iterator->u2 = y;
-            QTime clock;
+            result_iterator->x = x;
+            result_iterator->y = y;
 
+            clock.start();
             switch (type) {
             case U1_I:
                 result_iterator->result = this->calculateTrajectoryResult(y, x, z, chaosExpressionString, LCExpressionString);
@@ -205,7 +206,8 @@ CalculatedCut* TrajectoryCalculator::calculateCut(CrossSectionType type, double 
                 result_iterator->result = this->calculateTrajectoryResult(z, x, y, chaosExpressionString, LCExpressionString);
                 break;
             }
-            result_iterator->t = clock.elapsed();
+            result_iterator->t = clock.nsecsElapsed() / 1000000.0;
+
             ++result_iterator;
         }
         currentResult->addU1Column(&(*(vector_iterator)));
@@ -271,17 +273,18 @@ public:
 
         std::vector<std::vector<CalculatedCut::TrajectoryResult>>::iterator vector_iterator = currentResult->begin() + idx;
         int ySize = this->currentResult->u2Size;
+        QElapsedTimer clock;
         for(idx = r.begin(); idx != r.end(); ++idx){
             double x = xMin + (idx * xStep);
             std::vector<CalculatedCut::TrajectoryResult>::iterator result_iterator = vector_iterator->begin();
             double y = yMin;
             for(int j = 0; j < ySize; ++j, y+=yStep){
-                result_iterator->u1 = x;
-                result_iterator->u2 = y;
-                result_iterator->t = -1;
+                result_iterator->x = x;
+                result_iterator->y = y;
+
+                clock.start();
                 switch (this->type) {
                 case U1_I:
-                    // TODO
                     result_iterator->result = this->calculator->calculateTrajectoryResult(y, x, z, this->chaosExpressionString, this->LCExpressionString);
                     break;
                 case U2_I:
@@ -291,6 +294,7 @@ public:
                     result_iterator->result = this->calculator->calculateTrajectoryResult(z, x, y, this->chaosExpressionString, this->LCExpressionString);
                     break;
                 }
+                result_iterator->t = clock.nsecsElapsed() / 1000000.0;
                 ++result_iterator;
             }
             currentResult->addU1Column(&(*(vector_iterator)));
