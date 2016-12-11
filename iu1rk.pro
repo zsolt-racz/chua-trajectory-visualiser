@@ -32,7 +32,6 @@ HEADERS  += mainwindow.h \
     widgets/trajectorywidget.h \
     widgets/cutwidget.h \
     circuitparameters.h \
-    trajectoryresulttype.h \
     calculatedcut.h \
     partiallycalculatedcut.h \
     crosssectiontype.h \
@@ -141,7 +140,8 @@ HEADERS  += mainwindow.h \
     tbb/include/tbb/tbb_stddef.h \
     tbb/include/tbb/tbb_thread.h \
     tbb/include/tbb/tbbmalloc_proxy.h \
-    tbb/include/tbb/tick_count.h
+    tbb/include/tbb/tick_count.h \
+    trajectoryresult.h
 
 FORMS    += mainwindow.ui \
     widgets/cutwidget.ui \

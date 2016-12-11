@@ -99,10 +99,27 @@ bool TrajectoryCalculator::isExpressionValid(std::string expressionString){
     return parser.compile(expressionString, expression);
 }
 
-TrajectoryResultType::ResultType TrajectoryCalculator::calculateTrajectoryResult(double i0, double u1_0, double u2_0, std::string chaosExpressionString, std::string LCExpressionString) {
-    double i = i0;
-    double u1 = u1_0;
-    double u2 = u2_0;
+void TrajectoryCalculator::calculateTrajectoryResult(std::vector<TrajectoryResult>::iterator result, CrossSectionType type, double x, double y, double z, std::string chaosExpressionString, std::string LCExpressionString) {
+    result->x = x;
+    result->y = y;
+
+    int divisionCount = 0;
+    QElapsedTimer clock;
+    clock.start();
+
+    double i,u1,u2;
+
+    switch (type) {
+        case U1_I:
+            i = y; u1 = x; u2 = z;
+            break;
+        case U2_I:
+            i = y; u1 = z; u2 = x;
+            break;
+        case U1_U2:
+            i = z; u1 = x; u2 = y;
+            break;
+    }
 
     exprtk::expression<double> chaosExpression = this->createCompiledExpression(&i, &u1, &u2, chaosExpressionString);
     exprtk::expression<double> LCExpression = this->createCompiledExpression(&i, &u1, &u2, LCExpressionString);
@@ -127,7 +144,6 @@ TrajectoryResultType::ResultType TrajectoryCalculator::calculateTrajectoryResult
         double d_i = fi(u2 + h * c_u2, i + h * c_i);
         double d_u1 = fu1(u1 + h * c_u1, u2 + h * c_u2, i + h * c_i);
         double d_u2 = fu2(u1 + h * c_u1, u2 + h * c_u2, i + h * c_i);
-
         double iDiff = hdiv6*(a_i + 2 * b_i + 2 * c_i + d_i);
         double u1Diff = hdiv6*(a_u1 + 2 * b_u1 + 2 * c_u1 + d_u1);
         double u2Diff = hdiv6*(a_u2 + 2 * b_u2 + 2 * c_u2 + d_u2);
@@ -137,6 +153,7 @@ TrajectoryResultType::ResultType TrajectoryCalculator::calculateTrajectoryResult
             t = t - h;
 
             h = hdiv2;
+            ++divisionCount;
         }else{
             i = i + iDiff;
             u1 = u1 + u1Diff;
@@ -149,12 +166,18 @@ TrajectoryResultType::ResultType TrajectoryCalculator::calculateTrajectoryResult
             if(t > 50){
                 // Test LC
                 if (LCExpression.value()) {
-                    return TrajectoryResultType::LC;
+                    result->t = clock.nsecsElapsed() / 1000000.0;
+                    result->result = TrajectoryResult::ResultType::LC;
+                    result->divisionCount = divisionCount;
+                    return;
                 }
 
                 // Test CHA
                 if (chaosExpression.value()) {
-                    return TrajectoryResultType::CHA;
+                    result->t = clock.nsecsElapsed() / 1000000.0;
+                    result->result = TrajectoryResult::ResultType::CHA;
+                    result->divisionCount = divisionCount;
+                    return;
                 }
             }
 
@@ -175,38 +198,24 @@ TrajectoryResultType::ResultType TrajectoryCalculator::calculateTrajectoryResult
         }
     }
 
-    return TrajectoryResultType::UNDETERMINED;
-
+    result->t = clock.nsecsElapsed() / 1000000.0;
+    result->result = TrajectoryResult::ResultType::UNDETERMINED;
+    result->divisionCount = divisionCount;
 }
 
 CalculatedCut* TrajectoryCalculator::calculateCut(CrossSectionType type, double xMin, double xMax, double xStep,double yMin, double yMax, double yStep, double z, std::string chaosExpressionString, std::string LCExpressionString){
     this->currentResult = new PartiallyCalculatedCut(type, z, xMin, xMax, xStep, yMin, yMax, yStep);
 
-    std::vector<std::vector<CalculatedCut::TrajectoryResult>>::iterator vector_iterator = currentResult->begin();
+    std::vector<std::vector<TrajectoryResult>>::iterator vector_iterator = currentResult->begin();
     int xSize = this->currentResult->u1Size;
     double x = xMin;
     int ySize = this->currentResult->u2Size;
-    QElapsedTimer clock;
+
     for(int j = 0; j < xSize; ++j, x+=xStep){
-        std::vector<CalculatedCut::TrajectoryResult>::iterator result_iterator = vector_iterator->begin();
+        std::vector<TrajectoryResult>::iterator result_iterator = vector_iterator->begin();
         double y = yMin;
         for(int k = 0; k < ySize; ++k, y+=yStep){
-            result_iterator->x = x;
-            result_iterator->y = y;
-
-            clock.start();
-            switch (type) {
-            case U1_I:
-                result_iterator->result = this->calculateTrajectoryResult(y, x, z, chaosExpressionString, LCExpressionString);
-                break;
-            case U2_I:
-                result_iterator->result = this->calculateTrajectoryResult(y, z, x, chaosExpressionString, LCExpressionString);
-                break;
-            case U1_U2:
-                result_iterator->result = this->calculateTrajectoryResult(z, x, y, chaosExpressionString, LCExpressionString);
-                break;
-            }
-            result_iterator->t = clock.nsecsElapsed() / 1000000.0;
+            this->calculateTrajectoryResult(result_iterator, type, x, y, z, chaosExpressionString, LCExpressionString);
 
             ++result_iterator;
         }
@@ -271,30 +280,15 @@ public:
     void operator()(const tbb::blocked_range<size_t>& r) const {
         size_t idx = r.begin();
 
-        std::vector<std::vector<CalculatedCut::TrajectoryResult>>::iterator vector_iterator = currentResult->begin() + idx;
+        std::vector<std::vector<TrajectoryResult>>::iterator vector_iterator = currentResult->begin() + idx;
         int ySize = this->currentResult->u2Size;
-        QElapsedTimer clock;
         for(idx = r.begin(); idx != r.end(); ++idx){
             double x = xMin + (idx * xStep);
-            std::vector<CalculatedCut::TrajectoryResult>::iterator result_iterator = vector_iterator->begin();
+            std::vector<TrajectoryResult>::iterator result_iterator = vector_iterator->begin();
             double y = yMin;
             for(int j = 0; j < ySize; ++j, y+=yStep){
-                result_iterator->x = x;
-                result_iterator->y = y;
+                calculator->calculateTrajectoryResult(result_iterator, type, x, y, z, chaosExpressionString, LCExpressionString);
 
-                clock.start();
-                switch (this->type) {
-                case U1_I:
-                    result_iterator->result = this->calculator->calculateTrajectoryResult(y, x, z, this->chaosExpressionString, this->LCExpressionString);
-                    break;
-                case U2_I:
-                    result_iterator->result = this->calculator->calculateTrajectoryResult(y, z, x, this->chaosExpressionString, this->LCExpressionString);
-                    break;
-                case U1_U2:
-                    result_iterator->result = this->calculator->calculateTrajectoryResult(z, x, y, this->chaosExpressionString, this->LCExpressionString);
-                    break;
-                }
-                result_iterator->t = clock.nsecsElapsed() / 1000000.0;
                 ++result_iterator;
             }
             currentResult->addU1Column(&(*(vector_iterator)));

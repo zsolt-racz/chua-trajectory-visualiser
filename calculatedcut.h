@@ -7,21 +7,13 @@
 #include <iostream>
 #include <fstream>
 #include "crosssectiontype.h"
-#include "trajectoryresulttype.h"
+#include "trajectoryresult.h"
 
 class CalculatedCut
 {
 
 public:
     CalculatedCut(CrossSectionType type, double i, double u1Min, double u1Max, double u1Step, double u2Min, double u2Max, double u2Step);
-
-    struct TrajectoryResult{
-        double x;
-        double y;
-        double t;
-
-        TrajectoryResultType::ResultType result;
-    };
 
     CrossSectionType type;
     const double i;
@@ -32,7 +24,7 @@ public:
     const double u2Max;
     const int u2Size;
 
-    void writeToCSV(std::string filename);
+    void writeToTxt(std::string filename);
     void writeToPLY(std::string filename);
 
     std::vector<std::vector<TrajectoryResult>>::iterator begin();

@@ -6,7 +6,10 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    this->parameters = new CircuitParameters("parameters.txt");
+    this->loadedFileLabel = new QLabel();
+    this->ui->statusBar->addPermanentWidget(this->loadedFileLabel);
+
+    this->loadParametersFromFile("parameters.txt");
     this->ui->trajectory->updateParameters(this->parameters);
     this->ui->cutwidget->updateParameters(this->parameters);
 
@@ -33,10 +36,19 @@ void MainWindow::parametersChangedInTrajectory(CircuitParameters* parameters){
 }
 
 void MainWindow::loadParametersFromFile(std::string filename){
-    this->parameters->loadFromFile(filename);
+    this->parameters = new CircuitParameters(filename);
 
     this->ui->trajectory->updateParameters(this->parameters);
+
+    std::string truncatedFileName;
     this->ui->cutwidget->updateParameters(this->parameters);
+    if(filename.length() > 60){
+        truncatedFileName = "..." + filename.substr(filename.length() - 55, 55);
+    }else{
+        truncatedFileName = filename;
+    }
+
+    loadedFileLabel->setText(QString(("Loaded file: " +truncatedFileName).c_str()));
 }
 
 

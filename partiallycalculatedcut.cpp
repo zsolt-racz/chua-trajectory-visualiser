@@ -6,11 +6,11 @@ PartiallyCalculatedCut::PartiallyCalculatedCut(CrossSectionType type, double i, 
 }
 
 
-std::list<std::vector<CalculatedCut::TrajectoryResult>*>::const_iterator PartiallyCalculatedCut::cbeginU1Columns(){
+std::list<std::vector<TrajectoryResult>*>::const_iterator PartiallyCalculatedCut::cbeginU1Columns(){
     return this->calculatedU1Columns.cbegin();
 }
 
-std::list<std::vector<CalculatedCut::TrajectoryResult>*>::const_iterator PartiallyCalculatedCut::cendU1Columns(){
+std::list<std::vector<TrajectoryResult>*>::const_iterator PartiallyCalculatedCut::cendU1Columns(){
     return this->calculatedU1Columns.cend();
 }
 
@@ -18,7 +18,7 @@ std::size_t PartiallyCalculatedCut::U1Count(){
     return this->calculatedU1Columns.size();
 }
 
-void PartiallyCalculatedCut::addU1Column(std::vector<CalculatedCut::TrajectoryResult>* u1){
+void PartiallyCalculatedCut::addU1Column(std::vector<TrajectoryResult>* u1){
     this->calculatedU1Columns.push_back(u1);
 }
 

@@ -18,7 +18,7 @@
 #include "qcustomplot/qcustomplot.h"
 #include "TrajectoryCalculator.h"
 #include "circuitparameters.h"
-#include "trajectoryresulttype.h"
+#include "trajectoryresult.h"
 #include "exprtk/exprtk.hpp"
 
 namespace Ui {
@@ -68,7 +68,7 @@ private slots:
     void testExpressionChanged(QWidget* textEdit);
     void contextMenuRequest(QPoint pos);
     void saveCurrentResultToPng();
-    void exportCurrentResultToCsv();
+    void exportCurrentResultToTxt();
 };
 
 #endif // CUT_H

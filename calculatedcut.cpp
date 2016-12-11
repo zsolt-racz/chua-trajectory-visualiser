@@ -24,13 +24,13 @@ CalculatedCut::CalculatedCut(CrossSectionType type, double i, double u1Min, doub
     results(results){}
 
 
-void CalculatedCut::writeToCSV(std::string filename) {
+void CalculatedCut::writeToTxt(std::string filename) {
     std::ofstream output;
     output.open(filename.c_str());
 
     for (std::vector<std::vector<TrajectoryResult>>::const_iterator vector_iterator = this->cbegin(); vector_iterator != this->cend(); ++vector_iterator) {
         for (std::vector<TrajectoryResult>::const_iterator result_iterator = vector_iterator->cbegin(); result_iterator != vector_iterator->cend(); ++result_iterator) {
-            output << std::setprecision(15) << this->i << "\t" << result_iterator->x << "\t" << result_iterator->y << "\t" << result_iterator->result << "\t" << result_iterator->t << "\n";
+            output << std::setprecision(15) << this->i << "\t" << result_iterator->x << "\t" << result_iterator->y << "\t" << result_iterator->result << "\t" << result_iterator->t << "\t" << result_iterator->divisionCount << "\n";
         }
     }
 
@@ -51,7 +51,7 @@ void CalculatedCut::writeToPLY(std::string filename) {
 
     for (std::vector<std::vector<TrajectoryResult>>::const_iterator vector_iterator = this->cbegin(); vector_iterator != this->cend(); ++vector_iterator) {
         for (std::vector<TrajectoryResult>::const_iterator result_iterator = vector_iterator->cbegin(); result_iterator != vector_iterator->cend(); ++result_iterator) {
-            if(result_iterator->result == TrajectoryResultType::CHA){
+            if(result_iterator->result == TrajectoryResult::ResultType::CHA){
                 output << this->i << " " << result_iterator->x << " " << result_iterator->y << "\n";
             }
         }
@@ -60,18 +60,18 @@ void CalculatedCut::writeToPLY(std::string filename) {
     output.close();
 }
 
-std::vector<std::vector<CalculatedCut::TrajectoryResult>>::iterator CalculatedCut::begin(){
+std::vector<std::vector<TrajectoryResult>>::iterator CalculatedCut::begin(){
     return this->results.begin();
 }
 
-std::vector<std::vector<CalculatedCut::TrajectoryResult>>::iterator CalculatedCut::end(){
+std::vector<std::vector<TrajectoryResult>>::iterator CalculatedCut::end(){
     return this->results.end();
 }
 
-std::vector<std::vector<CalculatedCut::TrajectoryResult>>::const_iterator CalculatedCut::cbegin(){
+std::vector<std::vector<TrajectoryResult>>::const_iterator CalculatedCut::cbegin(){
     return this->results.cbegin();
 }
 
-std::vector<std::vector<CalculatedCut::TrajectoryResult>>::const_iterator CalculatedCut::cend(){
+std::vector<std::vector<TrajectoryResult>>::const_iterator CalculatedCut::cend(){
     return this->results.cend();
 }

@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QLabel>
 
 #include "ui_mainwindow.h"
 #include "Point3DT.h"
@@ -27,6 +28,7 @@ private slots:
 private:
     Ui::MainWindow* ui;
     CircuitParameters* parameters = NULL;
+    QLabel* loadedFileLabel = NULL;
 
     void loadParametersFromFile(std::string filename);
 

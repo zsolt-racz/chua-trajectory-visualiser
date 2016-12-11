@@ -7,7 +7,7 @@
 #include "Point3DT.h"
 #include "circuitparameters.h"
 #include "Trajectory.h"
-#include "trajectoryresulttype.h"
+#include "trajectoryresult.h"
 #include "partiallycalculatedcut.h"
 #include "calculatedcut.h"
 #include "tbb/tbb.h"
@@ -40,7 +40,7 @@ public:
     //exprtk::parser<double> parser;
 
     Trajectory* calculateTrajectory(double i0, double u1_0, double u2_0);
-    TrajectoryResultType::ResultType calculateTrajectoryResult(double i0, double u1_0, double u2_0, std::string chaosExpressionString, std::string LCExpressionString);
+    void calculateTrajectoryResult(std::vector<TrajectoryResult>::iterator result, CrossSectionType type, double x, double y, double z, std::string chaosExpressionString, std::string LCExpressionString);
     CalculatedCut* calculateCut(CrossSectionType type, double xMin, double xMax, double xStep, double yMin, double yMax, double yStep, double z, std::string chaosExpressionString, std::string LCExpressionString);
     CalculatedCut* parallelCalculateCut(CrossSectionType type, double xMin, double xMax, double xStep, double yMin, double yMax, double yStep, double z, std::string chaosExpressionString, std::string LCExpressionString);
 
