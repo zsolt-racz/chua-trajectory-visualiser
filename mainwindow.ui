@@ -17,7 +17,7 @@
    </sizepolicy>
   </property>
   <property name="windowTitle">
-   <string>ChuaViz 0.2</string>
+   <string>ChuaViz 0.4</string>
   </property>
   <property name="styleSheet">
    <string notr="true">QGroupBox,QLabel {

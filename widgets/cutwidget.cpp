@@ -185,9 +185,9 @@ void CutWidget::reCalculate(CrossSectionType type, bool parallel){
 
     QFuture<CalculatedCut*> future;
     if(parallel){
-        future = QtConcurrent::run(std::bind(&TrajectoryCalculator::parallelCalculateCut, this->calculator, type, xMin, xMax, xStep, yMin, yMax, yStep, z, chaosTest, lcTest));
+        future = QtConcurrent::run(std::bind(&TrajectoryCalculator::parallelCalculateCrossSection, this->calculator, type, xMin, xMax, xStep, yMin, yMax, yStep, z, chaosTest, lcTest));
     }else{
-        future = QtConcurrent::run(std::bind(&TrajectoryCalculator::calculateCut, this->calculator, type, xMin, xMax, xStep, yMin, yMax, yStep, z, chaosTest, lcTest));
+        future = QtConcurrent::run(std::bind(&TrajectoryCalculator::calculateCrossSection, this->calculator, type, xMin, xMax, xStep, yMin, yMax, yStep, z, chaosTest, lcTest));
     }
     this->FutureWatcher.setFuture(future);
     this->clock.start();

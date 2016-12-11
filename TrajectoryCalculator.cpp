@@ -203,7 +203,7 @@ void TrajectoryCalculator::calculateTrajectoryResult(std::vector<TrajectoryResul
     result->divisionCount = divisionCount;
 }
 
-CalculatedCut* TrajectoryCalculator::calculateCut(CrossSectionType type, double xMin, double xMax, double xStep,double yMin, double yMax, double yStep, double z, std::string chaosExpressionString, std::string LCExpressionString){
+CalculatedCut* TrajectoryCalculator::calculateCrossSection(CrossSectionType type, double xMin, double xMax, double xStep,double yMin, double yMax, double yStep, double z, std::string chaosExpressionString, std::string LCExpressionString){
     this->currentResult = new PartiallyCalculatedCut(type, z, xMin, xMax, xStep, yMin, yMax, yStep);
 
     std::vector<std::vector<TrajectoryResult>>::iterator vector_iterator = currentResult->begin();
@@ -261,7 +261,7 @@ CalculatedCut* TrajectoryCalculator::calculateCut(CrossSectionType type, double 
     return result;
 }*/
 
-class TBBCalculateCut {
+class TBBCalculateCrossSection {
 private:
     CrossSectionType type;
     double xMin;
@@ -296,7 +296,7 @@ public:
         }
     }
 
-    TBBCalculateCut(CrossSectionType type, double xMin, double xMax, double xStep, double yMin, double yMax, double yStep, double z, std::string chaosExpressionString, std::string LCExpressionString, TrajectoryCalculator* calculator, PartiallyCalculatedCut* currentResult):
+    TBBCalculateCrossSection(CrossSectionType type, double xMin, double xMax, double xStep, double yMin, double yMax, double yStep, double z, std::string chaosExpressionString, std::string LCExpressionString, TrajectoryCalculator* calculator, PartiallyCalculatedCut* currentResult):
         type(type),
         xMin(xMin),
         xMax(xMax),
@@ -312,10 +312,10 @@ public:
     }
 };
 
-CalculatedCut* TrajectoryCalculator::parallelCalculateCut(CrossSectionType type, double xMin, double xMax, double xStep,double yMin, double yMax, double yStep, double z, std::string chaosExpressionString, std::string LCExpressionString){
+CalculatedCut* TrajectoryCalculator::parallelCalculateCrossSection(CrossSectionType type, double xMin, double xMax, double xStep,double yMin, double yMax, double yStep, double z, std::string chaosExpressionString, std::string LCExpressionString){
     this->currentResult = new PartiallyCalculatedCut(type, z, xMin, xMax, xStep, yMin, yMax, yStep);
 
-    tbb::parallel_for(tbb::blocked_range<size_t>(0, this->currentResult->u1Size), TBBCalculateCut(type, xMin, xMax, xStep, yMin, yMax, yStep, z, chaosExpressionString, LCExpressionString, this, this->currentResult));
+    tbb::parallel_for(tbb::blocked_range<size_t>(0, this->currentResult->u1Size), TBBCalculateCrossSection(type, xMin, xMax, xStep, yMin, yMax, yStep, z, chaosExpressionString, LCExpressionString, this, this->currentResult));
 
     CalculatedCut* result = this->currentResult->createCalculatedCut();
 
