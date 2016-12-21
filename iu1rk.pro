@@ -19,10 +19,10 @@ SOURCES += main.cpp\
     TrajectoryCalculator.cpp \
     Trajectory.cpp \
     widgets/trajectorywidget.cpp \
-    widgets/cutwidget.cpp \
     circuitparameters.cpp \
     calculatedcut.cpp \
-    partiallycalculatedcut.cpp
+    partiallycalculatedcut.cpp \
+    widgets/crosssectionwidget.cpp
 
 HEADERS  += mainwindow.h \
     qcustomplot/qcustomplot.h \
@@ -30,7 +30,6 @@ HEADERS  += mainwindow.h \
     TrajectoryCalculator.h \
     Trajectory.h \
     widgets/trajectorywidget.h \
-    widgets/cutwidget.h \
     circuitparameters.h \
     calculatedcut.h \
     partiallycalculatedcut.h \
@@ -141,11 +140,12 @@ HEADERS  += mainwindow.h \
     tbb/include/tbb/tbb_thread.h \
     tbb/include/tbb/tbbmalloc_proxy.h \
     tbb/include/tbb/tick_count.h \
-    trajectoryresult.h
+    trajectoryresult.h \
+    widgets/crosssectionwidget.h
 
 FORMS    += mainwindow.ui \
-    widgets/cutwidget.ui \
-    widgets/trajectorywidget.ui
+    widgets/trajectorywidget.ui \
+    widgets/crosssectionwidget.ui
 
 DISTFILES += \
     parameters.txt \
@@ -332,6 +332,25 @@ DISTFILES += \
 INCLUDEPATH += "$$PWD/tbb/include"
 INCLUDEPATH += "$$PWD/exprtk"
 
-linux{
-    LIBS += -L"$$PWD/tbb/lib/intel64/gcc4.7" -ltbb
+
+CONFIG(debug, debug|release) {
+    linux{
+        LIBS += -L"$$PWD/tbb/lib/intel64/gcc4.7" -ltbb_debug
+    }
+
+    win32{
+        LIBS += -L"C:\\Users\\rzsol\\Desktop\\chua-trajectory-visualiser\\tbb\\lib\\ia32\\vc12" -ltbb_debug
+        QMAKE_CXXFLAGS += -bigobj
+    }
+}
+
+CONFIG(release, debug|release) {
+    linux{
+        LIBS += -L"$$PWD/tbb/lib/intel64/gcc4.7" -ltbb
+    }
+
+    win32{
+        LIBS += -L"C:\\Users\\rzsol\\Desktop\\chua-trajectory-visualiser\\tbb\\lib\\ia32\\vc12" -ltbb
+        QMAKE_CXXFLAGS += -bigobj
+    }
 }

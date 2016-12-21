@@ -27,6 +27,7 @@ TrajectoryWidget::TrajectoryWidget(QWidget *parent) :
     this->connect(this->ui->input_h0, SIGNAL(editingFinished()), this, SLOT(updateParametersByGui()));
     this->connect(this->ui->input_ihmax, SIGNAL(editingFinished()), this, SLOT(updateParametersByGui()));
     this->connect(this->ui->input_uhmax, SIGNAL(editingFinished()), this, SLOT(updateParametersByGui()));
+    this->connect(this->ui->input_n, SIGNAL(editingFinished()), this, SLOT(updateParametersByGui()));
 
     //TODO remove
     this->ui->input_i_0->setValue(0.000001);
@@ -62,6 +63,7 @@ void TrajectoryWidget::updateParameters(CircuitParameters* parameters){
     this->ui->input_h0->setValue(parameters->h0);
     this->ui->input_ihmax->setValue(parameters->iStepMax);
     this->ui->input_uhmax->setValue(parameters->uStepMax);
+    this->ui->input_n->setValue(parameters->n);
 
     this->updatingParameters = false;
 }
@@ -86,6 +88,7 @@ void TrajectoryWidget::updateParametersByGui(){
     this->parameters->h0 = this->ui->input_h0->value();
     this->parameters->iStepMax =this->ui->input_ihmax->value();
     this->parameters->uStepMax = this->ui->input_uhmax->value();
+    this->parameters->n = this->ui->input_n->value();
 
     emit parametersChanged(this->parameters);
 }
@@ -157,6 +160,8 @@ void TrajectoryWidget::redrawPlot(QCustomPlot* plot, Trajectory* result, int xRa
 
      const std::vector<Point3DT>* points = result->points;
 
+
+
      if(plot == this->ui->plot_iu1){
          for (std::vector<Point3DT>::const_iterator point = points->begin(); point != points->end(); ++point) {
              if(point == points->begin()){
@@ -216,7 +221,7 @@ void TrajectoryWidget::zoomPlot(QWheelEvent* event){
  float factor = 1 - (event->delta() * 0.002);
 
  QCPRange rangeU1 = this->ui->plot_iu1->xAxis->range();
- QCPRange rangeU2 = this->ui->plot_iu2->yAxis->range();
+ QCPRange rangeU2 = this->ui->plot_iu2->xAxis->range();
  QCPRange rangeI = this->ui->plot_iu1->yAxis->range();
 
  this->ui->plot_iu1->xAxis->setRange(rangeU1.lower*factor, rangeU1.upper*factor);

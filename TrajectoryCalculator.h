@@ -17,7 +17,7 @@
 class TrajectoryCalculator{
 
 public:
-    TrajectoryCalculator(double C1, double C2, double L, double Bp, double B0, double R, double ro, double I, double m0, double m1, double m2, double t_max, double h0, double iStepMax, double uStepMax);
+    TrajectoryCalculator(double C1, double C2, double L, double Bp, double B0, double R, double ro, double I, double m0, double m1, double m2, double t_max, double h0, double iStepMax, double uStepMax, double n);
     TrajectoryCalculator(CircuitParameters* parameters);
     ~TrajectoryCalculator();
 
@@ -36,6 +36,8 @@ public:
     const double h0;
     const double iStepMax;
     const double uStepMax;
+    const double n;
+    bool cancelled = false;
 
     //exprtk::parser<double> parser;
 

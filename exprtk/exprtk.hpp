@@ -33,6 +33,8 @@
 #ifndef INCLUDE_EXPRTK_HPP
 #define INCLUDE_EXPRTK_HPP
 
+#undef min
+#undef max
 
 #include <algorithm>
 #include <cctype>

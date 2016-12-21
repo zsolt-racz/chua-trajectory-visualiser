@@ -449,6 +449,33 @@
         </item>
        </layout>
       </item>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_21">
+        <item>
+         <widget class="QLabel" name="label_20">
+          <property name="text">
+           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;right&quot;&gt;n =&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QDoubleSpinBox" name="input_n">
+          <property name="decimals">
+           <number>15</number>
+          </property>
+          <property name="minimum">
+           <double>1.000001000000000</double>
+          </property>
+          <property name="maximum">
+           <double>8.000000000000000</double>
+          </property>
+          <property name="value">
+           <double>2.000000000000000</double>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
      </layout>
     </item>
     <item>
@@ -505,7 +532,7 @@
     <rect>
      <x>25</x>
      <y>200</y>
-     <width>598</width>
+     <width>638</width>
      <height>41</height>
     </rect>
    </property>

@@ -22,21 +22,21 @@
 #include "exprtk/exprtk.hpp"
 
 namespace Ui {
-class CutWidget;
+class CrossSectionWidget;
 }
 
-class CutWidget : public QWidget
+class CrossSectionWidget : public QWidget
 {
     Q_OBJECT
 
 public:
-    explicit CutWidget(QWidget *parent = 0);
-    ~CutWidget();
+    explicit CrossSectionWidget(QWidget *parent = 0);
+    ~CrossSectionWidget();
 
     void updateParameters(CircuitParameters* parameters);
 
 private:
-    Ui::CutWidget *ui;
+    Ui::CrossSectionWidget *ui;
     CircuitParameters* parameters = NULL;
     TrajectoryCalculator* calculator = NULL;
     CalculatedCut* currentResult = NULL;

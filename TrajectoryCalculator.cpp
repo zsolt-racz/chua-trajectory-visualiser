@@ -1,11 +1,11 @@
 #include "TrajectoryCalculator.h"
 
-TrajectoryCalculator::TrajectoryCalculator(double C1, double C2, double L, double Bp, double B0, double R, double ro, double I, double m0, double m1, double m2, double t_max,double h0, double iStepMax, double uStepMax) :
-    C1(C1), C2(C2), L(L), Bp(Bp), B0(B0), R(R), ro(ro), I(I), m0(m0), m1(m1), m2(m2), t_max(t_max), h0(h0), iStepMax(iStepMax), uStepMax(uStepMax) {
+TrajectoryCalculator::TrajectoryCalculator(double C1, double C2, double L, double Bp, double B0, double R, double ro, double I, double m0, double m1, double m2, double t_max,double h0, double iStepMax, double uStepMax, double n) :
+    C1(C1), C2(C2), L(L), Bp(Bp), B0(B0), R(R), ro(ro), I(I), m0(m0), m1(m1), m2(m2), t_max(t_max), h0(h0), iStepMax(iStepMax), uStepMax(uStepMax), n(n) {
 }
 
 TrajectoryCalculator::TrajectoryCalculator(CircuitParameters* parameters) :
-    C1(parameters->C1), C2(parameters->C2), L(parameters->L), Bp(parameters->Bp), B0(parameters->B0), R(parameters->R), ro(parameters->ro), I(parameters->I), m0(parameters->m0), m1(parameters->m1), m2(parameters->m2), t_max(parameters->t_max), h0(parameters->h0), iStepMax(parameters->iStepMax), uStepMax(parameters->uStepMax) {
+    C1(parameters->C1), C2(parameters->C2), L(parameters->L), Bp(parameters->Bp), B0(parameters->B0), R(parameters->R), ro(parameters->ro), I(parameters->I), m0(parameters->m0), m1(parameters->m1), m2(parameters->m2), t_max(parameters->t_max), h0(parameters->h0), iStepMax(parameters->iStepMax), uStepMax(parameters->uStepMax), n(parameters->n) {
 }
 
 TrajectoryCalculator::~TrajectoryCalculator() {
@@ -51,16 +51,14 @@ Trajectory* TrajectoryCalculator::calculateTrajectory(double i0, double u1_0, do
             //std::cout << "Division by 2 at t = " << t << ". h = " << h << "\n";
             t = t - h;
 
-            h = hdiv2;
+            h = h / this->n;
             ++divisionCount;
         }else{
             i = i + iDiff;
             u1 = u1 + u1Diff;
             u2 = u2 + u2Diff;
 
-            if(h != h0){
-                h = h * 2;
-            }
+            h = h * this->n;
 
             points->push_back(Point3DT(i, u1, u2, t));
         }
@@ -152,16 +150,14 @@ void TrajectoryCalculator::calculateTrajectoryResult(std::vector<TrajectoryResul
             //std::cout << "Division by 2 at t = " << t << ". h = " << h << "\n";
             t = t - h;
 
-            h = hdiv2;
+            h = h / this->n;
             ++divisionCount;
         }else{
             i = i + iDiff;
             u1 = u1 + u1Diff;
             u2 = u2 + u2Diff;
 
-            if(h != h0){
-                h = h * 2;
-            }
+            h = h * this->n;
 
             if(t > 50){
                 // Test LC
@@ -211,7 +207,7 @@ CalculatedCut* TrajectoryCalculator::calculateCrossSection(CrossSectionType type
     double x = xMin;
     int ySize = this->currentResult->u2Size;
 
-    for(int j = 0; j < xSize; ++j, x+=xStep){
+    for(int j = 0; j < xSize && !this->cancelled; ++j, x+=xStep){
         std::vector<TrajectoryResult>::iterator result_iterator = vector_iterator->begin();
         double y = yMin;
         for(int k = 0; k < ySize; ++k, y+=yStep){
@@ -261,6 +257,7 @@ CalculatedCut* TrajectoryCalculator::calculateCrossSection(CrossSectionType type
     return result;
 }*/
 
+
 class TBBCalculateCrossSection {
 private:
     CrossSectionType type;
@@ -278,11 +275,14 @@ private:
 
 public:
     void operator()(const tbb::blocked_range<size_t>& r) const {
+        if(calculator->cancelled){
+            return;
+        }
         size_t idx = r.begin();
 
         std::vector<std::vector<TrajectoryResult>>::iterator vector_iterator = currentResult->begin() + idx;
         int ySize = this->currentResult->u2Size;
-        for(idx = r.begin(); idx != r.end(); ++idx){
+        for(idx = r.begin(); idx != r.end() && !calculator->cancelled; ++idx){
             double x = xMin + (idx * xStep);
             std::vector<TrajectoryResult>::iterator result_iterator = vector_iterator->begin();
             double y = yMin;
@@ -315,7 +315,7 @@ public:
 CalculatedCut* TrajectoryCalculator::parallelCalculateCrossSection(CrossSectionType type, double xMin, double xMax, double xStep,double yMin, double yMax, double yStep, double z, std::string chaosExpressionString, std::string LCExpressionString){
     this->currentResult = new PartiallyCalculatedCut(type, z, xMin, xMax, xStep, yMin, yMax, yStep);
 
-    tbb::parallel_for(tbb::blocked_range<size_t>(0, this->currentResult->u1Size), TBBCalculateCrossSection(type, xMin, xMax, xStep, yMin, yMax, yStep, z, chaosExpressionString, LCExpressionString, this, this->currentResult));
+    tbb::parallel_for(tbb::blocked_range<size_t>(0, this->currentResult->u1Size, this->cancelled), TBBCalculateCrossSection(type, xMin, xMax, xStep, yMin, yMax, yStep, z, chaosExpressionString, LCExpressionString, this, this->currentResult));
 
     CalculatedCut* result = this->currentResult->createCalculatedCut();
 
@@ -324,8 +324,6 @@ CalculatedCut* TrajectoryCalculator::parallelCalculateCrossSection(CrossSectionT
 
     return result;
 }
-
-
 
 inline double TrajectoryCalculator::fu1(double u1, double u2, double i) {
     return ((u2 - u1) / R - (m2 * u1 + 0.5 * (m1 - m0)*(this->abs(u1 - Bp) - this->abs(u1 + Bp)) + 0.5 * (m2 - m1)*(this->abs(u1 - B0) - this->abs(u1 + B0))) - I) / C1;

@@ -1,9 +1,9 @@
-#include "widgets/cutwidget.h"
-#include "ui_cutwidget.h"
+#include "widgets/crosssectionwidget.h"
+#include "ui_crosssectionwidget.h"
 
-CutWidget::CutWidget(QWidget *parent) :
+CrossSectionWidget::CrossSectionWidget(QWidget *parent) :
     QWidget(parent),
-    ui(new Ui::CutWidget)
+    ui(new Ui::CrossSectionWidget)
 {
     ui->setupUi(this);
 
@@ -52,7 +52,7 @@ CutWidget::CutWidget(QWidget *parent) :
     this->initPlot();
 }
 
-CutWidget::~CutWidget()
+CrossSectionWidget::~CrossSectionWidget()
 {
     delete ui;
     delete parameters;
@@ -61,7 +61,7 @@ CutWidget::~CutWidget()
     delete calculatButtonSignalMapper;
 }
 
-void CutWidget::updateParameters(CircuitParameters* parameters){
+void CrossSectionWidget::updateParameters(CircuitParameters* parameters){
     this->parameters = parameters;
 
     this->ui->value_c1->setText(QString::number(parameters->C1));
@@ -79,9 +79,10 @@ void CutWidget::updateParameters(CircuitParameters* parameters){
     this->ui->value_h0->setText(QString::number(parameters->h0));
     this->ui->value_ihmax->setText(QString::number(parameters->iStepMax));
     this->ui->value_uhmax->setText(QString::number(parameters->uStepMax));
+    this->ui->value_n->setText(QString::number(parameters->n));
 }
 
-void CutWidget::saveCurrentResultToPng()
+void CrossSectionWidget::saveCurrentResultToPng()
 {
     QString fileName = QFileDialog::getSaveFileName(this, QString("Save result to PNG"), QString(), QString("PNG files (*.png)"));
 
@@ -92,7 +93,7 @@ void CutWidget::saveCurrentResultToPng()
     this->ui->plot_cut->savePng(fileName, 0, 0, 1.0, -1);
 }
 
-void CutWidget::exportCurrentResultToTxt()
+void CrossSectionWidget::exportCurrentResultToTxt()
 {
     QString fileName = QFileDialog::getSaveFileName(this, QString("Save result to CSV"), QString(), QString("Text files (*.txt)"));
 
@@ -103,7 +104,7 @@ void CutWidget::exportCurrentResultToTxt()
     this->currentResult->writeToTxt(fileName.toStdString());
 }
 
-void CutWidget::contextMenuRequest(QPoint pos)
+void CrossSectionWidget::contextMenuRequest(QPoint pos)
 {
     if(this->currentResult != NULL){
         QMenu *menu = new QMenu(this);
@@ -114,7 +115,7 @@ void CutWidget::contextMenuRequest(QPoint pos)
     }
 }
 
-void CutWidget::initPlot(){
+void CrossSectionWidget::initPlot(){
     QCustomPlot* customPlot = this->ui->plot_cut;
     this->colorMap = new QCPColorMap(customPlot->xAxis, customPlot->yAxis);
 
@@ -124,7 +125,7 @@ void CutWidget::initPlot(){
     colorMap->setDataRange(QCPRange(0,100));
 }
 
-void CutWidget::calculateButtonPressed(QWidget* button){
+void CrossSectionWidget::calculateButtonPressed(QWidget* button){
     if(button == ui->button_calculate_u1i){
         this->reCalculate(U1_I, false);
     }else if(button == ui->button_calculate_parallel_u1i){
@@ -140,7 +141,7 @@ void CutWidget::calculateButtonPressed(QWidget* button){
     }
 }
 
-void CutWidget::reCalculate(CrossSectionType type, bool parallel){
+void CrossSectionWidget::reCalculate(CrossSectionType type, bool parallel){
     this->calculator = new TrajectoryCalculator(this->parameters);
 
     double xMin, xMax, xStep, yMin, yMax, yStep, z;
@@ -183,12 +184,14 @@ void CutWidget::reCalculate(CrossSectionType type, bool parallel){
     std::string chaosTest = this->ui->test_chaos->toPlainText().toStdString();
     std::string lcTest = this->ui->test_lc->toPlainText().toStdString();
 
+
     QFuture<CalculatedCut*> future;
     if(parallel){
         future = QtConcurrent::run(std::bind(&TrajectoryCalculator::parallelCalculateCrossSection, this->calculator, type, xMin, xMax, xStep, yMin, yMax, yStep, z, chaosTest, lcTest));
     }else{
         future = QtConcurrent::run(std::bind(&TrajectoryCalculator::calculateCrossSection, this->calculator, type, xMin, xMax, xStep, yMin, yMax, yStep, z, chaosTest, lcTest));
     }
+
     this->FutureWatcher.setFuture(future);
     this->clock.start();
 
@@ -218,14 +221,26 @@ void CutWidget::reCalculate(CrossSectionType type, bool parallel){
 
 }
 
-void CutWidget::cancelCalculation(){
+void CrossSectionWidget::cancelCalculation(){
     this->ui->progressBar->setValue(0);
     this->ui->progressBar->setDisabled(true);
+
+    this->ui->button_cancel_u1i->setDisabled(true);
+    this->ui->button_cancel_u2i->setDisabled(true);
     this->ui->button_cancel_u1u2->setDisabled(true);
+    this->ui->button_calculate_u1i->setEnabled(true);
+
+    this->ui->button_calculate_parallel_u1i->setEnabled(true);
+    this->ui->button_calculate_u2i->setEnabled(true);
+    this->ui->button_calculate_parallel_u2i->setEnabled(true);
+    this->ui->button_calculate_u1u2->setEnabled(true);
+    this->ui->button_calculate_parallel_u1u2->setEnabled(true);
+
+    this->calculator->cancelled = true;
 
 }
 
-void CutWidget::calculationFinished(){
+void CrossSectionWidget::calculationFinished(){
     int time = this->clock.elapsed();
 
     CalculatedCut* cut = this->FutureWatcher.result();
@@ -267,7 +282,7 @@ void CutWidget::calculationFinished(){
     this->calculator = NULL;
 }
 
-void CutWidget::testExpressionChanged(QWidget* textEdit){
+void CrossSectionWidget::testExpressionChanged(QWidget* textEdit){
     QString expressionString;
     QLabel* validityLabel;
     if(textEdit == this->ui->test_chaos){
@@ -306,7 +321,7 @@ void CutWidget::testExpressionChanged(QWidget* textEdit){
     }
 }
 
-void CutWidget::initForCut(CalculatedCut* cut){
+void CrossSectionWidget::initForCut(CalculatedCut* cut){
     QCustomPlot* customPlot = this->ui->plot_cut;
     if(cut->type == U1_I){
         customPlot->xAxis->setLabel("u1");
@@ -325,7 +340,7 @@ void CutWidget::initForCut(CalculatedCut* cut){
     customPlot->yAxis->setRange(cut->u2Min, cut->u2Max);
 }
 
-void CutWidget::reDraw(CalculatedCut* cut){
+void CrossSectionWidget::reDraw(CalculatedCut* cut){
     QCustomPlot* customPlot = this->ui->plot_cut;
 
     for (std::vector<std::vector<TrajectoryResult>>::const_iterator vector_iterator = cut->cbegin(); vector_iterator != cut->cend(); ++vector_iterator) {
@@ -347,7 +362,7 @@ void CutWidget::reDraw(CalculatedCut* cut){
     customPlot->replot();
 }
 
-void CutWidget::reDrawPartial(PartiallyCalculatedCut* cut){
+void CrossSectionWidget::reDrawPartial(PartiallyCalculatedCut* cut){
     QCustomPlot* customPlot = this->ui->plot_cut;
 
     for (std::list<std::vector<TrajectoryResult>*>::const_iterator vector_iterator = cut->cbeginU1Columns(); vector_iterator != cut->cendU1Columns(); ++vector_iterator) {
@@ -369,7 +384,7 @@ void CutWidget::reDrawPartial(PartiallyCalculatedCut* cut){
     customPlot->replot();
 }
 
-void CutWidget::updateResultTable(CalculatedCut* cut, int timeInMs){
+void CrossSectionWidget::updateResultTable(CalculatedCut* cut, int timeInMs){
     int chaosPoints = 0;
     int lcPoints = 0;
     int undPoints = 0;
@@ -416,14 +431,18 @@ void CutWidget::updateResultTable(CalculatedCut* cut, int timeInMs){
     this->ui->resultTable->setItem(0,4, und);
 }
 
-QString CutWidget::formatTime(int timeInMs){
+QString CrossSectionWidget::formatTime(int timeInMs){
     int elapsedMins = timeInMs/1000/60;
     int elapsedSeconds = timeInMs/1000 - std::floor(timeInMs/1000/60)*60;
     return QString("%1:%2").arg(elapsedMins).arg(elapsedSeconds,2, 10, QChar('0'));
 }
 
-void CutWidget::updateProgressBar()
+void CrossSectionWidget::updateProgressBar()
 {
+    if(this->calculator->cancelled){
+        return;
+    }
+
     int elapsed = this->clock.elapsed();
     QString formattedTime = this->formatTime(elapsed);
     this->ui->time->setText(formattedTime);
