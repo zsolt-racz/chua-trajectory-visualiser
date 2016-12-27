@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>TestInputWidget</class>
+ <widget class="QWidget" name="TestInputWidget">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>920</width>
+    <height>180</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <widget class="QTableWidget" name="table">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>921</width>
+     <height>141</height>
+    </rect>
+   </property>
+   <column>
+    <property name="text">
+     <string>Name</string>
+    </property>
+   </column>
+   <column>
+    <property name="text">
+     <string>Type</string>
+    </property>
+   </column>
+   <column>
+    <property name="text">
+     <string>Color</string>
+    </property>
+   </column>
+   <column>
+    <property name="text">
+     <string>u1 lo</string>
+    </property>
+   </column>
+   <column>
+    <property name="text">
+     <string>u1 hi</string>
+    </property>
+   </column>
+   <column>
+    <property name="text">
+     <string>u2 lo</string>
+    </property>
+   </column>
+   <column>
+    <property name="text">
+     <string>u2 hi</string>
+    </property>
+   </column>
+   <column>
+    <property name="text">
+     <string>i lo</string>
+    </property>
+   </column>
+   <column>
+    <property name="text">
+     <string>i hi</string>
+    </property>
+   </column>
+  </widget>
+  <widget class="QPushButton" name="add_cha">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>150</y>
+     <width>80</width>
+     <height>22</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Add Chaos</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="add_lc">
+   <property name="geometry">
+    <rect>
+     <x>90</x>
+     <y>150</y>
+     <width>80</width>
+     <height>22</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Add LC</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="delete_selection">
+   <property name="geometry">
+    <rect>
+     <x>180</x>
+     <y>150</y>
+     <width>121</width>
+     <height>22</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Delete selected</string>
+   </property>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

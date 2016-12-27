@@ -19,7 +19,10 @@
 #include "TrajectoryCalculator.h"
 #include "circuitparameters.h"
 #include "trajectoryresult.h"
-#include "exprtk/exprtk.hpp"
+#include "trajectorytest.h"
+#include "trajectoryresulttype.h"
+#include "crosssectionmap.h"
+#include <QStandardItemModel>
 
 namespace Ui {
 class CrossSectionWidget;
@@ -40,7 +43,7 @@ private:
     CircuitParameters* parameters = NULL;
     TrajectoryCalculator* calculator = NULL;
     CalculatedCut* currentResult = NULL;
-    QCPColorMap *colorMap = NULL;
+    CrossSectionMap *colorMap = NULL;
     std::tuple<double, double, double> map(std::tuple<double, double, double> &parameters);
 
     void initPlot();
@@ -65,7 +68,6 @@ private slots:
     void cancelCalculation();
     void calculationFinished();
     void updateProgressBar();
-    void testExpressionChanged(QWidget* textEdit);
     void contextMenuRequest(QPoint pos);
     void saveCurrentResultToPng();
     void exportCurrentResultToTxt();

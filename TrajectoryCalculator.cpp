@@ -67,37 +67,8 @@ Trajectory* TrajectoryCalculator::calculateTrajectory(double i0, double u1_0, do
     return new Trajectory(points, divisionCount);
 }
 
-exprtk::expression<double> TrajectoryCalculator::createExpression(double* i, double* u1, double* u2){
-    exprtk::symbol_table<double> symbolTable;
-    exprtk::expression<double> result;
 
-    symbolTable.add_variable("i", *i);
-    symbolTable.add_variable("u1", *u1);
-    symbolTable.add_variable("u2", *u2);
-
-    result.register_symbol_table(symbolTable);
-
-    return result;
-}
-
-exprtk::expression<double> TrajectoryCalculator::createCompiledExpression(double* i, double* u1, double* u2, std::string expressionString){
-    exprtk::expression<double> expression = this->createExpression(i,u1,u2);
-
-    exprtk::parser<double> parser;
-    parser.compile(expressionString, expression);
-
-    return expression;
-}
-
-bool TrajectoryCalculator::isExpressionValid(std::string expressionString){
-    double i, u1, u2;
-    exprtk::expression<double> expression = this->createExpression(&i,&u1,&u2);
-
-    exprtk::parser<double> parser;
-    return parser.compile(expressionString, expression);
-}
-
-void TrajectoryCalculator::calculateTrajectoryResult(std::vector<TrajectoryResult>::iterator result, CrossSectionType type, double x, double y, double z, std::string chaosExpressionString, std::string LCExpressionString) {
+void TrajectoryCalculator::calculateTrajectoryResult(std::vector<TrajectoryResult>::iterator result, CrossSectionType type, double x, double y, double z, std::vector<TrajectoryTest>* tests) {
     result->x = x;
     result->y = y;
 
@@ -118,9 +89,6 @@ void TrajectoryCalculator::calculateTrajectoryResult(std::vector<TrajectoryResul
             i = z; u1 = x; u2 = y;
             break;
     }
-
-    exprtk::expression<double> chaosExpression = this->createCompiledExpression(&i, &u1, &u2, chaosExpressionString);
-    exprtk::expression<double> LCExpression = this->createCompiledExpression(&i, &u1, &u2, LCExpressionString);
 
     double h = h0;
 
@@ -159,48 +127,27 @@ void TrajectoryCalculator::calculateTrajectoryResult(std::vector<TrajectoryResul
 
             h = h * this->n;
 
+            // Tests
             if(t > 50){
-                // Test LC
-                if (LCExpression.value()) {
-                    result->t = clock.nsecsElapsed() / 1000000.0;
-                    result->result = TrajectoryResult::ResultType::LC;
-                    result->divisionCount = divisionCount;
-                    return;
-                }
+                for(std::vector<TrajectoryTest>::const_iterator test = tests->cbegin(); test != tests->cend(); ++test){
+                    if(test->eval(u1, u2, i)){
+                        result->t = clock.nsecsElapsed() / 1000000.0;
+                        result->test = &(*test);
+                        result->divisionCount = divisionCount;
 
-                // Test CHA
-                if (chaosExpression.value()) {
-                    result->t = clock.nsecsElapsed() / 1000000.0;
-                    result->result = TrajectoryResult::ResultType::CHA;
-                    result->divisionCount = divisionCount;
-                    return;
+                        return;
+                    }
                 }
             }
-
-            /*
-            if(t > 50){
-                // Test LC
-                if (i > 30 || i < -30) {
-                    return TrajectoryResultType::LC;
-                }
-
-                // Test CHA
-                if (u2 < -4.75 && u2 > -5.25 && u1 < 0.25 && u1 > -0.25 && i < 5 && i > -5) {
-                    return TrajectoryResultType::CHA;
-                }
-            }*/
-
-
         }
     }
 
     result->t = clock.nsecsElapsed() / 1000000.0;
-    result->result = TrajectoryResult::ResultType::UNDETERMINED;
     result->divisionCount = divisionCount;
 }
 
-CalculatedCut* TrajectoryCalculator::calculateCrossSection(CrossSectionType type, double xMin, double xMax, double xStep,double yMin, double yMax, double yStep, double z, std::string chaosExpressionString, std::string LCExpressionString){
-    this->currentResult = new PartiallyCalculatedCut(type, z, xMin, xMax, xStep, yMin, yMax, yStep);
+CalculatedCut* TrajectoryCalculator::calculateCrossSection(CrossSectionType type, double xMin, double xMax, double xStep,double yMin, double yMax, double yStep, double z, std::vector<TrajectoryTest>* tests){
+    this->currentResult = new PartiallyCalculatedCut(type, z, xMin, xMax, xStep, yMin, yMax, yStep, tests);
 
     std::vector<std::vector<TrajectoryResult>>::iterator vector_iterator = currentResult->begin();
     int xSize = this->currentResult->u1Size;
@@ -211,7 +158,7 @@ CalculatedCut* TrajectoryCalculator::calculateCrossSection(CrossSectionType type
         std::vector<TrajectoryResult>::iterator result_iterator = vector_iterator->begin();
         double y = yMin;
         for(int k = 0; k < ySize; ++k, y+=yStep){
-            this->calculateTrajectoryResult(result_iterator, type, x, y, z, chaosExpressionString, LCExpressionString);
+            this->calculateTrajectoryResult(result_iterator, type, x, y, z, tests);
 
             ++result_iterator;
         }
@@ -219,44 +166,11 @@ CalculatedCut* TrajectoryCalculator::calculateCrossSection(CrossSectionType type
         ++vector_iterator;
     }
 
-    CalculatedCut* result = this->currentResult->createCalculatedCut();
-
-    delete this->currentResult;
+    CalculatedCut* result = this->currentResult;
     this->currentResult = NULL;
 
     return result;
 }
-
-/*CalculatedCut* TrajectoryCalculator::calculateCut(double u1Min, double u1Max, double u1Step,double u2Min, double u2Max, double u2Step, double i){
-    this->currentResult = new PartiallyCalculatedCut(i, u1Min, u1Max, u1Step, u2Min, u2Max, u2Step);
-
-    std::vector<std::vector<CalculatedCut::TrajectoryResult>>::iterator vector_iterator = currentResult->begin();
-    int u1Size = this->currentResult->u1Size;
-    double u1 = u1Min;
-    int u2Size = this->currentResult->u2Size;
-    for(int j = 0; j < u1Size; ++j, u1+=u1Step){
-        std::vector<CalculatedCut::TrajectoryResult>::iterator result_iterator = vector_iterator->begin();
-        double u2 = u2Min;
-        for(int k = 0; k < u2Size; ++k, u2+=u2Step){
-            result_iterator->u1 = u1;
-            result_iterator->u2 = u2;
-            result_iterator->t = -1;
-
-            result_iterator->result = this->calculateTrajectoryResult(i, u1, u2);
-            ++result_iterator;
-        }
-        currentResult->addU1Column(&(*(vector_iterator)));
-        ++vector_iterator;
-    }
-
-    CalculatedCut* result = this->currentResult->createCalculatedCut();
-
-    delete this->currentResult;
-    this->currentResult = NULL;
-
-    return result;
-}*/
-
 
 class TBBCalculateCrossSection {
 private:
@@ -268,8 +182,7 @@ private:
     double yMax;
     double yStep;
     double z;
-    std::string chaosExpressionString;
-    std::string LCExpressionString;
+    std::vector<TrajectoryTest>* tests;
     TrajectoryCalculator* calculator;
     tbb::atomic<PartiallyCalculatedCut*> currentResult;
 
@@ -287,7 +200,7 @@ public:
             std::vector<TrajectoryResult>::iterator result_iterator = vector_iterator->begin();
             double y = yMin;
             for(int j = 0; j < ySize; ++j, y+=yStep){
-                calculator->calculateTrajectoryResult(result_iterator, type, x, y, z, chaosExpressionString, LCExpressionString);
+                calculator->calculateTrajectoryResult(result_iterator, type, x, y, this->z, this->tests);
 
                 ++result_iterator;
             }
@@ -296,7 +209,7 @@ public:
         }
     }
 
-    TBBCalculateCrossSection(CrossSectionType type, double xMin, double xMax, double xStep, double yMin, double yMax, double yStep, double z, std::string chaosExpressionString, std::string LCExpressionString, TrajectoryCalculator* calculator, PartiallyCalculatedCut* currentResult):
+    TBBCalculateCrossSection(CrossSectionType type, double xMin, double xMax, double xStep, double yMin, double yMax, double yStep, double z, std::vector<TrajectoryTest>* tests, TrajectoryCalculator* calculator, PartiallyCalculatedCut* currentResult):
         type(type),
         xMin(xMin),
         xMax(xMax),
@@ -305,21 +218,18 @@ public:
         yMax(yMax),
         yStep(yStep),
         z(z),
-        chaosExpressionString(chaosExpressionString),
-        LCExpressionString(LCExpressionString),
+        tests(tests),
         calculator(calculator),
         currentResult(currentResult)  {
     }
 };
 
-CalculatedCut* TrajectoryCalculator::parallelCalculateCrossSection(CrossSectionType type, double xMin, double xMax, double xStep,double yMin, double yMax, double yStep, double z, std::string chaosExpressionString, std::string LCExpressionString){
-    this->currentResult = new PartiallyCalculatedCut(type, z, xMin, xMax, xStep, yMin, yMax, yStep);
+CalculatedCut* TrajectoryCalculator::parallelCalculateCrossSection(CrossSectionType type, double xMin, double xMax, double xStep,double yMin, double yMax, double yStep, double z, std::vector<TrajectoryTest>* tests){
+    this->currentResult = new PartiallyCalculatedCut(type, z, xMin, xMax, xStep, yMin, yMax, yStep, tests);
 
-    tbb::parallel_for(tbb::blocked_range<size_t>(0, this->currentResult->u1Size, this->cancelled), TBBCalculateCrossSection(type, xMin, xMax, xStep, yMin, yMax, yStep, z, chaosExpressionString, LCExpressionString, this, this->currentResult));
+    tbb::parallel_for(tbb::blocked_range<size_t>(0, this->currentResult->u1Size, this->cancelled), TBBCalculateCrossSection(type, xMin, xMax, xStep, yMin, yMax, yStep, z, tests, this, this->currentResult));
 
-    CalculatedCut* result = this->currentResult->createCalculatedCut();
-
-    delete this->currentResult;
+    CalculatedCut* result = this->currentResult;
     this->currentResult = NULL;
 
     return result;

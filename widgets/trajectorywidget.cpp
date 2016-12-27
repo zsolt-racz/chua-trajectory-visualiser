@@ -160,6 +160,12 @@ void TrajectoryWidget::redrawPlot(QCustomPlot* plot, Trajectory* result, int xRa
 
      const std::vector<Point3DT>* points = result->points;
 
+     /*QCPItemRect* rect = new QCPItemRect(plot);
+     plot->addItem(rect);
+     rect->topLeft->setCoords(4,4);
+     rect->bottomRight->setCoords(0,0);
+     rect->b().setWidth(2);
+     rect->pen().setColor(QColor(0,255,0));*/
 
 
      if(plot == this->ui->plot_iu1){

@@ -8,13 +8,14 @@
 #include <fstream>
 #include "crosssectiontype.h"
 #include "trajectoryresult.h"
+#include "trajectoryresulttype.h"
 
 class CalculatedCut
 {
 
 public:
-    CalculatedCut(CrossSectionType type, double i, double u1Min, double u1Max, double u1Step, double u2Min, double u2Max, double u2Step);
-
+    CalculatedCut(CrossSectionType type, double i, double u1Min, double u1Max, double u1Step, double u2Min, double u2Max, double u2Step, std::vector<TrajectoryTest>* tests);
+    ~CalculatedCut();
     CrossSectionType type;
     const double i;
     const double u1Min;
@@ -32,10 +33,14 @@ public:
 
     std::vector<std::vector<TrajectoryResult>>::const_iterator cbegin();
     std::vector<std::vector<TrajectoryResult>>::const_iterator cend();
+    int getTestIndex(const TrajectoryTest test);
+    int getTestIndex(const TrajectoryTest* test);
 
-    CalculatedCut(CrossSectionType type, double i, double u1Min, double u1Max, double u1Size, double u2Min, double u2Max, double u2Size, std::vector<std::vector<TrajectoryResult>> results);
+    CalculatedCut(CrossSectionType type, double i, double u1Min, double u1Max, double u1Size, double u2Min, double u2Max, double u2Size, std::vector<TrajectoryTest>* tests, std::vector<std::vector<TrajectoryResult>> results);
 protected:
+    std::vector<TrajectoryTest>* tests;
     std::vector<std::vector<TrajectoryResult>> results;
+
 };
 
 #endif // CALCULATEDCUT_H

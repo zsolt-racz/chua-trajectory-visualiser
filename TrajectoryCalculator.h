@@ -12,7 +12,7 @@
 #include "calculatedcut.h"
 #include "tbb/tbb.h"
 #include "crosssectiontype.h"
-#include "exprtk/exprtk.hpp"
+#include "trajectorytest.h"
 
 class TrajectoryCalculator{
 
@@ -42,16 +42,12 @@ public:
     //exprtk::parser<double> parser;
 
     Trajectory* calculateTrajectory(double i0, double u1_0, double u2_0);
-    void calculateTrajectoryResult(std::vector<TrajectoryResult>::iterator result, CrossSectionType type, double x, double y, double z, std::string chaosExpressionString, std::string LCExpressionString);
-    CalculatedCut* calculateCrossSection(CrossSectionType type, double xMin, double xMax, double xStep, double yMin, double yMax, double yStep, double z, std::string chaosExpressionString, std::string LCExpressionString);
-    CalculatedCut* parallelCalculateCrossSection(CrossSectionType type, double xMin, double xMax, double xStep, double yMin, double yMax, double yStep, double z, std::string chaosExpressionString, std::string LCExpressionString);
+    void calculateTrajectoryResult(std::vector<TrajectoryResult>::iterator result, CrossSectionType type, double x, double y, double z, std::vector<TrajectoryTest>* tests);
+    CalculatedCut* calculateCrossSection(CrossSectionType type, double xMin, double xMax, double xStep, double yMin, double yMax, double yStep, double z, std::vector<TrajectoryTest>* tests);
+    CalculatedCut* parallelCalculateCrossSection(CrossSectionType type, double xMin, double xMax, double xStep, double yMin, double yMax, double yStep, double z, std::vector<TrajectoryTest>* tests);
 
     bool hasPartialResult();
     PartiallyCalculatedCut* partialResult();
-
-    exprtk::expression<double> createExpression(double* i, double* u1, double* u2);
-    exprtk::expression<double> createCompiledExpression(double* i, double* u1, double* u2, std::string expressionString);
-    bool isExpressionValid(std::string expressionString);
 
 private:
     inline double fu1(double u1, double u2, double i);

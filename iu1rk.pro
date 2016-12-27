@@ -22,7 +22,11 @@ SOURCES += main.cpp\
     circuitparameters.cpp \
     calculatedcut.cpp \
     partiallycalculatedcut.cpp \
-    widgets/crosssectionwidget.cpp
+    widgets/crosssectionwidget.cpp \
+    widgets/testinputwidget.cpp \
+    trajectorytest.cpp \
+    trajectoryresult.cpp \
+    crosssectionmap.cpp
 
 HEADERS  += mainwindow.h \
     qcustomplot/qcustomplot.h \
@@ -34,7 +38,6 @@ HEADERS  += mainwindow.h \
     calculatedcut.h \
     partiallycalculatedcut.h \
     crosssectiontype.h \
-    exprtk/exprtk.hpp \
     tbb/include/serial/tbb/parallel_for.h \
     tbb/include/serial/tbb/tbb_annotate.h \
     tbb/include/tbb/compat/condition_variable \
@@ -141,11 +144,16 @@ HEADERS  += mainwindow.h \
     tbb/include/tbb/tbbmalloc_proxy.h \
     tbb/include/tbb/tick_count.h \
     trajectoryresult.h \
-    widgets/crosssectionwidget.h
+    widgets/crosssectionwidget.h \
+    widgets/testinputwidget.h \
+    trajectorytest.h \
+    trajectoryresulttype.h \
+    crosssectionmap.h
 
 FORMS    += mainwindow.ui \
     widgets/trajectorywidget.ui \
-    widgets/crosssectionwidget.ui
+    widgets/crosssectionwidget.ui \
+    widgets/testinputwidget.ui
 
 DISTFILES += \
     parameters.txt \

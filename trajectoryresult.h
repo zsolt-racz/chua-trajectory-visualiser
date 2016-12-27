@@ -1,15 +1,17 @@
 #ifndef TRAJECTORYRESULT_H
 #define TRAJECTORYRESULT_H
 
-struct TrajectoryResult{
-    enum ResultType { UNDETERMINED = 6, LC = 0, CHA = 1 };
+#include "trajectorytest.h"
+#include "trajectoryresulttype.h"
 
+struct TrajectoryResult{
     double x;
     double y;
+    const TrajectoryTest* test = NULL;
     double t;
     double divisionCount;
 
-    ResultType result;
+    TrajectoryResultType result() const;
 };
 
 #endif // TRAJECTORYRESULT_H

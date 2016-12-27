@@ -31,16 +31,6 @@ CrossSectionWidget::CrossSectionWidget(QWidget *parent) :
     this->calculatButtonSignalMapper->setMapping(this->ui->button_calculate_parallel_u1u2, this->ui->button_calculate_parallel_u1u2);
     this->connect(this->ui->button_calculate_parallel_u1u2, SIGNAL(clicked()), this->calculatButtonSignalMapper, SLOT(map()));
 
-    this->testChangedSignalMapper = new QSignalMapper(this);
-
-    this->connect(this->testChangedSignalMapper, SIGNAL(mapped(QWidget*)), this, SLOT(testExpressionChanged(QWidget*)));
-
-    this->testChangedSignalMapper->setMapping(this->ui->test_chaos, this->ui->test_chaos);
-    this->connect(this->ui->test_chaos, SIGNAL(textChanged()), this->testChangedSignalMapper, SLOT(map()));
-
-    this->testChangedSignalMapper->setMapping(this->ui->test_lc, this->ui->test_lc);
-    this->connect(this->ui->test_lc, SIGNAL(textChanged()), this->testChangedSignalMapper, SLOT(map()));
-
     this->connect(this->ui->button_cancel_u1i, SIGNAL(clicked()), this, SLOT(cancelCalculation()));
     this->connect(this->ui->button_cancel_u2i, SIGNAL(clicked()), this, SLOT(cancelCalculation()));
     this->connect(this->ui->button_cancel_u1u2, SIGNAL(clicked()), this, SLOT(cancelCalculation()));
@@ -117,12 +107,11 @@ void CrossSectionWidget::contextMenuRequest(QPoint pos)
 
 void CrossSectionWidget::initPlot(){
     QCustomPlot* customPlot = this->ui->plot_cut;
-    this->colorMap = new QCPColorMap(customPlot->xAxis, customPlot->yAxis);
+    this->colorMap = new CrossSectionMap(customPlot->xAxis, customPlot->yAxis);
 
-    colorMap->setGradient(QCPColorGradient::gpHot);
+    //colorMap->setGradient(QCPColorGradient::gpHot);
     colorMap->setAntialiased(false);
     colorMap->setInterpolate(false);
-    colorMap->setDataRange(QCPRange(0,100));
 }
 
 void CrossSectionWidget::calculateButtonPressed(QWidget* button){
@@ -181,21 +170,20 @@ void CrossSectionWidget::reCalculate(CrossSectionType type, bool parallel){
         break;
     }
 
-    std::string chaosTest = this->ui->test_chaos->toPlainText().toStdString();
-    std::string lcTest = this->ui->test_lc->toPlainText().toStdString();
 
-
+    std::vector<TrajectoryTest>* tests = this->ui->test->getTests();
     QFuture<CalculatedCut*> future;
     if(parallel){
-        future = QtConcurrent::run(std::bind(&TrajectoryCalculator::parallelCalculateCrossSection, this->calculator, type, xMin, xMax, xStep, yMin, yMax, yStep, z, chaosTest, lcTest));
+        future = QtConcurrent::run(std::bind(&TrajectoryCalculator::parallelCalculateCrossSection, this->calculator, type, xMin, xMax, xStep, yMin, yMax, yStep, z, tests));
     }else{
-        future = QtConcurrent::run(std::bind(&TrajectoryCalculator::calculateCrossSection, this->calculator, type, xMin, xMax, xStep, yMin, yMax, yStep, z, chaosTest, lcTest));
+        future = QtConcurrent::run(std::bind(&TrajectoryCalculator::calculateCrossSection, this->calculator, type, xMin, xMax, xStep, yMin, yMax, yStep, z, tests));
     }
 
     this->FutureWatcher.setFuture(future);
     this->clock.start();
 
     this->colorMap->data()->clear();
+    this->colorMap->updateColors(tests);
 
     this->ui->button_calculate_u1i->setDisabled(true);
     this->ui->button_calculate_parallel_u1i->setDisabled(true);
@@ -282,44 +270,6 @@ void CrossSectionWidget::calculationFinished(){
     this->calculator = NULL;
 }
 
-void CrossSectionWidget::testExpressionChanged(QWidget* textEdit){
-    QString expressionString;
-    QLabel* validityLabel;
-    if(textEdit == this->ui->test_chaos){
-        expressionString = this->ui->test_chaos->toPlainText();
-        validityLabel = this->ui->test_chaos_validity;
-    }else{
-        expressionString = this->ui->test_lc->toPlainText();
-        validityLabel = this->ui->test_lc_validity;
-    }
-
-    if(expressionString.isEmpty()){
-        validityLabel->setDisabled(true);
-        validityLabel->setText(QString("empty"));
-
-        return;
-    }
-
-    if(this->calculator->isExpressionValid(expressionString.toStdString())){
-        validityLabel->setEnabled(true);
-        validityLabel->setText(QString("valid"));
-
-        if(textEdit == this->ui->test_chaos){
-
-        }else{
-
-        }
-    }else{
-        validityLabel->setEnabled(true);
-        validityLabel->setText(QString("invalid"));
-
-        if(textEdit == this->ui->test_chaos){
-
-        }else{
-
-        }
-    }
-}
 
 void CrossSectionWidget::initForCut(CalculatedCut* cut){
     QCustomPlot* customPlot = this->ui->plot_cut;
@@ -345,17 +295,7 @@ void CrossSectionWidget::reDraw(CalculatedCut* cut){
 
     for (std::vector<std::vector<TrajectoryResult>>::const_iterator vector_iterator = cut->cbegin(); vector_iterator != cut->cend(); ++vector_iterator) {
         for (std::vector<TrajectoryResult>::const_iterator result_iterator = vector_iterator->cbegin(); result_iterator != vector_iterator->cend(); ++result_iterator) {
-            switch(result_iterator->result){
-            case TrajectoryResult::ResultType::CHA:
-                this->colorMap->data()->setData(result_iterator->x, result_iterator->y, 100);
-                break;
-            case TrajectoryResult::ResultType::LC:
-                this->colorMap->data()->setData(result_iterator->x, result_iterator->y, 60);
-                break;
-            case TrajectoryResult::ResultType::UNDETERMINED:
-                this->colorMap->data()->setData(result_iterator->x, result_iterator->y, 20);
-                break;
-            }
+            this->colorMap->data()->setData(result_iterator->x, result_iterator->y, cut->getTestIndex(result_iterator->test));
         }
     }
 
@@ -367,17 +307,7 @@ void CrossSectionWidget::reDrawPartial(PartiallyCalculatedCut* cut){
 
     for (std::list<std::vector<TrajectoryResult>*>::const_iterator vector_iterator = cut->cbeginU1Columns(); vector_iterator != cut->cendU1Columns(); ++vector_iterator) {
         for (std::vector<TrajectoryResult>::const_iterator result_iterator = (*vector_iterator)->cbegin(); result_iterator != (*vector_iterator)->cend(); ++result_iterator) {
-            switch(result_iterator->result){
-            case TrajectoryResult::ResultType::CHA:
-                this->colorMap->data()->setData(result_iterator->x, result_iterator->y, 100);
-                break;
-            case TrajectoryResult::ResultType::LC:
-                this->colorMap->data()->setData(result_iterator->x, result_iterator->y, 60);
-                break;
-            case TrajectoryResult::ResultType::UNDETERMINED:
-                this->colorMap->data()->setData(result_iterator->x, result_iterator->y, 20);
-                break;
-            }
+            this->colorMap->data()->setData(result_iterator->x, result_iterator->y, cut->getTestIndex(result_iterator->test));
         }
     }
 
@@ -390,14 +320,14 @@ void CrossSectionWidget::updateResultTable(CalculatedCut* cut, int timeInMs){
     int undPoints = 0;
     for (std::vector<std::vector<TrajectoryResult>>::const_iterator vector_iterator = cut->cbegin(); vector_iterator != cut->cend(); ++vector_iterator) {
         for (std::vector<TrajectoryResult>::const_iterator result_iterator = vector_iterator->cbegin(); result_iterator != vector_iterator->cend(); ++result_iterator) {
-            switch(result_iterator->result){
-            case TrajectoryResult::ResultType::CHA:
+            switch(result_iterator->result()){
+            case TrajectoryResultType::CHA:
                 ++chaosPoints;
                 break;
-            case TrajectoryResult::ResultType::LC:
+            case TrajectoryResultType::LC:
                 ++lcPoints;
                 break;
-            case TrajectoryResult::ResultType::UNDETERMINED:
+            case TrajectoryResultType::UNDETERMINED:
                 ++undPoints;
                 break;
             }

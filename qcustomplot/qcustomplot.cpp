@@ -11305,7 +11305,7 @@ void QCPColorGradient::colorize(const double *data, const QCPRange &range, QRgb 
   }
   if (mColorBufferInvalidated)
     updateColorBuffer();
-  
+
   if (!logarithmic)
   {
     const double posToIndexFactor = (mLevelCount-1)/range.size();
