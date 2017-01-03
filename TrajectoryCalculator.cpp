@@ -1,11 +1,11 @@
 #include "TrajectoryCalculator.h"
 
-TrajectoryCalculator::TrajectoryCalculator(double C1, double C2, double L, double Bp, double B0, double R, double ro, double I, double m0, double m1, double m2, double t_max,double h0, double iStepMax, double uStepMax, double n) :
-    C1(C1), C2(C2), L(L), Bp(Bp), B0(B0), R(R), ro(ro), I(I), m0(m0), m1(m1), m2(m2), t_max(t_max), h0(h0), iStepMax(iStepMax), uStepMax(uStepMax), n(n) {
+TrajectoryCalculator::TrajectoryCalculator(double C1, double C2, double L, double Bp, double B0, double R, double ro, double I, double m0, double m1, double m2, double t_max,double h0, double iStepMax, double uStepMax, double n, double t_test) :
+    C1(C1), C2(C2), L(L), Bp(Bp), B0(B0), R(R), ro(ro), I(I), m0(m0), m1(m1), m2(m2), t_max(t_max), h0(h0), iStepMax(iStepMax), uStepMax(uStepMax), n(n), t_test(t_test) {
 }
 
 TrajectoryCalculator::TrajectoryCalculator(CircuitParameters* parameters) :
-    C1(parameters->C1), C2(parameters->C2), L(parameters->L), Bp(parameters->Bp), B0(parameters->B0), R(parameters->R), ro(parameters->ro), I(parameters->I), m0(parameters->m0), m1(parameters->m1), m2(parameters->m2), t_max(parameters->t_max), h0(parameters->h0), iStepMax(parameters->iStepMax), uStepMax(parameters->uStepMax), n(parameters->n) {
+    C1(parameters->C1), C2(parameters->C2), L(parameters->L), Bp(parameters->Bp), B0(parameters->B0), R(parameters->R), ro(parameters->ro), I(parameters->I), m0(parameters->m0), m1(parameters->m1), m2(parameters->m2), t_max(parameters->t_max), h0(parameters->h0), iStepMax(parameters->iStepMax), uStepMax(parameters->uStepMax), n(parameters->n), t_test(parameters->t_test) {
 }
 
 TrajectoryCalculator::~TrajectoryCalculator() {
@@ -51,7 +51,7 @@ Trajectory* TrajectoryCalculator::calculateTrajectory(double i0, double u1_0, do
             //std::cout << "Division by 2 at t = " << t << ". h = " << h << "\n";
             t = t - h;
 
-            h = h / this->n;
+            h = h / 2;
             ++divisionCount;
         }else{
             i = i + iDiff;
@@ -73,8 +73,6 @@ void TrajectoryCalculator::calculateTrajectoryResult(std::vector<TrajectoryResul
     result->y = y;
 
     int divisionCount = 0;
-    QElapsedTimer clock;
-    clock.start();
 
     double i,u1,u2;
 
@@ -91,8 +89,9 @@ void TrajectoryCalculator::calculateTrajectoryResult(std::vector<TrajectoryResul
     }
 
     double h = h0;
+    double t;
 
-    for (double t = h; t <= t_max; t += h) {
+    for (t = h; t <= t_max; t += h) {
         double a_i = fi(u2, i);
         double a_u1 = fu1(u1, u2, i);
         double a_u2 = fu2(u1, u2, i);
@@ -118,7 +117,7 @@ void TrajectoryCalculator::calculateTrajectoryResult(std::vector<TrajectoryResul
             //std::cout << "Division by 2 at t = " << t << ". h = " << h << "\n";
             t = t - h;
 
-            h = h / this->n;
+            h = h / 2;
             ++divisionCount;
         }else{
             i = i + iDiff;
@@ -131,7 +130,7 @@ void TrajectoryCalculator::calculateTrajectoryResult(std::vector<TrajectoryResul
             if(t > 50){
                 for(std::vector<TrajectoryTest>::const_iterator test = tests->cbegin(); test != tests->cend(); ++test){
                     if(test->eval(u1, u2, i)){
-                        result->t = clock.nsecsElapsed() / 1000000.0;
+                        result->t = t;
                         result->test = &(*test);
                         result->divisionCount = divisionCount;
 
@@ -142,7 +141,7 @@ void TrajectoryCalculator::calculateTrajectoryResult(std::vector<TrajectoryResul
         }
     }
 
-    result->t = clock.nsecsElapsed() / 1000000.0;
+    result->t = t;
     result->divisionCount = divisionCount;
 }
 

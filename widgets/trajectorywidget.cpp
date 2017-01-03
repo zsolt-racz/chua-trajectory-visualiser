@@ -28,6 +28,7 @@ TrajectoryWidget::TrajectoryWidget(QWidget *parent) :
     this->connect(this->ui->input_ihmax, SIGNAL(editingFinished()), this, SLOT(updateParametersByGui()));
     this->connect(this->ui->input_uhmax, SIGNAL(editingFinished()), this, SLOT(updateParametersByGui()));
     this->connect(this->ui->input_n, SIGNAL(editingFinished()), this, SLOT(updateParametersByGui()));
+    this->connect(this->ui->input_t_test, SIGNAL(editingFinished()), this, SLOT(updateParametersByGui()));
 
     //TODO remove
     this->ui->input_i_0->setValue(0.000001);
@@ -64,6 +65,7 @@ void TrajectoryWidget::updateParameters(CircuitParameters* parameters){
     this->ui->input_ihmax->setValue(parameters->iStepMax);
     this->ui->input_uhmax->setValue(parameters->uStepMax);
     this->ui->input_n->setValue(parameters->n);
+    this->ui->input_t_test->setValue(parameters->t_test);
 
     this->updatingParameters = false;
 }
@@ -89,6 +91,7 @@ void TrajectoryWidget::updateParametersByGui(){
     this->parameters->iStepMax =this->ui->input_ihmax->value();
     this->parameters->uStepMax = this->ui->input_uhmax->value();
     this->parameters->n = this->ui->input_n->value();
+    this->parameters->t_test = this->ui->input_t_test->value();
 
     emit parametersChanged(this->parameters);
 }
@@ -152,7 +155,7 @@ void TrajectoryWidget::initPlots(){
     this->connect(u1u2Plot, SIGNAL(afterReplot()), this, SLOT(synchronizeRangeWithU1U2()));
 }
 
-void TrajectoryWidget::redrawPlot(QCustomPlot* plot, Trajectory* result, int xRange, int yRange ){
+void TrajectoryWidget::redrawPlot(QCustomPlot* plot, Trajectory* result, int xRangeLo, int xRangeHi, int yRangeLo, int yRangeHi ){
      QCPCurve* curve = dynamic_cast<QCPCurve*>(plot->plottable(0));
      QCPGraph* startPoint = dynamic_cast<QCPGraph*>(plot->plottable(1));
      QCPGraph* endPoint = dynamic_cast<QCPGraph*>(plot->plottable(2));
@@ -168,13 +171,29 @@ void TrajectoryWidget::redrawPlot(QCustomPlot* plot, Trajectory* result, int xRa
      rect->pen().setColor(QColor(0,255,0));*/
 
 
+     std::vector<Point3DT>::const_iterator prevPoint;
+     double xCoeff = static_cast<double>(plot->width()) / (xRangeHi -xRangeLo);
+     double yCoeff = static_cast<double>(plot->height()) / (yRangeHi -yRangeLo);
+
      if(plot == this->ui->plot_iu1){
          for (std::vector<Point3DT>::const_iterator point = points->begin(); point != points->end(); ++point) {
              if(point == points->begin()){
                  startPoint->data()->clear();
                  startPoint->addData(point->u1, point->i);
+
+                 curve->addData(point->t, point->u1, point->i);
+                 prevPoint = point;
+             }else{
+                 double xDiff = std::abs((point->u1) * xCoeff - (prevPoint->u1) * xCoeff);
+                 double yDiff = std::abs((point->i) * yCoeff - (prevPoint->i) * yCoeff);
+
+                 if(yDiff >= 1 || xDiff >= 1){
+                     curve->addData(point->t, point->u1, point->i);
+                     prevPoint = point;
+                 }
              }
-             curve->addData(point->t, point->u1, point->i);
+
+
              if(point == points->end() -1 ){
                  endPoint->data()->clear();
                  endPoint->addData(point->u1, point->i);
@@ -185,8 +204,19 @@ void TrajectoryWidget::redrawPlot(QCustomPlot* plot, Trajectory* result, int xRa
              if(point == points->begin()){
                  startPoint->data()->clear();
                  startPoint->addData(point->u2, point->i);
+
+                 curve->addData(point->t, point->u2, point->i);
+                 prevPoint = point;
+             }else{
+                 double xDiff = std::abs((point->u2) * xCoeff - (prevPoint->u2) * xCoeff);
+                 double yDiff = std::abs((point->i) * yCoeff - (prevPoint->i) * yCoeff);
+
+                 if(yDiff >= 1 || xDiff >= 1){
+                     curve->addData(point->t, point->u2, point->i);
+                     prevPoint = point;
+                 }
              }
-             curve->addData(point->t, point->u2, point->i);
+
              if(point == points->end() -1 ){
                  endPoint->data()->clear();
                  endPoint->addData(point->u2, point->i);
@@ -197,8 +227,19 @@ void TrajectoryWidget::redrawPlot(QCustomPlot* plot, Trajectory* result, int xRa
              if(point == points->begin()){
                  startPoint->data()->clear();
                  startPoint->addData(point->u1, point->u2);
+
+                 curve->addData(point->t, point->u1, point->u2);
+                 prevPoint = point;
+             }else{
+                 double xDiff = std::abs((point->u1) * xCoeff - (prevPoint->u1) * xCoeff);
+                 double yDiff = std::abs((point->u2) * yCoeff - (prevPoint->u2) * yCoeff);
+
+                 if(yDiff >= 1 || xDiff >= 1){
+                     curve->addData(point->t, point->u1, point->u2);
+                     prevPoint = point;
+                 }
              }
-             curve->addData(point->t, point->u1, point->u2);
+
              if(point == points->end() -1 ){
                  endPoint->data()->clear();
                  endPoint->addData(point->u1, point->u2);
@@ -207,8 +248,8 @@ void TrajectoryWidget::redrawPlot(QCustomPlot* plot, Trajectory* result, int xRa
      }
 
 
-     plot->xAxis->setRange(-xRange,xRange);
-     plot->yAxis->setRange(-yRange,yRange);
+     plot->xAxis->setRange(xRangeLo,xRangeHi);
+     plot->yAxis->setRange(yRangeLo,yRangeHi);
      plot->replot();
 }
 
@@ -218,9 +259,9 @@ void TrajectoryWidget::redrawPlots(Trajectory* result){
     int iMaxMin = std::ceil(maxMins.i) + 1;
     int uMaxMin = std::max(std::ceil(maxMins.u1), std::ceil(maxMins.u2)) +1 ;
 
-    this->redrawPlot(this->ui->plot_iu1, result, uMaxMin, iMaxMin);
-    this->redrawPlot(this->ui->plot_iu2, result, uMaxMin, iMaxMin);
-    this->redrawPlot(this->ui->plot_u1u2, result, uMaxMin, uMaxMin);
+    this->redrawPlot(this->ui->plot_iu1, result, -uMaxMin, uMaxMin, -iMaxMin, iMaxMin);
+    this->redrawPlot(this->ui->plot_iu2, result, -uMaxMin, uMaxMin, -iMaxMin, iMaxMin);
+    this->redrawPlot(this->ui->plot_u1u2, result, -uMaxMin, uMaxMin, -uMaxMin, uMaxMin);
 }
 
 void TrajectoryWidget::zoomPlot(QWheelEvent* event){
@@ -230,18 +271,10 @@ void TrajectoryWidget::zoomPlot(QWheelEvent* event){
  QCPRange rangeU2 = this->ui->plot_iu2->xAxis->range();
  QCPRange rangeI = this->ui->plot_iu1->yAxis->range();
 
- this->ui->plot_iu1->xAxis->setRange(rangeU1.lower*factor, rangeU1.upper*factor);
- this->ui->plot_iu1->yAxis->setRange(rangeI.lower*factor, rangeI.upper*factor);
 
- this->ui->plot_iu2->xAxis->setRange(rangeU2.lower*factor, rangeU2.upper*factor);
- this->ui->plot_iu2->yAxis->setRange(rangeI.lower*factor, rangeI.upper*factor);
-
- this->ui->plot_u1u2->xAxis->setRange(rangeU1.lower*factor, rangeU1.upper*factor);
- this->ui->plot_u1u2->yAxis->setRange(rangeU2.lower*factor, rangeU2.upper*factor);
-
- this->ui->plot_iu1->replot();
- this->ui->plot_iu2->replot();
- this->ui->plot_u1u2->replot();
+ this->redrawPlot(this->ui->plot_iu1, this->currentResult, rangeU1.lower*factor, rangeU1.upper*factor, rangeI.lower*factor, rangeI.upper*factor);
+ this->redrawPlot(this->ui->plot_iu2, this->currentResult, rangeU2.lower*factor, rangeU2.upper*factor, rangeI.lower*factor, rangeI.upper*factor);
+ this->redrawPlot(this->ui->plot_u1u2, this->currentResult, rangeU1.lower*factor, rangeU1.upper*factor, rangeU2.lower*factor, rangeU2.upper*factor);
 
 }
 

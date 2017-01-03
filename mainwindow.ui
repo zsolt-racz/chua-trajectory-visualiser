@@ -62,7 +62,7 @@ font-size:10.5pt;
     <addaction name="actionLoad_parameters"/>
     <addaction name="actionSave_parameters"/>
     <addaction name="separator"/>
-    <addaction name="actionExport_to_CSV"/>
+    <addaction name="actionExport_to_TXT"/>
     <addaction name="actionExport_to_PLY"/>
     <addaction name="separator"/>
     <addaction name="actionExit"/>
@@ -96,9 +96,9 @@ font-size:10.5pt;
     <string>Ctrl+S</string>
    </property>
   </action>
-  <action name="actionExport_to_CSV">
+  <action name="actionExport_to_TXT">
    <property name="text">
-    <string>Export to CSV</string>
+    <string>Export to TXT</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+E</string>

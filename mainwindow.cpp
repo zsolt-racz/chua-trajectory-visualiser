@@ -15,7 +15,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     this->connect(this->ui->actionLoad_parameters, &QAction::triggered, this, &MainWindow::loadParametersAction);
     this->connect(this->ui->actionSave_parameters, &QAction::triggered, this, &MainWindow::saveParametersAction);
-    this->connect(this->ui->actionExport_to_CSV, &QAction::triggered, this, &MainWindow::exportCSVAction);
+    this->connect(this->ui->actionExport_to_TXT, &QAction::triggered, this, &MainWindow::exportTXTAction);
     this->connect(this->ui->actionExport_to_PLY, &QAction::triggered, this, &MainWindow::exportPLYAction);
     this->connect(this->ui->actionExit, &QAction::triggered, this, &MainWindow::exitAction);
     this->connect(this->ui->actionTrajectory, &QAction::triggered, this, &MainWindow::switchToTrajectoryAction);
@@ -39,7 +39,7 @@ void MainWindow::loadParametersFromFile(std::string filename){
     double C1, C2, R, L, I;
     double Bp, B0, m0, m1, m2;
     double ro, tmax, h0, uhmax, ihmax;
-    double n, u1_0, u2_0, i_0;
+    double n, u1_0, u2_0, i_0, t_test;
     double u1_from_u1i, u1_to_u1i, u1_step_u1i, u2_u1i, i_from_u1i, i_to_u1i, i_step_u1i;
     double i_from_u2i, u2_from_u2i, u2_to_u2i, u2_step_u2i, u1_u2i, i_to_u2i, i_step_u2i;
     double u1_from_u1u2, u1_to_u1u2, u1_step_u1u2, u2_from_u1u2, u2_to_u1u2, u2_step_u1u2, i_u1u2;
@@ -47,9 +47,9 @@ void MainWindow::loadParametersFromFile(std::string filename){
     std::ifstream file;
     file.open(filename);
     file >> std::setprecision(15) >> C1 >> C2 >> R >> L >> I >>
-                                     Bp >> B0 >> m0 >> m1 >> m2 >>
-                                     ro >> tmax >> h0 >> uhmax >> ihmax >>
-                                     n >> u1_0 >> u2_0 >> i_0 >>
+                                     Bp >> B0 >> m0 >> m1 >> m2 >> ro >>
+                                     tmax >> h0 >> uhmax >> ihmax >> t_test >> n >>
+                                     i_0 >> u1_0 >> u2_0 >>
                                      u1_from_u1i >> u1_to_u1i >> u1_step_u1i >> u2_u1i >> i_from_u1i >> i_to_u1i >> i_step_u1i >>
                                      i_from_u2i >> u2_from_u2i >> u2_to_u2i >> u2_step_u2i >> u1_u2i >> i_to_u2i >> i_step_u2i >>
                                      u1_from_u1u2 >> u1_to_u1u2 >> u1_step_u1u2 >> u2_from_u1u2 >> u2_to_u1u2 >> u2_step_u1u2 >> i_u1u2;
@@ -57,7 +57,7 @@ void MainWindow::loadParametersFromFile(std::string filename){
 
     file.close();
 
-    this->parameters = new CircuitParameters(C1, C2, R, L, I, Bp, B0, m0, m1, m2, ro, tmax, h0, uhmax, ihmax, n);
+    this->parameters = new CircuitParameters(C1, C2, R, L, I, Bp, B0, m0, m1, m2, ro, tmax, h0, uhmax, ihmax, n, t_test);
 
     this->ui->trajectory->findChild<QDoubleSpinBox*>("input_u1_0")->setValue(u1_0);
     this->ui->trajectory->findChild<QDoubleSpinBox*>("input_u2_0")->setValue(u2_0);
@@ -137,15 +137,16 @@ void MainWindow::saveParametersAction(){
               this->ui->trajectory->findChild<QDoubleSpinBox*>("input_B0")->value() << "\t" <<
               this->ui->trajectory->findChild<QDoubleSpinBox*>("input_m0")->value() << "\t" <<
               this->ui->trajectory->findChild<QDoubleSpinBox*>("input_m1")->value() << "\t" <<
-              this->ui->trajectory->findChild<QDoubleSpinBox*>("input_m2")->value() << "\n" <<
+              this->ui->trajectory->findChild<QDoubleSpinBox*>("input_m2")->value() << "\t" <<
+              this->ui->trajectory->findChild<QDoubleSpinBox*>("input_ro")->value() << "\n" <<
 
-              this->ui->trajectory->findChild<QDoubleSpinBox*>("input_ro")->value() << "\t" <<
               this->ui->trajectory->findChild<QDoubleSpinBox*>("input_tmax")->value() << "\t" <<
               this->ui->trajectory->findChild<QDoubleSpinBox*>("input_h0")->value() << "\t" <<
               this->ui->trajectory->findChild<QDoubleSpinBox*>("input_uhmax")->value() << "\t" <<
-              this->ui->trajectory->findChild<QDoubleSpinBox*>("input_ihmax")->value() << "\n" <<
+              this->ui->trajectory->findChild<QDoubleSpinBox*>("input_ihmax")->value() << "\t" <<
+              this->ui->trajectory->findChild<QDoubleSpinBox*>("input_t_test")->value() << "\t" <<
+              this->ui->trajectory->findChild<QDoubleSpinBox*>("input_n")->value() << "\n" <<
 
-              this->ui->trajectory->findChild<QDoubleSpinBox*>("input_n")->value() << "\t" <<
               this->ui->trajectory->findChild<QDoubleSpinBox*>("input_u1_0")->value() << "\t" <<
               this->ui->trajectory->findChild<QDoubleSpinBox*>("input_u2_0")->value() << "\t" <<
               this->ui->trajectory->findChild<QDoubleSpinBox*>("input_i_0")->value() << "\n\n" <<
@@ -176,24 +177,24 @@ void MainWindow::saveParametersAction(){
 
               "\n\nC1\tC2\tR\tL\tI\n" <<
               "Bp\tBo\tm0\tm1\tm2\n" <<
-              "ro\ttmax\tho\tuhmax\tihmax\n" <<
-              "n\tu1_0\tu2_0\tn\n" <<
-              "u1_from_u1i\tu1_to_u1i\tu1_step_u1i\tu2_u1i\ti_from_u1i\ti_to_u1i\ti_step_u1i" <<
-              "i_from_u2i\tu2_from_u2i\tu2_to_u2i\tu2_step_u2i\tu1_u2i\ti_to_u2i\ti_step_u2i" <<
+              "ro\ttmax\tho\tuhmax\tihmax\tt_test\tn\n" <<
+              "i_zp\tu1_zp\tu2_zp\n\n" <<
+              "u1_from_u1i\tu1_to_u1i\tu1_step_u1i\tu2_u1i\ti_from_u1i\ti_to_u1i\ti_step_u1i\n" <<
+              "i_from_u2i\tu2_from_u2i\tu2_to_u2i\tu2_step_u2i\tu1_u2i\ti_to_u2i\ti_step_u2i\n" <<
               "u1_from_u1u2\tu1_to_u1u2\tu1_step_u1u2\tu2_from_u1u2\tu2_to_u1u2\tu2_step_u1u2\ti_u1u2";
 
 
     output.close();
 }
 
-void MainWindow::exportCSVAction(){
-    QString fileName = QFileDialog::getSaveFileName(this, QString("Save parameters file"), QString(), QString("Comma-separeted values (*.csv);;All Files (*)"));
+void MainWindow::exportTXTAction(){
+    QString fileName = QFileDialog::getSaveFileName(this, QString("Save parameters file"), QString(), QString("Text file (*.txt);;All Files (*)"));
 
     if(fileName.isEmpty()){
         return;
     }
 
-    this->ui->trajectory->currentResult->writeToCSV(fileName.toStdString());
+    this->ui->trajectory->currentResult->writeToTXT(fileName.toStdString());
 }
 
 void MainWindow::exportPLYAction(){

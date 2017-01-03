@@ -32,7 +32,7 @@ private:
 
     void loadParametersFromFile(std::string filename);
 
-    void exportCSVAction();
+    void exportTXTAction();
     void exportPLYAction();
     void exitAction();
     void switchToTrajectoryAction();

@@ -51,13 +51,13 @@ Point3DT Trajectory::getMaxMins(){
 }
 
 
-void Trajectory::writeToCSV(std::string filename) {
+void Trajectory::writeToTXT(std::string filename) {
     std::ofstream output;
     output.open(filename.c_str());
 
     const std::vector<Point3DT>* points = this->points;
     for (std::vector<Point3DT>::const_iterator point = points->begin(); point != points->end(); ++point) {
-        output << std::setprecision(15) << point->i << "; " << point->u1 << "; " << point->u2 << "; " << point->t << "\n";
+        output << std::setprecision(15) << point->i << "\t" << point->u1 << "\t" << point->u2 << "\t" << point->t << "\n";
     }
 
     output.close();

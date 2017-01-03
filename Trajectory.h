@@ -19,7 +19,7 @@ public:
 
     int getMaxMin();
     Point3DT getMaxMins();
-    void writeToCSV(std::string filename);
+    void writeToTXT(std::string filename);
     void writeToPLY(std::string filename, bool withEdges);
 };
 
