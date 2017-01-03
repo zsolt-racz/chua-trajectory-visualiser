@@ -265,16 +265,24 @@ void TrajectoryWidget::redrawPlots(Trajectory* result){
 }
 
 void TrajectoryWidget::zoomPlot(QWheelEvent* event){
- float factor = 1 - (event->delta() * 0.002);
+    float factor = 1 - (event->delta() * 0.002);
 
- QCPRange rangeU1 = this->ui->plot_iu1->xAxis->range();
- QCPRange rangeU2 = this->ui->plot_iu2->xAxis->range();
- QCPRange rangeI = this->ui->plot_iu1->yAxis->range();
+    QCPRange rangeU1 = this->ui->plot_iu1->xAxis->range();
+    QCPRange rangeU2 = this->ui->plot_iu2->yAxis->range();
+    QCPRange rangeI = this->ui->plot_iu1->yAxis->range();
 
+    this->ui->plot_iu1->xAxis->setRange(rangeU1.lower*factor, rangeU1.upper*factor);
+    this->ui->plot_iu1->yAxis->setRange(rangeI.lower*factor, rangeI.upper*factor);
 
- this->redrawPlot(this->ui->plot_iu1, this->currentResult, rangeU1.lower*factor, rangeU1.upper*factor, rangeI.lower*factor, rangeI.upper*factor);
- this->redrawPlot(this->ui->plot_iu2, this->currentResult, rangeU2.lower*factor, rangeU2.upper*factor, rangeI.lower*factor, rangeI.upper*factor);
- this->redrawPlot(this->ui->plot_u1u2, this->currentResult, rangeU1.lower*factor, rangeU1.upper*factor, rangeU2.lower*factor, rangeU2.upper*factor);
+    this->ui->plot_iu2->xAxis->setRange(rangeU2.lower*factor, rangeU2.upper*factor);
+    this->ui->plot_iu2->yAxis->setRange(rangeI.lower*factor, rangeI.upper*factor);
+
+    this->ui->plot_u1u2->xAxis->setRange(rangeU1.lower*factor, rangeU1.upper*factor);
+    this->ui->plot_u1u2->yAxis->setRange(rangeU2.lower*factor, rangeU2.upper*factor);
+
+    this->ui->plot_iu1->replot();
+    this->ui->plot_iu2->replot();
+   this->ui->plot_u1u2->replot();
 
 }
 
