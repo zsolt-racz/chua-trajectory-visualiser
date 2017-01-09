@@ -156,101 +156,63 @@ void TrajectoryWidget::initPlots(){
 }
 
 void TrajectoryWidget::redrawPlot(QCustomPlot* plot, Trajectory* result, int xRangeLo, int xRangeHi, int yRangeLo, int yRangeHi ){
-     QCPCurve* curve = dynamic_cast<QCPCurve*>(plot->plottable(0));
-     QCPGraph* startPoint = dynamic_cast<QCPGraph*>(plot->plottable(1));
-     QCPGraph* endPoint = dynamic_cast<QCPGraph*>(plot->plottable(2));
-     curve->clearData();
+    QCPCurve* curve = dynamic_cast<QCPCurve*>(plot->plottable(0));
+         QCPGraph* startPoint = dynamic_cast<QCPGraph*>(plot->plottable(1));
+         QCPGraph* endPoint = dynamic_cast<QCPGraph*>(plot->plottable(2));
+         curve->clearData();
 
-     const std::vector<Point3DT>* points = result->points;
+         const std::vector<Point3DT>* points = result->points;
 
-     /*QCPItemRect* rect = new QCPItemRect(plot);
-     plot->addItem(rect);
-     rect->topLeft->setCoords(4,4);
-     rect->bottomRight->setCoords(0,0);
-     rect->b().setWidth(2);
-     rect->pen().setColor(QColor(0,255,0));*/
+         /*QCPItemRect* rect = new QCPItemRect(plot);
+         plot->addItem(rect);
+         rect->topLeft->setCoords(4,4);
+         rect->bottomRight->setCoords(0,0);
+         rect->b().setWidth(2);
+         rect->pen().setColor(QColor(0,255,0));*/
 
 
-     std::vector<Point3DT>::const_iterator prevPoint;
-     double xCoeff = static_cast<double>(plot->width()) / (xRangeHi -xRangeLo);
-     double yCoeff = static_cast<double>(plot->height()) / (yRangeHi -yRangeLo);
-
-     if(plot == this->ui->plot_iu1){
-         for (std::vector<Point3DT>::const_iterator point = points->begin(); point != points->end(); ++point) {
-             if(point == points->begin()){
-                 startPoint->data()->clear();
-                 startPoint->addData(point->u1, point->i);
-
+         if(plot == this->ui->plot_iu1){
+             for (std::vector<Point3DT>::const_iterator point = points->begin(); point != points->end(); ++point) {
+                 if(point == points->begin()){
+                     startPoint->data()->clear();
+                     startPoint->addData(point->u1, point->i);
+                 }
                  curve->addData(point->t, point->u1, point->i);
-                 prevPoint = point;
-             }else{
-                 double xDiff = std::abs((point->u1) * xCoeff - (prevPoint->u1) * xCoeff);
-                 double yDiff = std::abs((point->i) * yCoeff - (prevPoint->i) * yCoeff);
-
-                 if(yDiff >= 1 || xDiff >= 1){
-                     curve->addData(point->t, point->u1, point->i);
-                     prevPoint = point;
+                 if(point == points->end() -1 ){
+                     endPoint->data()->clear();
+                     endPoint->addData(point->u1, point->i);
                  }
              }
-
-
-             if(point == points->end() -1 ){
-                 endPoint->data()->clear();
-                 endPoint->addData(point->u1, point->i);
-             }
-         }
-     }else if(plot == this->ui->plot_iu2){
-         for (std::vector<Point3DT>::const_iterator point = points->begin(); point != points->end(); ++point) {
-             if(point == points->begin()){
-                 startPoint->data()->clear();
-                 startPoint->addData(point->u2, point->i);
-
+         }else if(plot == this->ui->plot_iu2){
+             for (std::vector<Point3DT>::const_iterator point = points->begin(); point != points->end(); ++point) {
+                 if(point == points->begin()){
+                     startPoint->data()->clear();
+                     startPoint->addData(point->u2, point->i);
+                 }
                  curve->addData(point->t, point->u2, point->i);
-                 prevPoint = point;
-             }else{
-                 double xDiff = std::abs((point->u2) * xCoeff - (prevPoint->u2) * xCoeff);
-                 double yDiff = std::abs((point->i) * yCoeff - (prevPoint->i) * yCoeff);
-
-                 if(yDiff >= 1 || xDiff >= 1){
-                     curve->addData(point->t, point->u2, point->i);
-                     prevPoint = point;
+                 if(point == points->end() -1 ){
+                     endPoint->data()->clear();
+                     endPoint->addData(point->u2, point->i);
                  }
              }
-
-             if(point == points->end() -1 ){
-                 endPoint->data()->clear();
-                 endPoint->addData(point->u2, point->i);
-             }
-         }
-     }else if(plot == this->ui->plot_u1u2){
-         for (std::vector<Point3DT>::const_iterator point = points->begin(); point != points->end(); ++point) {
-             if(point == points->begin()){
-                 startPoint->data()->clear();
-                 startPoint->addData(point->u1, point->u2);
-
+         }else if(plot == this->ui->plot_u1u2){
+             for (std::vector<Point3DT>::const_iterator point = points->begin(); point != points->end(); ++point) {
+                 if(point == points->begin()){
+                     startPoint->data()->clear();
+                     startPoint->addData(point->u1, point->u2);
+                 }
                  curve->addData(point->t, point->u1, point->u2);
-                 prevPoint = point;
-             }else{
-                 double xDiff = std::abs((point->u1) * xCoeff - (prevPoint->u1) * xCoeff);
-                 double yDiff = std::abs((point->u2) * yCoeff - (prevPoint->u2) * yCoeff);
-
-                 if(yDiff >= 1 || xDiff >= 1){
-                     curve->addData(point->t, point->u1, point->u2);
-                     prevPoint = point;
+                 if(point == points->end() -1 ){
+                     endPoint->data()->clear();
+                     endPoint->addData(point->u1, point->u2);
                  }
              }
-
-             if(point == points->end() -1 ){
-                 endPoint->data()->clear();
-                 endPoint->addData(point->u1, point->u2);
-             }
          }
-     }
 
 
-     plot->xAxis->setRange(xRangeLo,xRangeHi);
-     plot->yAxis->setRange(yRangeLo,yRangeHi);
-     plot->replot();
+         plot->xAxis->setRange(xRangeLo,xRangeHi);
+         plot->yAxis->setRange(yRangeLo,yRangeHi);
+    plot->replot();
 }
 
 void TrajectoryWidget::redrawPlots(Trajectory* result){
@@ -265,24 +227,40 @@ void TrajectoryWidget::redrawPlots(Trajectory* result){
 }
 
 void TrajectoryWidget::zoomPlot(QWheelEvent* event){
-    float factor = 1 - (event->delta() * 0.002);
+    float factor = event->delta() * 0.002;
 
     QCPRange rangeU1 = this->ui->plot_iu1->xAxis->range();
-    QCPRange rangeU2 = this->ui->plot_iu2->yAxis->range();
+    QCPRange rangeU2 = this->ui->plot_iu2->xAxis->range();
     QCPRange rangeI = this->ui->plot_iu1->yAxis->range();
 
-    this->ui->plot_iu1->xAxis->setRange(rangeU1.lower*factor, rangeU1.upper*factor);
-    this->ui->plot_iu1->yAxis->setRange(rangeI.lower*factor, rangeI.upper*factor);
+    double u1Lo, u1Hi, u2Lo, u2Hi, iLo, iHi;
+    if(event->delta() > 0){
+        factor = 1.5;
+    }else{
+        factor = 0.75;
+    }
 
-    this->ui->plot_iu2->xAxis->setRange(rangeU2.lower*factor, rangeU2.upper*factor);
-    this->ui->plot_iu2->yAxis->setRange(rangeI.lower*factor, rangeI.upper*factor);
+    u1Lo = rangeU1.lower + (rangeU1.size() - (rangeU1.size() / factor)) / 2;
+    u1Hi = u1Lo + rangeU1.size() / factor;
 
-    this->ui->plot_u1u2->xAxis->setRange(rangeU1.lower*factor, rangeU1.upper*factor);
-    this->ui->plot_u1u2->yAxis->setRange(rangeU2.lower*factor, rangeU2.upper*factor);
+    u2Lo = rangeU2.lower + (rangeU1.size() - (rangeU2.size() / factor)) / 2;
+    u2Hi = u2Lo + rangeU2.size() / factor;
+
+    iLo = rangeI.lower + (rangeI.size() - (rangeI.size() / factor)) / 2;
+    iHi = iLo + rangeI.size() / factor;
+
+    this->ui->plot_iu1->xAxis->setRange(u1Lo, u1Hi);
+    this->ui->plot_iu1->yAxis->setRange(iLo, iHi);
+
+    this->ui->plot_iu2->xAxis->setRange(u2Lo, u2Hi);
+    this->ui->plot_iu2->yAxis->setRange(iLo, iHi);
+
+    this->ui->plot_u1u2->xAxis->setRange(u1Lo, u1Hi);
+    this->ui->plot_u1u2->yAxis->setRange(u2Lo, u2Hi);
 
     this->ui->plot_iu1->replot();
     this->ui->plot_iu2->replot();
-   this->ui->plot_u1u2->replot();
+    this->ui->plot_u1u2->replot();
 
 }
 
