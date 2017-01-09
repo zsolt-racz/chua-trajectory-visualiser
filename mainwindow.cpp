@@ -147,9 +147,9 @@ void MainWindow::saveParametersAction(){
               this->ui->trajectory->findChild<QDoubleSpinBox*>("input_t_test")->value() << "\t" <<
               this->ui->trajectory->findChild<QDoubleSpinBox*>("input_n")->value() << "\n" <<
 
+              this->ui->trajectory->findChild<QDoubleSpinBox*>("input_i_0")->value() << "\n\n" <<
               this->ui->trajectory->findChild<QDoubleSpinBox*>("input_u1_0")->value() << "\t" <<
               this->ui->trajectory->findChild<QDoubleSpinBox*>("input_u2_0")->value() << "\t" <<
-              this->ui->trajectory->findChild<QDoubleSpinBox*>("input_i_0")->value() << "\n\n" <<
 
               this->ui->crosssection->findChild<QDoubleSpinBox*>("input_u1_from_u1i")->value() << "\t" <<
               this->ui->crosssection->findChild<QDoubleSpinBox*>("input_u1_to_u1i")->value() << "\t" <<
