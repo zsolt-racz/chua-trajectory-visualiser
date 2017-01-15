@@ -30,9 +30,6 @@ TrajectoryWidget::TrajectoryWidget(QWidget *parent) :
     this->connect(this->ui->input_n, SIGNAL(editingFinished()), this, SLOT(updateParametersByGui()));
     this->connect(this->ui->input_t_test, SIGNAL(editingFinished()), this, SLOT(updateParametersByGui()));
 
-    //TODO remove
-    this->ui->input_i_0->setValue(0.000001);
-
     this->animationTimer = new QTimer(this);
     this->connect(this->animationTimer, &QTimer::timeout, this, &TrajectoryWidget::animationStep);
 
@@ -155,7 +152,7 @@ void TrajectoryWidget::initPlots(){
     this->connect(u1u2Plot, SIGNAL(afterReplot()), this, SLOT(synchronizeRangeWithU1U2()));
 }
 
-void TrajectoryWidget::redrawPlot(QCustomPlot* plot, Trajectory* result, int xRangeLo, int xRangeHi, int yRangeLo, int yRangeHi ){
+void TrajectoryWidget::redrawPlot(QCustomPlot* plot, Trajectory* result){
     QCPCurve* curve = dynamic_cast<QCPCurve*>(plot->plottable(0));
          QCPGraph* startPoint = dynamic_cast<QCPGraph*>(plot->plottable(1));
          QCPGraph* endPoint = dynamic_cast<QCPGraph*>(plot->plottable(2));
@@ -208,27 +205,19 @@ void TrajectoryWidget::redrawPlot(QCustomPlot* plot, Trajectory* result, int xRa
                  }
              }
          }
-
-
-         plot->xAxis->setRange(xRangeLo,xRangeHi);
-         plot->yAxis->setRange(yRangeLo,yRangeHi);
-    plot->replot();
+        plot->replot();
 }
 
 void TrajectoryWidget::redrawPlots(Trajectory* result){
-    Point3DT maxMins = result->getMaxMins();
+    this->resetPlotRanges();
 
-    int iMaxMin = std::ceil(maxMins.i) + 1;
-    int uMaxMin = std::max(std::ceil(maxMins.u1), std::ceil(maxMins.u2)) +1 ;
-
-    this->redrawPlot(this->ui->plot_iu1, result, -uMaxMin, uMaxMin, -iMaxMin, iMaxMin);
-    this->redrawPlot(this->ui->plot_iu2, result, -uMaxMin, uMaxMin, -iMaxMin, iMaxMin);
-    this->redrawPlot(this->ui->plot_u1u2, result, -uMaxMin, uMaxMin, -uMaxMin, uMaxMin);
+    this->redrawPlot(this->ui->plot_iu1, result);
+    this->redrawPlot(this->ui->plot_iu2, result);
+    this->redrawPlot(this->ui->plot_u1u2, result);
 }
 
 void TrajectoryWidget::zoomPlot(QWheelEvent* event){
-    float factor = event->delta() * 0.002;
-
+    double factor;
     QCPRange rangeU1 = this->ui->plot_iu1->xAxis->range();
     QCPRange rangeU2 = this->ui->plot_iu2->xAxis->range();
     QCPRange rangeI = this->ui->plot_iu1->yAxis->range();
@@ -320,7 +309,35 @@ void TrajectoryWidget::synchronizeRangeWithU1U2(){
 }
 
 void TrajectoryWidget::resetPlots(QMouseEvent* event){
+    this->resetPlotRanges();
+
+    this->ui->plot_iu1->replot();
+    this->ui->plot_iu2->replot();
+    this->ui->plot_u1u2->replot();
+}
+
+void TrajectoryWidget::resetPlotRanges(){
+   /* Point3DT maxes = this->currentResult->getMaxes();
+    Point3DT mins = this->currentResult->getMins();
+
+    double uMin = std::min(mins.getU1(), mins.getU2());
+    double uMax = std::max(maxes.getU1(), maxes.getU2());
+    double uSize = uMax-uMin;
+
+    double iMin = mins.getI();
+    double iMax = maxes.getI();
+    double iSize = iMax - iMin;
+
+    double factor = .95;
+
+    uMin = uMin + (uSize - (uSize / factor)) / 2;
+    uMax = uMin + uSize / factor;
+
+    iMin = iMin + (iSize - (iSize / factor)) / 2;
+    iMax = iMin + iSize / factor;*/
+
     Point3DT maxMins = this->currentResult->getMaxMins();
+
     int iMaxMin = std::ceil(maxMins.i) + 1;
     int uMaxMin = std::max(std::ceil(maxMins.u1), std::ceil(maxMins.u2)) +1 ;
 
@@ -332,11 +349,6 @@ void TrajectoryWidget::resetPlots(QMouseEvent* event){
 
     this->ui->plot_u1u2->xAxis->setRange(-uMaxMin,uMaxMin);
     this->ui->plot_u1u2->yAxis->setRange(-uMaxMin,uMaxMin);
-
-
-    this->ui->plot_iu1->replot();
-    this->ui->plot_iu2->replot();
-    this->ui->plot_u1u2->replot();
 }
 
 void TrajectoryWidget::redrawResultTabe(Trajectory* result, int time){
@@ -350,9 +362,20 @@ void TrajectoryWidget::redrawResultTabe(Trajectory* result, int time){
     QTableWidgetItem *type = new QTableWidgetItem;
     type->setText(QString("%1 ms").arg(time));
 
+    double tMax;
+    if(result->points->size() == 0){
+        tMax = 0;
+    }else{
+        tMax = (result->points->cend() - 1)->t;
+    }
+
+    QTableWidgetItem *intTime = new QTableWidgetItem;
+    intTime->setText(QString("%1 ms").arg(tMax));
+
     this->ui->resultTable->setItem(0,0, points);
     this->ui->resultTable->setItem(0,1, divisions);
     this->ui->resultTable->setItem(0,2, type);
+    this->ui->resultTable->setItem(0,3, intTime);
 }
 
 void TrajectoryWidget::stopAnimation(){
@@ -360,23 +383,14 @@ void TrajectoryWidget::stopAnimation(){
 }
 
 void TrajectoryWidget::animatePlots(){
-    Point3DT maxMins = this->currentResult->getMaxMins();
+    this->resetPlotRanges();
 
-    int iMaxMin = std::ceil(maxMins.i) + 1;
-    int uMaxMin = std::max(std::ceil(maxMins.u1), std::ceil(maxMins.u2)) +1 ;
-
-    this->ui->plot_iu1->xAxis->setRange(-uMaxMin,uMaxMin);
-    this->ui->plot_iu1->yAxis->setRange(-iMaxMin,iMaxMin);
     QCPCurve* iu1curve = dynamic_cast<QCPCurve*>(this->ui->plot_iu1->plottable(0));
     iu1curve->clearData();
 
-    this->ui->plot_iu2->xAxis->setRange(-uMaxMin,uMaxMin);
-    this->ui->plot_iu2->yAxis->setRange(-iMaxMin,iMaxMin);
     QCPCurve* iu2curve = dynamic_cast<QCPCurve*>(this->ui->plot_iu2->plottable(0));
     iu2curve->clearData();
 
-    this->ui->plot_u1u2->xAxis->setRange(-uMaxMin,uMaxMin);
-    this->ui->plot_u1u2->yAxis->setRange(-uMaxMin,uMaxMin);
     QCPCurve* u1u2curve = dynamic_cast<QCPCurve*>(this->ui->plot_u1u2->plottable(0));
     u1u2curve->clearData();
 

@@ -35,6 +35,17 @@ void MainWindow::parametersChangedInTrajectory(CircuitParameters* parameters){
     this->ui->crosssection->updateParameters(this->parameters);
 }
 
+std::string MainWindow::trim(const std::string& str, const std::string& whitespace = " \t"){
+    const auto strBegin = str.find_first_not_of(whitespace);
+    if (strBegin == std::string::npos)
+        return ""; // no content
+
+    const auto strEnd = str.find_last_not_of(whitespace);
+    const auto strRange = strEnd - strBegin + 1;
+
+    return str.substr(strBegin, strRange);
+}
+
 void MainWindow::loadParametersFromFile(std::string filename){
     double C1, C2, R, L, I;
     double Bp, B0, m0, m1, m2;
@@ -46,13 +57,28 @@ void MainWindow::loadParametersFromFile(std::string filename){
 
     std::ifstream file;
     file.open(filename);
-    file >> std::setprecision(15) >> C1 >> C2 >> R >> L >> I >>
-                                     Bp >> B0 >> m0 >> m1 >> m2 >> ro >>
-                                     tmax >> h0 >> uhmax >> ihmax >> t_test >> n >>
-                                     i_0 >> u1_0 >> u2_0 >>
+    file >> std::setprecision(15) >> C1 >> C2 >> R >> L >> ro >> m0 >> m1 >> i_0 >> u1_0 >> u2_0 >>
+                                     m2 >> I >> Bp >> B0 >> tmax >> h0 >> uhmax >> ihmax >> t_test >> n >>
                                      u1_from_u1i >> u1_to_u1i >> u1_step_u1i >> u2_u1i >> i_from_u1i >> i_to_u1i >> i_step_u1i >>
                                      i_from_u2i >> u2_from_u2i >> u2_to_u2i >> u2_step_u2i >> u1_u2i >> i_to_u2i >> i_step_u2i >>
                                      u1_from_u1u2 >> u1_to_u1u2 >> u1_step_u1u2 >> u2_from_u1u2 >> u2_to_u1u2 >> u2_step_u1u2 >> i_u1u2;
+
+    int testCount;
+    file >> testCount;
+    this->ui->crosssection->findChild<TestInputWidget*>("test")->clearRows();
+    for(int i = 0; i < testCount; i++){
+        std::string name, type, color;
+        double u1Lo, u1Hi, u2Lo, u2Hi, iLo, iHi;
+        std::getline(file, name, '\t');
+        name = trim(name, "\n");
+        std::getline(file, type, '\t');
+        type = trim(type, "\n");
+        std::getline(file, color, '\t');
+        color = trim(color, "\n");
+        file >> u1Lo >> u1Hi >> u2Lo >> u2Hi >> iLo >> iHi;
+
+        this->ui->crosssection->findChild<TestInputWidget*>("test")->addRow(QString::fromStdString(name), QString::fromStdString(type), QString::fromStdString(color), u1Lo, u1Hi, u2Lo, u2Hi, iLo, iHi);
+    }
 
 
     file.close();
@@ -124,6 +150,7 @@ void MainWindow::saveParametersAction(){
     std::ofstream output;
     output.open(fileName.toStdString());
 
+    std::vector<TrajectoryTest>* tests = this->ui->crosssection->findChild<TestInputWidget*>("test")->getTests();
 
     output << std::fixed << std::setprecision(15) <<
 
@@ -131,25 +158,23 @@ void MainWindow::saveParametersAction(){
               this->ui->trajectory->findChild<QDoubleSpinBox*>("input_C2")->value() << "\t" <<
               this->ui->trajectory->findChild<QDoubleSpinBox*>("input_R")->value() << "\t" <<
               this->ui->trajectory->findChild<QDoubleSpinBox*>("input_L")->value() << "\t" <<
-              this->ui->trajectory->findChild<QDoubleSpinBox*>("input_I")->value() << "\n" <<
-
-              this->ui->trajectory->findChild<QDoubleSpinBox*>("input_Bp")->value() << "\t" <<
-              this->ui->trajectory->findChild<QDoubleSpinBox*>("input_B0")->value() << "\t" <<
+              this->ui->trajectory->findChild<QDoubleSpinBox*>("input_ro")->value() << "\t" <<
               this->ui->trajectory->findChild<QDoubleSpinBox*>("input_m0")->value() << "\t" <<
               this->ui->trajectory->findChild<QDoubleSpinBox*>("input_m1")->value() << "\t" <<
-              this->ui->trajectory->findChild<QDoubleSpinBox*>("input_m2")->value() << "\t" <<
-              this->ui->trajectory->findChild<QDoubleSpinBox*>("input_ro")->value() << "\n" <<
+              this->ui->trajectory->findChild<QDoubleSpinBox*>("input_i_0")->value() << "\t" <<
+              this->ui->trajectory->findChild<QDoubleSpinBox*>("input_u1_0")->value() << "\t" <<
+              this->ui->trajectory->findChild<QDoubleSpinBox*>("input_u2_0")->value() << "\n" <<
 
+              this->ui->trajectory->findChild<QDoubleSpinBox*>("input_m2")->value() << "\t" <<
+              this->ui->trajectory->findChild<QDoubleSpinBox*>("input_I")->value() << "\t" <<
+              this->ui->trajectory->findChild<QDoubleSpinBox*>("input_Bp")->value() << "\t" <<
+              this->ui->trajectory->findChild<QDoubleSpinBox*>("input_B0")->value() << "\t" <<
               this->ui->trajectory->findChild<QDoubleSpinBox*>("input_tmax")->value() << "\t" <<
               this->ui->trajectory->findChild<QDoubleSpinBox*>("input_h0")->value() << "\t" <<
               this->ui->trajectory->findChild<QDoubleSpinBox*>("input_uhmax")->value() << "\t" <<
               this->ui->trajectory->findChild<QDoubleSpinBox*>("input_ihmax")->value() << "\t" <<
               this->ui->trajectory->findChild<QDoubleSpinBox*>("input_t_test")->value() << "\t" <<
-              this->ui->trajectory->findChild<QDoubleSpinBox*>("input_n")->value() << "\n" <<
-
-              this->ui->trajectory->findChild<QDoubleSpinBox*>("input_i_0")->value() << "\n\n" <<
-              this->ui->trajectory->findChild<QDoubleSpinBox*>("input_u1_0")->value() << "\t" <<
-              this->ui->trajectory->findChild<QDoubleSpinBox*>("input_u2_0")->value() << "\t" <<
+              this->ui->trajectory->findChild<QDoubleSpinBox*>("input_n")->value() << "\n\n" <<
 
               this->ui->crosssection->findChild<QDoubleSpinBox*>("input_u1_from_u1i")->value() << "\t" <<
               this->ui->crosssection->findChild<QDoubleSpinBox*>("input_u1_to_u1i")->value() << "\t" <<
@@ -173,12 +198,22 @@ void MainWindow::saveParametersAction(){
               this->ui->crosssection->findChild<QDoubleSpinBox*>("input_u2_from_u1u2")->value() << "\t" <<
               this->ui->crosssection->findChild<QDoubleSpinBox*>("input_u2_to_u1u2")->value() << "\t" <<
               this->ui->crosssection->findChild<QDoubleSpinBox*>("input_u2_step_u1u2")->value() << "\t" <<
-              this->ui->crosssection->findChild<QDoubleSpinBox*>("input_i_u1u2")->value() << "\n" <<
+              this->ui->crosssection->findChild<QDoubleSpinBox*>("input_i_u1u2")->value() << "\n\n" <<
+              tests->size() << "\n";
 
-              "\n\nC1\tC2\tR\tL\tI\n" <<
-              "Bp\tBo\tm0\tm1\tm2\n" <<
-              "ro\ttmax\tho\tuhmax\tihmax\tt_test\tn\n" <<
-              "i_zp\tu1_zp\tu2_zp\n\n" <<
+              for(std::vector<TrajectoryTest>::const_iterator test = tests->cbegin(); test != tests->cend(); ++test){
+                  std::string typeString;
+                  if(test->type == CHA){
+                      typeString = "Chaos";
+                  }else{
+                      typeString = "LC";
+                  }
+                 output << test->name << "\t" << typeString << "\t"  << test->color << "\t"  << test->u1Lo << "\t" << test->u1Hi << "\t" << test->u2Lo << "\t" << test->u2Hi << "\t" << test->iLo << "\t" << test->iHi << "\n";
+              }
+
+
+              output << "\n\nC1\tC2\tR\tL\tro\tm0\tm1\ti_zp\tu1_zp\tu2_zp\n" <<
+              "m2\tI\tBp\tBo\ttmax\tho\tuhmax\tihmax\tt_test\tn\n\n" <<
               "u1_from_u1i\tu1_to_u1i\tu1_step_u1i\tu2_u1i\ti_from_u1i\ti_to_u1i\ti_step_u1i\n" <<
               "i_from_u2i\tu2_from_u2i\tu2_to_u2i\tu2_step_u2i\tu1_u2i\ti_to_u2i\ti_step_u2i\n" <<
               "u1_from_u1u2\tu1_to_u1u2\tu1_step_u1u2\tu2_from_u1u2\tu2_to_u1u2\tu2_step_u1u2\ti_u1u2";

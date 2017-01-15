@@ -6,6 +6,7 @@
 #include <iomanip>
 #include <iostream>
 #include <fstream>
+#include <limits>
 #include "Point3DT.h"
 
 class Trajectory
@@ -19,6 +20,8 @@ public:
 
     int getMaxMin();
     Point3DT getMaxMins();
+    Point3DT getMaxes();
+    Point3DT getMins();
     void writeToTXT(std::string filename);
     void writeToPLY(std::string filename, bool withEdges);
 };

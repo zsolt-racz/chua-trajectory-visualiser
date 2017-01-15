@@ -70,6 +70,7 @@ void CrossSectionWidget::updateParameters(CircuitParameters* parameters){
     this->ui->value_ihmax->setText(QString::number(parameters->iStepMax));
     this->ui->value_uhmax->setText(QString::number(parameters->uStepMax));
     this->ui->value_n->setText(QString::number(parameters->n));
+    this->ui->value_t_test->setText(QString::number(parameters->t_test));
 }
 
 void CrossSectionWidget::saveCurrentResultToPng()

@@ -21,6 +21,7 @@ public:
     explicit TestInputWidget(QWidget *parent = 0);
     ~TestInputWidget();
 
+    void clearRows();
     void addRow(QString name, QString type, QString color, double u1Lo, double u1Hi, double u2Lo, double u2Hi, double iLo, double iHi);
     std::vector<TrajectoryTest>* getTests();
 

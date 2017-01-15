@@ -6,15 +6,23 @@ TrajectoryTest::TrajectoryTest(std::string name, TrajectoryResultType type, std:
 }
 
 bool TrajectoryTest::eval(double u1, double u2, double i) const{
-    if(this->type == CHA){
+    if(this->isChaos()){
         return u1 < this->u1Hi && u1 > this->u1Lo && u2 < this->u2Hi && u2 > this->u2Lo && i < this->iHi && i > this->iLo;
-    }else if(this->type == LC){
+    }else if(this->isLC()){
         return i > this->iHi || i < this->iLo || u1 > this->u1Hi || u1 < this->u1Lo || u2 > this->u2Hi || u2 < this->u2Lo;
     }
 
     throw 1;
 }
 
+
+bool TrajectoryTest::isChaos() const {
+    return this->type == CHA;
+}
+
+bool TrajectoryTest::isLC() const {
+    return this->type == LC;
+}
 
 bool TrajectoryTest::operator==(const TrajectoryTest& tt) const {
     return

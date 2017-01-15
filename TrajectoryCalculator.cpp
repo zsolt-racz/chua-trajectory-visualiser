@@ -127,15 +127,13 @@ void TrajectoryCalculator::calculateTrajectoryResult(std::vector<TrajectoryResul
             h = h * this->n;
 
             // Tests
-            if(t > 50){
-                for(std::vector<TrajectoryTest>::const_iterator test = tests->cbegin(); test != tests->cend(); ++test){
-                    if(test->eval(u1, u2, i)){
-                        result->t = t;
-                        result->test = &(*test);
-                        result->divisionCount = divisionCount;
+            for(std::vector<TrajectoryTest>::const_iterator test = tests->cbegin(); test != tests->cend(); ++test){
+                if((test->isLC() || t > this->t_test) && test->eval(u1, u2, i)){
+                    result->t = t;
+                    result->test = &(*test);
+                    result->divisionCount = divisionCount;
 
-                        return;
-                    }
+                    return;
                 }
             }
         }
@@ -192,6 +190,8 @@ public:
         }
         size_t idx = r.begin();
 
+        std::cout << "Begin: " << r.begin() << ", end: " << r.end() << "\n";
+
         std::vector<std::vector<TrajectoryResult>>::iterator vector_iterator = currentResult->begin() + idx;
         int ySize = this->currentResult->u2Size;
         for(idx = r.begin(); idx != r.end() && !calculator->cancelled; ++idx){
@@ -226,7 +226,7 @@ public:
 CalculatedCut* TrajectoryCalculator::parallelCalculateCrossSection(CrossSectionType type, double xMin, double xMax, double xStep,double yMin, double yMax, double yStep, double z, std::vector<TrajectoryTest>* tests){
     this->currentResult = new PartiallyCalculatedCut(type, z, xMin, xMax, xStep, yMin, yMax, yStep, tests);
 
-    tbb::parallel_for(tbb::blocked_range<size_t>(0, this->currentResult->u1Size, this->cancelled), TBBCalculateCrossSection(type, xMin, xMax, xStep, yMin, yMax, yStep, z, tests, this, this->currentResult));
+    tbb::parallel_for(tbb::blocked_range<size_t>(0, this->currentResult->u1Size), TBBCalculateCrossSection(type, xMin, xMax, xStep, yMin, yMax, yStep, z, tests, this, this->currentResult));
 
     CalculatedCut* result = this->currentResult;
     this->currentResult = NULL;

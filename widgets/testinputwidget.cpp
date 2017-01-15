@@ -11,8 +11,8 @@ TestInputWidget::TestInputWidget(QWidget *parent) :
     this->connect(this->ui->add_lc, SIGNAL(clicked()), this, SLOT(addLCRow()));
     this->connect(this->ui->delete_selection, SIGNAL(clicked()), this, SLOT(removeSelectedRows()));
 
-    this->addRow("Atraktor 1", QString("Chaos"), QString("aqua"), -0.25, 0.25, -5.25, -4.75, -5, 5);
-    this->addRow("LC", QString("LC"), QString("gray"), -1000, 1000, -1000, 1000, -30, 30);
+    //this->addRow("Atraktor 1", QString("Chaos"), QString("aqua"), -0.25, 0.25, -5.25, -4.75, -5, 5);
+    //this->addRow("LC", QString("LC"), QString("gray"), -1000, 1000, -1000, 1000, -30, 30);
 
 }
 
@@ -36,8 +36,6 @@ void TestInputWidget::addRow(QString name, QString type, QString color, double u
     table->setColumnWidth(0, 75);
     table->setColumnWidth(1, 75);
     table->setColumnWidth(2, 75);
-
-
 }
 
 void TestInputWidget::addChaosRow(){
@@ -55,6 +53,11 @@ void TestInputWidget::removeSelectedRows(){
     for(QModelIndexList::const_iterator row = selectedRows.cbegin(); row != selectedRows.cend(); ++row){
         table->removeRow(row->row());
     }
+}
+
+void TestInputWidget::clearRows(){
+    QTableWidget* table = this->ui->table;
+    table->setRowCount(0);
 }
 
 QDoubleSpinBox* TestInputWidget::createSpinBox(QWidget* parent){

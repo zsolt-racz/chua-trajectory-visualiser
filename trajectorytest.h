@@ -23,6 +23,8 @@ public:
     const double iHi;
 
     bool eval(double u1, double u2, double i) const;
+    bool isChaos() const;
+    bool isLC() const;
 
 };
 

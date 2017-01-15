@@ -27,27 +27,66 @@ int Trajectory::getMaxMin(){
 }
 
 Point3DT Trajectory::getMaxMins(){
-    int iMaxMin = 0;
-    int u1MaxMin = 0;
-    int u2MaxMin = 0;
-    int tMaxMin = 0;
+    Point3DT maxes = this->getMaxes();
+    Point3DT mins = this->getMins();
+
+    return Point3DT(std::max(std::abs(maxes.i), std::abs(mins.i)), std::max(std::abs(maxes.u1), std::abs(mins.u1)), std::max(std::abs(maxes.u2), std::abs(mins.u2)), std::max(std::abs(maxes.t), std::abs(mins.t)));
+}
+
+Point3DT Trajectory::getMaxes(){
+    if(this->points->size() == 0){
+        return Point3DT(0, 0, 0, 0);
+    }
+
+    double iMax = std::numeric_limits<double>::min();
+    double u1Max = std::numeric_limits<double>::min();
+    double u2Max = std::numeric_limits<double>::min();
+    double tMax = std::numeric_limits<double>::min();
 
     const std::vector<Point3DT>* points = this->points;
     for (std::vector<Point3DT>::const_iterator point = points->begin(); point != points->end(); ++point) {
-        if(iMaxMin < std::abs(point->i)){
-            iMaxMin = (int) std::ceil(std::abs(point->i));
+        if(iMax < point->i){
+            iMax = point->i;
         }
-        if(u1MaxMin < std::abs(point->u1)){
-            u1MaxMin = (int) std::ceil(std::abs(point->u1));
+        if(u1Max < point->u1){
+            u1Max = point->u1;
         }
-        if(u2MaxMin < std::abs(point->u2)){
-            u2MaxMin = (int) std::ceil(std::abs(point->u2));
+        if(u2Max < point->u2){
+            u2Max = point->u2;
         }
-        if(tMaxMin < std::abs(point->t)){
-            tMaxMin = (int) std::ceil(std::abs(point->t));
+        if(tMax < point->t){
+            tMax = point->t;
         }
     }
-    return Point3DT(iMaxMin, u1MaxMin, u2MaxMin, tMaxMin);
+    return Point3DT(iMax, u1Max, u2Max, tMax);
+}
+
+Point3DT Trajectory::getMins(){
+    if(this->points->size() == 0){
+        return Point3DT(0, 0, 0, 0);
+    }
+
+    double iMin = std::numeric_limits<double>::max();
+    double u1Min = std::numeric_limits<double>::max();
+    double u2Min = std::numeric_limits<double>::max();
+    double tMin = std::numeric_limits<double>::max();
+
+    const std::vector<Point3DT>* points = this->points;
+    for (std::vector<Point3DT>::const_iterator point = points->begin(); point != points->end(); ++point) {
+        if(iMin > point->i){
+            iMin = point->i;
+        }
+        if(u1Min > point->u1){
+            u1Min = point->u1;
+        }
+        if(u2Min > point->u2){
+            u2Min = point->u2;
+        }
+        if(tMin > point->t){
+            tMin = point->t;
+        }
+    }
+    return Point3DT(iMin, u1Min, u2Min, tMin);
 }
 
 

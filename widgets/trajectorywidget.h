@@ -47,8 +47,9 @@ private:
     bool updatingParameters = false;
     void initPlots();
     void redrawPlots(Trajectory* result);
-    void redrawPlot(QCustomPlot* plot, Trajectory* result, int xRangeLo, int xRangeHi, int yRangeLo, int yRangeHi );
+    void redrawPlot(QCustomPlot* plot, Trajectory* result);
     void resetPlots(QMouseEvent* event);
+    void resetPlotRanges();
     void zoomPlot(QWheelEvent* event);
     void redrawResultTabe(Trajectory* result, int time);
 

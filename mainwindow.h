@@ -9,6 +9,7 @@
 #include "circuitparameters.h"
 #include <cmath>
 #include <vector>
+#include <widgets/testinputwidget.h>
 
 namespace Ui {
     class MainWindow;
@@ -30,6 +31,7 @@ private:
     CircuitParameters* parameters = NULL;
     QLabel* loadedFileLabel = NULL;
 
+    std::string trim(const std::string& str, const std::string& whitespace);
     void loadParametersFromFile(std::string filename);
 
     void exportTXTAction();
