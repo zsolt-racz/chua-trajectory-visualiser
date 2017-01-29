@@ -39,32 +39,32 @@
    </column>
    <column>
     <property name="text">
-     <string>u1 lo</string>
+     <string>u1 low</string>
     </property>
    </column>
    <column>
     <property name="text">
-     <string>u1 hi</string>
+     <string>u1 high</string>
     </property>
    </column>
    <column>
     <property name="text">
-     <string>u2 lo</string>
+     <string>u2 low</string>
     </property>
    </column>
    <column>
     <property name="text">
-     <string>u2 hi</string>
+     <string>u2 high</string>
     </property>
    </column>
    <column>
     <property name="text">
-     <string>i lo</string>
+     <string>i low</string>
     </property>
    </column>
    <column>
     <property name="text">
-     <string>i hi</string>
+     <string>i high</string>
     </property>
    </column>
   </widget>
@@ -73,7 +73,7 @@
     <rect>
      <x>0</x>
      <y>150</y>
-     <width>80</width>
+     <width>101</width>
      <height>22</height>
     </rect>
    </property>
@@ -84,9 +84,9 @@
   <widget class="QPushButton" name="add_lc">
    <property name="geometry">
     <rect>
-     <x>90</x>
+     <x>110</x>
      <y>150</y>
-     <width>80</width>
+     <width>101</width>
      <height>22</height>
     </rect>
    </property>
@@ -97,9 +97,9 @@
   <widget class="QPushButton" name="delete_selection">
    <property name="geometry">
     <rect>
-     <x>180</x>
+     <x>220</x>
      <y>150</y>
-     <width>121</width>
+     <width>141</width>
      <height>22</height>
     </rect>
    </property>

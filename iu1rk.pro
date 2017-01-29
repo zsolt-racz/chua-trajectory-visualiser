@@ -26,7 +26,8 @@ SOURCES += main.cpp\
     widgets/testinputwidget.cpp \
     trajectorytest.cpp \
     trajectoryresult.cpp \
-    crosssectionmap.cpp
+    crosssectionmap.cpp \
+    widgets/squarelayout.cpp
 
 HEADERS  += mainwindow.h \
     qcustomplot/qcustomplot.h \
@@ -148,7 +149,8 @@ HEADERS  += mainwindow.h \
     widgets/testinputwidget.h \
     trajectorytest.h \
     trajectoryresulttype.h \
-    crosssectionmap.h
+    crosssectionmap.h \
+    widgets/squarelayout.h
 
 FORMS    += mainwindow.ui \
     widgets/trajectorywidget.ui \
@@ -344,6 +346,7 @@ INCLUDEPATH += "$$PWD/exprtk"
 CONFIG(debug, debug|release) {
     linux{
         LIBS += -L"$$PWD/tbb/lib/intel64/gcc4.7" -ltbb_debug
+
     }
 
     win32{
@@ -355,6 +358,12 @@ CONFIG(debug, debug|release) {
 CONFIG(release, debug|release) {
     linux{
         LIBS += -L"$$PWD/tbb/lib/intel64/gcc4.7" -ltbb
+QMAKE_CXXFLAGS_RELEASE -= -O
+QMAKE_CXXFLAGS_RELEASE -= -O1
+QMAKE_CXXFLAGS_RELEASE -= -O2
+QMAKE_CXXFLAGS_RELEASE += -O3
+QMAKE_CXXFLAGS_RELEASE += -march=haswell
+QMAKE_CXXFLAGS_RELEASE += -mavx2 -mfma
     }
 
     win32{

@@ -22,7 +22,7 @@ void CrossSectionMap::colorize(const double *data, const QCPRange &range, QRgb *
     for (int i=0; i<n; ++i){
         std::map<int, std::string>::const_iterator color_it = this->colors.find((int)data[i]);
         if(color_it == this->colors.end()){
-            scanLine[i] = QColor("white").rgb();
+            scanLine[i] = QColor("black").rgb();
         }else{
             scanLine[i] = QColor(QString::fromStdString(color_it->second)).rgb();
         }

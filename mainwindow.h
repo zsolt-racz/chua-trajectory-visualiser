@@ -41,6 +41,7 @@ private:
     void switchToCrossSectionAction();
     void loadParametersAction();
     void saveParametersAction();
+    void setStatusText(std::string filename);
 };
 
 #endif // MAINWINDOW_H

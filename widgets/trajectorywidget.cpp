@@ -6,6 +6,8 @@ TrajectoryWidget::TrajectoryWidget(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    this->ui->resultTable->horizontalHeader()->hide();
+
     this->connect(this->ui->button_calculate, SIGNAL(clicked()), this, SLOT(reCalculateAndReDraw()));
     this->connect(this->ui->button_animate, SIGNAL(clicked()), this, SLOT(reCalculateAndAnimate()));
     this->connect(this->ui->button_animate_stop, SIGNAL(clicked()), this, SLOT(stopAnimation()));
@@ -94,7 +96,14 @@ void TrajectoryWidget::updateParametersByGui(){
 }
 
 void TrajectoryWidget::initPlots(){
+    QFont font = ui->plot_iu1->xAxis->labelFont();
+    font.setPointSize(11);
+
     QCustomPlot* iu1Plot = ui->plot_iu1;
+    iu1Plot->xAxis->setLabelFont(font);
+    iu1Plot->yAxis->setLabelFont(font);
+    iu1Plot->xAxis->setTickLabelFont(font);
+    iu1Plot->yAxis->setTickLabelFont(font);
     QCPCurve *iu1Curve = new QCPCurve(iu1Plot->xAxis, iu1Plot->yAxis);
     iu1Plot->setInteraction(QCP::iRangeDrag, true);
     //iu1Plot->setInteraction(QCP::iRangeZoom, true);
@@ -114,6 +123,10 @@ void TrajectoryWidget::initPlots(){
     this->connect(iu1Plot, SIGNAL(afterReplot()), this, SLOT(synchronizeRangeWithIU1()));
 
     QCustomPlot* iu2Plot = ui->plot_iu2;
+    iu2Plot->xAxis->setLabelFont(font);
+    iu2Plot->yAxis->setLabelFont(font);
+    iu2Plot->xAxis->setTickLabelFont(font);
+    iu2Plot->yAxis->setTickLabelFont(font);
     QCPCurve *iu2Curve = new QCPCurve(iu2Plot->xAxis, iu2Plot->yAxis);
     iu2Plot->setInteraction(QCP::iRangeDrag, true);
     //iu2Plot->setInteraction(QCP::iRangeZoom, true);
@@ -133,6 +146,10 @@ void TrajectoryWidget::initPlots(){
     this->connect(iu2Plot, SIGNAL(afterReplot()), this, SLOT(synchronizeRangeWithIU2()));
 
     QCustomPlot* u1u2Plot = ui->plot_u1u2;
+    u1u2Plot->xAxis->setLabelFont(font);
+    u1u2Plot->yAxis->setLabelFont(font);
+    u1u2Plot->xAxis->setTickLabelFont(font);
+    u1u2Plot->yAxis->setTickLabelFont(font);
     QCPCurve *u1u2Curve = new QCPCurve(u1u2Plot->xAxis, u1u2Plot->yAxis);
     u1u2Plot->setInteraction(QCP::iRangeDrag, true);
     //u1u2Plot->setInteraction(QCP::iRangeZoom, true);
@@ -160,13 +177,11 @@ void TrajectoryWidget::redrawPlot(QCustomPlot* plot, Trajectory* result){
 
          const std::vector<Point3DT>* points = result->points;
 
-         /*QCPItemRect* rect = new QCPItemRect(plot);
-         plot->addItem(rect);
-         rect->topLeft->setCoords(4,4);
-         rect->bottomRight->setCoords(0,0);
-         rect->b().setWidth(2);
-         rect->pen().setColor(QColor(0,255,0));*/
+         std::vector<TrajectoryTest>* tests = this->table->getTests();
 
+         for(int i = 0; plot->item(i) != 0; i++){
+             plot->removeItem(plot->item(i));
+         }
 
          if(plot == this->ui->plot_iu1){
              for (std::vector<Point3DT>::const_iterator point = points->begin(); point != points->end(); ++point) {
@@ -178,6 +193,20 @@ void TrajectoryWidget::redrawPlot(QCustomPlot* plot, Trajectory* result){
                  if(point == points->end() -1 ){
                      endPoint->data()->clear();
                      endPoint->addData(point->u1, point->i);
+                 }
+             }
+
+             for(std::vector<TrajectoryTest>::const_iterator test = tests->cbegin(); test != tests->cend(); ++test){
+                 if(test->isChaos()){
+                     QCPItemRect* rect = new QCPItemRect(plot);
+                     QPen pen = QPen(QColor(QString::fromStdString(test->color)));
+                     pen.setWidth(2);
+                     rect->setPen(pen);
+                     plot->addItem(rect);
+                     rect->topLeft->setCoords(test->u1Lo, test->iHi);
+                     rect->bottomRight->setCoords(test->u1Hi, test->iLo);
+
+                     rect->pen().setColor(QColor(255,0,0));
                  }
              }
          }else if(plot == this->ui->plot_iu2){
@@ -192,6 +221,19 @@ void TrajectoryWidget::redrawPlot(QCustomPlot* plot, Trajectory* result){
                      endPoint->addData(point->u2, point->i);
                  }
              }
+             for(std::vector<TrajectoryTest>::const_iterator test = tests->cbegin(); test != tests->cend(); ++test){
+                 if(test->isChaos()){
+                     QCPItemRect* rect = new QCPItemRect(plot);
+                     QPen pen = QPen(QColor(QString::fromStdString(test->color)));
+                     pen.setWidth(2);
+                     rect->setPen(pen);
+                     plot->addItem(rect);
+                     rect->topLeft->setCoords(test->u2Lo,test->iHi);
+                     rect->bottomRight->setCoords(test->u2Hi,test->iLo);
+
+                     rect->pen().setColor(QColor(255,0,0));
+                 }
+             }
          }else if(plot == this->ui->plot_u1u2){
              for (std::vector<Point3DT>::const_iterator point = points->begin(); point != points->end(); ++point) {
                  if(point == points->begin()){
@@ -204,7 +246,19 @@ void TrajectoryWidget::redrawPlot(QCustomPlot* plot, Trajectory* result){
                      endPoint->addData(point->u1, point->u2);
                  }
              }
+             for(std::vector<TrajectoryTest>::const_iterator test = tests->cbegin(); test != tests->cend(); ++test){
+                 if(test->isChaos()){
+                     QCPItemRect* rect = new QCPItemRect(plot);
+                     QPen pen = QPen(QColor(QString::fromStdString(test->color)));
+                     pen.setWidth(2);
+                     rect->setPen(pen);
+                     plot->addItem(rect);
+                     rect->topLeft->setCoords(test->u1Lo,test->u2Hi);
+                     rect->bottomRight->setCoords(test->u1Hi, test->u2Lo);
+                 }
+             }
          }
+         delete tests;
         plot->replot();
 }
 
@@ -370,7 +424,7 @@ void TrajectoryWidget::redrawResultTabe(Trajectory* result, int time){
     }
 
     QTableWidgetItem *intTime = new QTableWidgetItem;
-    intTime->setText(QString("%1 ms").arg(tMax));
+    intTime->setText(QString("%1 s").arg(tMax));
 
     this->ui->resultTable->setItem(0,0, points);
     this->ui->resultTable->setItem(0,1, divisions);
@@ -424,6 +478,9 @@ void TrajectoryWidget::animationStep(){
     this->ui->plot_u1u2->replot();
 }
 
+void TrajectoryWidget::setTestTable(TestInputWidget* table){
+    this->table = table;
+}
 
 
 int TrajectoryWidget::reCalculate(){

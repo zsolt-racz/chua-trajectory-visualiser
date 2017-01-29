@@ -9,17 +9,17 @@ class PartiallyCalculatedCut : public CalculatedCut
 {
 
 public:
-    PartiallyCalculatedCut(CrossSectionType type, double i, double u1Min, double u1Max, double u1Step, double u2Min, double u2Max, double u2Step, std::vector<TrajectoryTest>* tests);
+    PartiallyCalculatedCut(CrossSectionType type, double z, double xMin, double xMax, double xStep, double yMin, double yMax, double yStep, std::vector<TrajectoryTest>* tests);
 
-    std::list<std::vector<TrajectoryResult>*>::const_iterator cbeginU1Columns();
-    std::list<std::vector<TrajectoryResult>*>::const_iterator cendU1Columns();
-    std::size_t U1Count();
-    void addU1Column(std::vector<TrajectoryResult>* u1);
+    std::list<std::vector<TrajectoryResult>*>::const_iterator cbeginXColumns();
+    std::list<std::vector<TrajectoryResult>*>::const_iterator cendXColumns();
+    std::size_t XCount();
+    void addXColumn(std::vector<TrajectoryResult>* x);
 
     double progress();
 
 private:
-    std::list<std::vector<TrajectoryResult>*> calculatedU1Columns;
+    std::list<std::vector<TrajectoryResult>*> calculatedXColumns;
     int currentProgress;
 };
 

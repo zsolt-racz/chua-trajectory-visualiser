@@ -52,7 +52,7 @@
                   </size>
                  </property>
                  <property name="text">
-                  <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;right&quot;&gt;C&lt;span style=&quot; vertical-align:sub;&quot;&gt;1&lt;/span&gt; =&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                  <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;right&quot;&gt;C1 =&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                  </property>
                 </widget>
                </item>
@@ -76,7 +76,7 @@
                   </size>
                  </property>
                  <property name="text">
-                  <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;right&quot;&gt;C&lt;span style=&quot; vertical-align:sub;&quot;&gt;2&lt;/span&gt; =&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                  <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;right&quot;&gt;C2 =&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                  </property>
                 </widget>
                </item>
@@ -172,7 +172,7 @@
                   </size>
                  </property>
                  <property name="text">
-                  <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;right&quot;&gt;B&lt;span style=&quot; vertical-align:sub;&quot;&gt;P&lt;/span&gt; =&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                  <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;right&quot;&gt;Bp =&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                  </property>
                 </widget>
                </item>
@@ -196,7 +196,7 @@
                   </size>
                  </property>
                  <property name="text">
-                  <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;right&quot;&gt;B&lt;span style=&quot; vertical-align:sub;&quot;&gt;0&lt;/span&gt; =&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                  <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;right&quot;&gt;B0 =&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                  </property>
                 </widget>
                </item>
@@ -220,7 +220,7 @@
                   </size>
                  </property>
                  <property name="text">
-                  <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;right&quot;&gt;m&lt;span style=&quot; vertical-align:sub;&quot;&gt;0&lt;/span&gt; =&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                  <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;right&quot;&gt;m0 =&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                  </property>
                 </widget>
                </item>
@@ -244,7 +244,7 @@
                   </size>
                  </property>
                  <property name="text">
-                  <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;right&quot;&gt;m&lt;span style=&quot; vertical-align:sub;&quot;&gt;1&lt;/span&gt; =&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                  <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;right&quot;&gt;m1 =&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                  </property>
                 </widget>
                </item>
@@ -268,7 +268,7 @@
                   </size>
                  </property>
                  <property name="text">
-                  <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;right&quot;&gt;m&lt;span style=&quot; vertical-align:sub;&quot;&gt;2&lt;/span&gt; =&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                  <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;right&quot;&gt;m2 =&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                  </property>
                 </widget>
                </item>
@@ -316,7 +316,7 @@
                   </size>
                  </property>
                  <property name="text">
-                  <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;right&quot;&gt;h&lt;span style=&quot; vertical-align:sub;&quot;&gt;0&lt;/span&gt; =&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                  <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;right&quot;&gt;h0 =&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                  </property>
                 </widget>
                </item>
@@ -340,7 +340,7 @@
                   </size>
                  </property>
                  <property name="text">
-                  <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;right&quot;&gt;u&lt;span style=&quot; vertical-align:sub;&quot;&gt;hmax&lt;/span&gt; =&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                  <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;right&quot;&gt;uhMax =&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                  </property>
                 </widget>
                </item>
@@ -364,7 +364,7 @@
                   </size>
                  </property>
                  <property name="text">
-                  <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;right&quot;&gt;i&lt;span style=&quot; vertical-align:sub;&quot;&gt;hmax&lt;/span&gt; =&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                  <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;right&quot;&gt;ihMax =&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                  </property>
                 </widget>
                </item>
@@ -388,7 +388,7 @@
                   </size>
                  </property>
                  <property name="text">
-                  <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;right&quot;&gt;t&lt;span style=&quot; vertical-align:sub;&quot;&gt;max&lt;/span&gt; =&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                  <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;right&quot;&gt;tMax =&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                  </property>
                 </widget>
                </item>
@@ -412,7 +412,7 @@
                   </size>
                  </property>
                  <property name="text">
-                  <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;right&quot;&gt;t&lt;span style=&quot; vertical-align:sub;&quot;&gt;test&lt;/span&gt; =&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                  <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;right&quot;&gt;tTest =&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                  </property>
                 </widget>
                </item>
@@ -472,11 +472,11 @@
             </size>
            </property>
            <property name="currentIndex">
-            <number>2</number>
+            <number>0</number>
            </property>
            <widget class="QWidget" name="tab_u1i">
             <attribute name="title">
-             <string>u1, i</string>
+             <string>i, u1</string>
             </attribute>
             <widget class="QGroupBox" name="groupBox_3">
              <property name="geometry">
@@ -495,154 +495,11 @@
                <rect>
                 <x>10</x>
                 <y>30</y>
-                <width>541</width>
+                <width>547</width>
                 <height>111</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_3">
-               <item>
-                <layout class="QHBoxLayout" name="horizontalLayout_5">
-                 <item>
-                  <layout class="QHBoxLayout" name="horizontalLayout_67">
-                   <item>
-                    <widget class="QLabel" name="label_64">
-                     <property name="maximumSize">
-                      <size>
-                       <width>60</width>
-                       <height>16777215</height>
-                      </size>
-                     </property>
-                     <property name="text">
-                      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;right&quot;&gt;u&lt;span style=&quot; vertical-align:sub;&quot;&gt;1&lt;/span&gt; from&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <widget class="QDoubleSpinBox" name="input_u1_from_u1i">
-                     <property name="decimals">
-                      <number>8</number>
-                     </property>
-                     <property name="minimum">
-                      <double>-1000.000000000000000</double>
-                     </property>
-                     <property name="maximum">
-                      <double>1000.990000000000009</double>
-                     </property>
-                     <property name="singleStep">
-                      <double>1.000000000000000</double>
-                     </property>
-                     <property name="value">
-                      <double>-25.000000000000000</double>
-                     </property>
-                    </widget>
-                   </item>
-                  </layout>
-                 </item>
-                 <item>
-                  <layout class="QHBoxLayout" name="horizontalLayout_68">
-                   <item>
-                    <widget class="QLabel" name="label_65">
-                     <property name="maximumSize">
-                      <size>
-                       <width>60</width>
-                       <height>16777215</height>
-                      </size>
-                     </property>
-                     <property name="text">
-                      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;right&quot;&gt;u&lt;span style=&quot; vertical-align:sub;&quot;&gt;1 &lt;/span&gt;to&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <widget class="QDoubleSpinBox" name="input_u1_to_u1i">
-                     <property name="decimals">
-                      <number>8</number>
-                     </property>
-                     <property name="minimum">
-                      <double>-1000.000000000000000</double>
-                     </property>
-                     <property name="maximum">
-                      <double>1000.000000000000000</double>
-                     </property>
-                     <property name="value">
-                      <double>25.000000000000000</double>
-                     </property>
-                    </widget>
-                   </item>
-                  </layout>
-                 </item>
-                 <item>
-                  <layout class="QHBoxLayout" name="horizontalLayout_70">
-                   <item>
-                    <widget class="QLabel" name="label_67">
-                     <property name="maximumSize">
-                      <size>
-                       <width>60</width>
-                       <height>16777215</height>
-                      </size>
-                     </property>
-                     <property name="text">
-                      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;right&quot;&gt;u&lt;span style=&quot; vertical-align:sub;&quot;&gt;1&lt;/span&gt; step&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <widget class="QDoubleSpinBox" name="input_u1_step_u1i">
-                     <property name="decimals">
-                      <number>8</number>
-                     </property>
-                     <property name="minimum">
-                      <double>0.000001000000000</double>
-                     </property>
-                     <property name="maximum">
-                      <double>100.000000000000000</double>
-                     </property>
-                     <property name="value">
-                      <double>0.250000000000000</double>
-                     </property>
-                    </widget>
-                   </item>
-                  </layout>
-                 </item>
-                </layout>
-               </item>
-               <item>
-                <layout class="QHBoxLayout" name="horizontalLayout_6">
-                 <item>
-                  <layout class="QHBoxLayout" name="horizontalLayout_71">
-                   <item>
-                    <widget class="QLabel" name="label_68">
-                     <property name="maximumSize">
-                      <size>
-                       <width>45</width>
-                       <height>16777215</height>
-                      </size>
-                     </property>
-                     <property name="text">
-                      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;u&lt;span style=&quot; vertical-align:sub;&quot;&gt;2&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <widget class="QDoubleSpinBox" name="input_u2_u1i">
-                     <property name="decimals">
-                      <number>8</number>
-                     </property>
-                     <property name="minimum">
-                      <double>-1000.000000000000000</double>
-                     </property>
-                     <property name="maximum">
-                      <double>1000.000000000000000</double>
-                     </property>
-                     <property name="value">
-                      <double>0.000001000000000</double>
-                     </property>
-                    </widget>
-                   </item>
-                  </layout>
-                 </item>
-                </layout>
-               </item>
                <item>
                 <layout class="QHBoxLayout" name="horizontalLayout_4">
                  <item>
@@ -650,14 +507,14 @@
                    <item>
                     <widget class="QLabel" name="label_58">
                      <property name="sizePolicy">
-                      <sizepolicy hsizetype="MinimumExpanding" vsizetype="Ignored">
+                      <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
                        <horstretch>0</horstretch>
                        <verstretch>0</verstretch>
                       </sizepolicy>
                      </property>
                      <property name="maximumSize">
                       <size>
-                       <width>45</width>
+                       <width>16777215</width>
                        <height>16777215</height>
                       </size>
                      </property>
@@ -668,6 +525,12 @@
                    </item>
                    <item>
                     <widget class="QDoubleSpinBox" name="input_i_from_u1i">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
                      <property name="decimals">
                       <number>8</number>
                      </property>
@@ -701,6 +564,12 @@
                    </item>
                    <item>
                     <widget class="QDoubleSpinBox" name="input_i_to_u1i">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
                      <property name="decimals">
                       <number>8</number>
                      </property>
@@ -734,6 +603,12 @@
                    </item>
                    <item>
                     <widget class="QDoubleSpinBox" name="input_i_step_u1i">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
                      <property name="decimals">
                       <number>8</number>
                      </property>
@@ -752,97 +627,37 @@
                  </item>
                 </layout>
                </item>
-              </layout>
-             </widget>
-             <widget class="QPushButton" name="button_calculate_parallel_u1i">
-              <property name="geometry">
-               <rect>
-                <x>350</x>
-                <y>150</y>
-                <width>111</width>
-                <height>22</height>
-               </rect>
-              </property>
-              <property name="text">
-               <string>Calculate parallel</string>
-              </property>
-             </widget>
-             <widget class="QPushButton" name="button_cancel_u1i">
-              <property name="enabled">
-               <bool>false</bool>
-              </property>
-              <property name="geometry">
-               <rect>
-                <x>470</x>
-                <y>150</y>
-                <width>80</width>
-                <height>22</height>
-               </rect>
-              </property>
-              <property name="text">
-               <string>Cancel</string>
-              </property>
-             </widget>
-             <widget class="QPushButton" name="button_calculate_u1i">
-              <property name="geometry">
-               <rect>
-                <x>260</x>
-                <y>150</y>
-                <width>80</width>
-                <height>22</height>
-               </rect>
-              </property>
-              <property name="text">
-               <string>Calculate</string>
-              </property>
-             </widget>
-            </widget>
-           </widget>
-           <widget class="QWidget" name="tab_u2i">
-            <attribute name="title">
-             <string>u2, i</string>
-            </attribute>
-            <widget class="QGroupBox" name="groupBox_4">
-             <property name="geometry">
-              <rect>
-               <x>10</x>
-               <y>10</y>
-               <width>561</width>
-               <height>191</height>
-              </rect>
-             </property>
-             <property name="title">
-              <string>Initial values</string>
-             </property>
-             <widget class="QWidget" name="verticalLayoutWidget_3">
-              <property name="geometry">
-               <rect>
-                <x>10</x>
-                <y>30</y>
-                <width>541</width>
-                <height>111</height>
-               </rect>
-              </property>
-              <layout class="QVBoxLayout" name="verticalLayout_4">
                <item>
-                <layout class="QHBoxLayout" name="horizontalLayout_9">
+                <layout class="QHBoxLayout" name="horizontalLayout_6">
                  <item>
-                  <layout class="QHBoxLayout" name="horizontalLayout_78">
+                  <layout class="QHBoxLayout" name="horizontalLayout_71">
                    <item>
-                    <widget class="QLabel" name="label_75">
-                     <property name="maximumSize">
+                    <widget class="QLabel" name="label_68">
+                     <property name="minimumSize">
                       <size>
                        <width>45</width>
+                       <height>0</height>
+                      </size>
+                     </property>
+                     <property name="maximumSize">
+                      <size>
+                       <width>16777215</width>
                        <height>16777215</height>
                       </size>
                      </property>
                      <property name="text">
-                      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;u&lt;span style=&quot; vertical-align:sub;&quot;&gt;1&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;u2&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                      </property>
                     </widget>
                    </item>
                    <item>
-                    <widget class="QDoubleSpinBox" name="input_u1_u2i">
+                    <widget class="QDoubleSpinBox" name="input_u2_u1i">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
                      <property name="decimals">
                       <number>8</number>
                      </property>
@@ -862,24 +677,30 @@
                 </layout>
                </item>
                <item>
-                <layout class="QHBoxLayout" name="horizontalLayout_8">
+                <layout class="QHBoxLayout" name="horizontalLayout_5">
                  <item>
-                  <layout class="QHBoxLayout" name="horizontalLayout_75">
+                  <layout class="QHBoxLayout" name="horizontalLayout_67">
                    <item>
-                    <widget class="QLabel" name="label_72">
+                    <widget class="QLabel" name="label_64">
                      <property name="maximumSize">
                       <size>
-                       <width>45</width>
+                       <width>60</width>
                        <height>16777215</height>
                       </size>
                      </property>
                      <property name="text">
-                      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;right&quot;&gt;u&lt;span style=&quot; vertical-align:sub;&quot;&gt;2&lt;/span&gt; from&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;right&quot;&gt;u1 from&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                      </property>
                     </widget>
                    </item>
                    <item>
-                    <widget class="QDoubleSpinBox" name="input_u2_from_u2i">
+                    <widget class="QDoubleSpinBox" name="input_u1_from_u1i">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
                      <property name="decimals">
                       <number>8</number>
                      </property>
@@ -900,9 +721,9 @@
                   </layout>
                  </item>
                  <item>
-                  <layout class="QHBoxLayout" name="horizontalLayout_76">
+                  <layout class="QHBoxLayout" name="horizontalLayout_68">
                    <item>
-                    <widget class="QLabel" name="label_73">
+                    <widget class="QLabel" name="label_65">
                      <property name="maximumSize">
                       <size>
                        <width>60</width>
@@ -910,12 +731,18 @@
                       </size>
                      </property>
                      <property name="text">
-                      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;right&quot;&gt;u&lt;span style=&quot; vertical-align:sub;&quot;&gt;2 &lt;/span&gt;to&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;right&quot;&gt;u1 to&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                      </property>
                     </widget>
                    </item>
                    <item>
-                    <widget class="QDoubleSpinBox" name="input_u2_to_u2i">
+                    <widget class="QDoubleSpinBox" name="input_u1_to_u1i">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
                      <property name="decimals">
                       <number>8</number>
                      </property>
@@ -933,9 +760,9 @@
                   </layout>
                  </item>
                  <item>
-                  <layout class="QHBoxLayout" name="horizontalLayout_77">
+                  <layout class="QHBoxLayout" name="horizontalLayout_70">
                    <item>
-                    <widget class="QLabel" name="label_74">
+                    <widget class="QLabel" name="label_67">
                      <property name="maximumSize">
                       <size>
                        <width>60</width>
@@ -943,12 +770,18 @@
                       </size>
                      </property>
                      <property name="text">
-                      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;right&quot;&gt;u&lt;span style=&quot; vertical-align:sub;&quot;&gt;2&lt;/span&gt; step&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;right&quot;&gt;u1 step&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                      </property>
                     </widget>
                    </item>
                    <item>
-                    <widget class="QDoubleSpinBox" name="input_u2_step_u2i">
+                    <widget class="QDoubleSpinBox" name="input_u1_step_u1i">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
                      <property name="decimals">
                       <number>8</number>
                      </property>
@@ -967,6 +800,78 @@
                  </item>
                 </layout>
                </item>
+              </layout>
+             </widget>
+             <widget class="QPushButton" name="button_calculate_parallel_u1i">
+              <property name="geometry">
+               <rect>
+                <x>320</x>
+                <y>150</y>
+                <width>131</width>
+                <height>22</height>
+               </rect>
+              </property>
+              <property name="text">
+               <string>Calculate parallel</string>
+              </property>
+             </widget>
+             <widget class="QPushButton" name="button_cancel_u1i">
+              <property name="enabled">
+               <bool>false</bool>
+              </property>
+              <property name="geometry">
+               <rect>
+                <x>459</x>
+                <y>150</y>
+                <width>91</width>
+                <height>22</height>
+               </rect>
+              </property>
+              <property name="text">
+               <string>Cancel</string>
+              </property>
+             </widget>
+             <widget class="QPushButton" name="button_calculate_u1i">
+              <property name="geometry">
+               <rect>
+                <x>210</x>
+                <y>150</y>
+                <width>101</width>
+                <height>22</height>
+               </rect>
+              </property>
+              <property name="text">
+               <string>Calculate</string>
+              </property>
+             </widget>
+            </widget>
+           </widget>
+           <widget class="QWidget" name="tab_u2i">
+            <attribute name="title">
+             <string>i, u2</string>
+            </attribute>
+            <widget class="QGroupBox" name="groupBox_4">
+             <property name="geometry">
+              <rect>
+               <x>10</x>
+               <y>10</y>
+               <width>561</width>
+               <height>191</height>
+              </rect>
+             </property>
+             <property name="title">
+              <string>Initial values</string>
+             </property>
+             <widget class="QWidget" name="verticalLayoutWidget_3">
+              <property name="geometry">
+               <rect>
+                <x>10</x>
+                <y>30</y>
+                <width>547</width>
+                <height>111</height>
+               </rect>
+              </property>
+              <layout class="QVBoxLayout" name="verticalLayout_4">
                <item>
                 <layout class="QHBoxLayout" name="horizontalLayout_7">
                  <item>
@@ -974,14 +879,14 @@
                    <item>
                     <widget class="QLabel" name="label_69">
                      <property name="sizePolicy">
-                      <sizepolicy hsizetype="MinimumExpanding" vsizetype="Ignored">
+                      <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
                        <horstretch>0</horstretch>
                        <verstretch>0</verstretch>
                       </sizepolicy>
                      </property>
                      <property name="maximumSize">
                       <size>
-                       <width>45</width>
+                       <width>16777215</width>
                        <height>16777215</height>
                       </size>
                      </property>
@@ -992,6 +897,12 @@
                    </item>
                    <item>
                     <widget class="QDoubleSpinBox" name="input_i_from_u2i">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
                      <property name="decimals">
                       <number>8</number>
                      </property>
@@ -1025,6 +936,12 @@
                    </item>
                    <item>
                     <widget class="QDoubleSpinBox" name="input_i_to_u2i">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
                      <property name="decimals">
                       <number>8</number>
                      </property>
@@ -1058,6 +975,12 @@
                    </item>
                    <item>
                     <widget class="QDoubleSpinBox" name="input_i_step_u2i">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
                      <property name="decimals">
                       <number>8</number>
                      </property>
@@ -1076,12 +999,185 @@
                  </item>
                 </layout>
                </item>
+               <item>
+                <layout class="QHBoxLayout" name="horizontalLayout_8">
+                 <item>
+                  <layout class="QHBoxLayout" name="horizontalLayout_75">
+                   <item>
+                    <widget class="QLabel" name="label_72">
+                     <property name="maximumSize">
+                      <size>
+                       <width>16777215</width>
+                       <height>16777215</height>
+                      </size>
+                     </property>
+                     <property name="text">
+                      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;right&quot;&gt;u2 from&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QDoubleSpinBox" name="input_u2_from_u2i">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="decimals">
+                      <number>8</number>
+                     </property>
+                     <property name="minimum">
+                      <double>-1000.000000000000000</double>
+                     </property>
+                     <property name="maximum">
+                      <double>1000.990000000000009</double>
+                     </property>
+                     <property name="singleStep">
+                      <double>1.000000000000000</double>
+                     </property>
+                     <property name="value">
+                      <double>-25.000000000000000</double>
+                     </property>
+                    </widget>
+                   </item>
+                  </layout>
+                 </item>
+                 <item>
+                  <layout class="QHBoxLayout" name="horizontalLayout_76">
+                   <item>
+                    <widget class="QLabel" name="label_73">
+                     <property name="maximumSize">
+                      <size>
+                       <width>60</width>
+                       <height>16777215</height>
+                      </size>
+                     </property>
+                     <property name="text">
+                      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;right&quot;&gt;u2 to&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QDoubleSpinBox" name="input_u2_to_u2i">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="decimals">
+                      <number>8</number>
+                     </property>
+                     <property name="minimum">
+                      <double>-1000.000000000000000</double>
+                     </property>
+                     <property name="maximum">
+                      <double>1000.000000000000000</double>
+                     </property>
+                     <property name="value">
+                      <double>25.000000000000000</double>
+                     </property>
+                    </widget>
+                   </item>
+                  </layout>
+                 </item>
+                 <item>
+                  <layout class="QHBoxLayout" name="horizontalLayout_77">
+                   <item>
+                    <widget class="QLabel" name="label_74">
+                     <property name="maximumSize">
+                      <size>
+                       <width>60</width>
+                       <height>16777215</height>
+                      </size>
+                     </property>
+                     <property name="text">
+                      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;right&quot;&gt;u2 step&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QDoubleSpinBox" name="input_u2_step_u2i">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="decimals">
+                      <number>8</number>
+                     </property>
+                     <property name="minimum">
+                      <double>0.000001000000000</double>
+                     </property>
+                     <property name="maximum">
+                      <double>100.000000000000000</double>
+                     </property>
+                     <property name="value">
+                      <double>0.250000000000000</double>
+                     </property>
+                    </widget>
+                   </item>
+                  </layout>
+                 </item>
+                </layout>
+               </item>
+               <item>
+                <layout class="QHBoxLayout" name="horizontalLayout_9">
+                 <item>
+                  <layout class="QHBoxLayout" name="horizontalLayout_78">
+                   <item>
+                    <widget class="QLabel" name="label_75">
+                     <property name="minimumSize">
+                      <size>
+                       <width>45</width>
+                       <height>0</height>
+                      </size>
+                     </property>
+                     <property name="maximumSize">
+                      <size>
+                       <width>16777215</width>
+                       <height>16777215</height>
+                      </size>
+                     </property>
+                     <property name="text">
+                      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;right&quot;&gt;u1&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QDoubleSpinBox" name="input_u1_u2i">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="decimals">
+                      <number>8</number>
+                     </property>
+                     <property name="minimum">
+                      <double>-1000.000000000000000</double>
+                     </property>
+                     <property name="maximum">
+                      <double>1000.000000000000000</double>
+                     </property>
+                     <property name="value">
+                      <double>0.000001000000000</double>
+                     </property>
+                    </widget>
+                   </item>
+                  </layout>
+                 </item>
+                </layout>
+               </item>
               </layout>
              </widget>
              <widget class="QPushButton" name="button_calculate_parallel_u2i">
               <property name="geometry">
                <rect>
-                <x>330</x>
+                <x>320</x>
                 <y>150</y>
                 <width>131</width>
                 <height>22</height>
@@ -1097,9 +1193,9 @@
               </property>
               <property name="geometry">
                <rect>
-                <x>470</x>
+                <x>459</x>
                 <y>150</y>
-                <width>80</width>
+                <width>91</width>
                 <height>22</height>
                </rect>
               </property>
@@ -1110,9 +1206,9 @@
              <widget class="QPushButton" name="button_calculate_u2i">
               <property name="geometry">
                <rect>
-                <x>240</x>
+                <x>210</x>
                 <y>150</y>
-                <width>80</width>
+                <width>101</width>
                 <height>22</height>
                </rect>
               </property>
@@ -1124,7 +1220,7 @@
            </widget>
            <widget class="QWidget" name="tab_u1u2">
             <attribute name="title">
-             <string>u1, u2</string>
+             <string>u2, u1</string>
             </attribute>
             <widget class="QGroupBox" name="groupBox_2">
              <property name="geometry">
@@ -1143,30 +1239,48 @@
                <rect>
                 <x>10</x>
                 <y>30</y>
-                <width>541</width>
+                <width>547</width>
                 <height>111</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_2">
                <item>
-                <layout class="QHBoxLayout" name="horizontalLayout">
+                <layout class="QHBoxLayout" name="horizontalLayout_3">
                  <item>
-                  <layout class="QHBoxLayout" name="horizontalLayout_58">
+                  <layout class="QHBoxLayout" name="horizontalLayout_69">
                    <item>
-                    <widget class="QLabel" name="label_55">
+                    <widget class="QLabel" name="label_66">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="minimumSize">
+                      <size>
+                       <width>45</width>
+                       <height>0</height>
+                      </size>
+                     </property>
                      <property name="maximumSize">
                       <size>
-                       <width>60</width>
+                       <width>16777215</width>
                        <height>16777215</height>
                       </size>
                      </property>
                      <property name="text">
-                      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;right&quot;&gt;u&lt;span style=&quot; vertical-align:sub;&quot;&gt;1&lt;/span&gt; from&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;i&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                      </property>
                     </widget>
                    </item>
                    <item>
-                    <widget class="QDoubleSpinBox" name="input_u1_from_u1u2">
+                    <widget class="QDoubleSpinBox" name="input_i_u1u2">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
                      <property name="decimals">
                       <number>8</number>
                      </property>
@@ -1177,73 +1291,7 @@
                       <double>1000.000000000000000</double>
                      </property>
                      <property name="value">
-                      <double>-25.000000000000000</double>
-                     </property>
-                    </widget>
-                   </item>
-                  </layout>
-                 </item>
-                 <item>
-                  <layout class="QHBoxLayout" name="horizontalLayout_59">
-                   <item>
-                    <widget class="QLabel" name="label_56">
-                     <property name="maximumSize">
-                      <size>
-                       <width>60</width>
-                       <height>16777215</height>
-                      </size>
-                     </property>
-                     <property name="text">
-                      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;right&quot;&gt;u&lt;span style=&quot; vertical-align:sub;&quot;&gt;1 &lt;/span&gt;to&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <widget class="QDoubleSpinBox" name="input_u1_to_u1u2">
-                     <property name="decimals">
-                      <number>8</number>
-                     </property>
-                     <property name="minimum">
-                      <double>-1000.000000000000000</double>
-                     </property>
-                     <property name="maximum">
-                      <double>1000.000000000000000</double>
-                     </property>
-                     <property name="value">
-                      <double>25.000000000000000</double>
-                     </property>
-                    </widget>
-                   </item>
-                  </layout>
-                 </item>
-                 <item>
-                  <layout class="QHBoxLayout" name="horizontalLayout_60">
-                   <item>
-                    <widget class="QLabel" name="label_57">
-                     <property name="maximumSize">
-                      <size>
-                       <width>60</width>
-                       <height>16777215</height>
-                      </size>
-                     </property>
-                     <property name="text">
-                      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;right&quot;&gt;u&lt;span style=&quot; vertical-align:sub;&quot;&gt;1&lt;/span&gt; step&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <widget class="QDoubleSpinBox" name="input_u1_step_u1u2">
-                     <property name="decimals">
-                      <number>8</number>
-                     </property>
-                     <property name="minimum">
                       <double>0.000001000000000</double>
-                     </property>
-                     <property name="maximum">
-                      <double>100.000000000000000</double>
-                     </property>
-                     <property name="value">
-                      <double>0.250000000000000</double>
                      </property>
                     </widget>
                    </item>
@@ -1264,12 +1312,18 @@
                       </size>
                      </property>
                      <property name="text">
-                      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;right&quot;&gt;u&lt;span style=&quot; vertical-align:sub;&quot;&gt;2&lt;/span&gt; from&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;right&quot;&gt;u2 from&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                      </property>
                     </widget>
                    </item>
                    <item>
                     <widget class="QDoubleSpinBox" name="input_u2_from_u1u2">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
                      <property name="decimals">
                       <number>8</number>
                      </property>
@@ -1300,12 +1354,18 @@
                       </size>
                      </property>
                      <property name="text">
-                      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;right&quot;&gt;u&lt;span style=&quot; vertical-align:sub;&quot;&gt;2 &lt;/span&gt;to&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;right&quot;&gt;u2 to&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                      </property>
                     </widget>
                    </item>
                    <item>
                     <widget class="QDoubleSpinBox" name="input_u2_to_u1u2">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
                      <property name="decimals">
                       <number>8</number>
                      </property>
@@ -1333,12 +1393,18 @@
                       </size>
                      </property>
                      <property name="text">
-                      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;right&quot;&gt;u&lt;span style=&quot; vertical-align:sub;&quot;&gt;2&lt;/span&gt; step&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;right&quot;&gt;u2 step&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                      </property>
                     </widget>
                    </item>
                    <item>
                     <widget class="QDoubleSpinBox" name="input_u2_step_u1u2">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
                      <property name="decimals">
                       <number>8</number>
                      </property>
@@ -1358,30 +1424,30 @@
                 </layout>
                </item>
                <item>
-                <layout class="QHBoxLayout" name="horizontalLayout_3">
+                <layout class="QHBoxLayout" name="horizontalLayout">
                  <item>
-                  <layout class="QHBoxLayout" name="horizontalLayout_69">
+                  <layout class="QHBoxLayout" name="horizontalLayout_58">
                    <item>
-                    <widget class="QLabel" name="label_66">
-                     <property name="sizePolicy">
-                      <sizepolicy hsizetype="Fixed" vsizetype="Ignored">
-                       <horstretch>0</horstretch>
-                       <verstretch>0</verstretch>
-                      </sizepolicy>
-                     </property>
+                    <widget class="QLabel" name="label_55">
                      <property name="maximumSize">
                       <size>
-                       <width>45</width>
+                       <width>60</width>
                        <height>16777215</height>
                       </size>
                      </property>
                      <property name="text">
-                      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;i&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;right&quot;&gt;u1 from&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                      </property>
                     </widget>
                    </item>
                    <item>
-                    <widget class="QDoubleSpinBox" name="input_i_u1u2">
+                    <widget class="QDoubleSpinBox" name="input_u1_from_u1u2">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
                      <property name="decimals">
                       <number>8</number>
                      </property>
@@ -1392,7 +1458,85 @@
                       <double>1000.000000000000000</double>
                      </property>
                      <property name="value">
+                      <double>-25.000000000000000</double>
+                     </property>
+                    </widget>
+                   </item>
+                  </layout>
+                 </item>
+                 <item>
+                  <layout class="QHBoxLayout" name="horizontalLayout_59">
+                   <item>
+                    <widget class="QLabel" name="label_56">
+                     <property name="maximumSize">
+                      <size>
+                       <width>60</width>
+                       <height>16777215</height>
+                      </size>
+                     </property>
+                     <property name="text">
+                      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;right&quot;&gt;u1 to&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QDoubleSpinBox" name="input_u1_to_u1u2">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="decimals">
+                      <number>8</number>
+                     </property>
+                     <property name="minimum">
+                      <double>-1000.000000000000000</double>
+                     </property>
+                     <property name="maximum">
+                      <double>1000.000000000000000</double>
+                     </property>
+                     <property name="value">
+                      <double>25.000000000000000</double>
+                     </property>
+                    </widget>
+                   </item>
+                  </layout>
+                 </item>
+                 <item>
+                  <layout class="QHBoxLayout" name="horizontalLayout_60">
+                   <item>
+                    <widget class="QLabel" name="label_57">
+                     <property name="maximumSize">
+                      <size>
+                       <width>60</width>
+                       <height>16777215</height>
+                      </size>
+                     </property>
+                     <property name="text">
+                      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;right&quot;&gt;u1 step&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QDoubleSpinBox" name="input_u1_step_u1u2">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="decimals">
+                      <number>8</number>
+                     </property>
+                     <property name="minimum">
                       <double>0.000001000000000</double>
+                     </property>
+                     <property name="maximum">
+                      <double>100.000000000000000</double>
+                     </property>
+                     <property name="value">
+                      <double>0.250000000000000</double>
                      </property>
                     </widget>
                    </item>
@@ -1405,11 +1549,17 @@
              <widget class="QPushButton" name="button_calculate_parallel_u1u2">
               <property name="geometry">
                <rect>
-                <x>350</x>
+                <x>320</x>
                 <y>150</y>
-                <width>111</width>
+                <width>131</width>
                 <height>22</height>
                </rect>
+              </property>
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
               </property>
               <property name="text">
                <string>Calculate parallel</string>
@@ -1421,9 +1571,9 @@
               </property>
               <property name="geometry">
                <rect>
-                <x>470</x>
+                <x>459</x>
                 <y>150</y>
-                <width>80</width>
+                <width>91</width>
                 <height>22</height>
                </rect>
               </property>
@@ -1434,9 +1584,9 @@
              <widget class="QPushButton" name="button_calculate_u1u2">
               <property name="geometry">
                <rect>
-                <x>260</x>
+                <x>210</x>
                 <y>150</y>
-                <width>80</width>
+                <width>101</width>
                 <height>22</height>
                </rect>
               </property>
@@ -1517,7 +1667,18 @@
       </layout>
      </item>
      <item>
-      <widget class="TestInputWidget" name="test" native="true"/>
+      <layout class="QVBoxLayout" name="verticalLayout_7">
+       <item>
+        <widget class="TestInputWidget" name="test" native="true">
+         <property name="minimumSize">
+          <size>
+           <width>840</width>
+           <height>100</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+      </layout>
      </item>
     </layout>
    </item>
@@ -1548,7 +1709,7 @@
         <bool>false</bool>
        </property>
        <property name="sizePolicy">
-        <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
+        <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
          <horstretch>0</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
@@ -1595,7 +1756,7 @@
        </row>
        <column>
         <property name="text">
-         <string>Value</string>
+         <string/>
         </property>
        </column>
       </widget>

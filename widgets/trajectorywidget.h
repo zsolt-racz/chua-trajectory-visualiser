@@ -8,6 +8,7 @@
 #include "TrajectoryCalculator.h"
 #include "circuitparameters.h"
 #include "qcustomplot/qcustomplot.h"
+#include "testinputwidget.h"
 
 namespace Ui {
 class TrajectoryWidget;
@@ -29,6 +30,7 @@ public:
     QTimer* animationTimer;
     qint64 animationStart = 0;
     std::vector<Point3DT>::const_iterator nextAnimationPoint;
+    void setTestTable(TestInputWidget* table);
 
     void updateParameters(CircuitParameters* parameters);
 
@@ -44,6 +46,7 @@ private slots:
 private:
     Ui::TrajectoryWidget *ui;
     CircuitParameters* parameters = NULL;
+    TestInputWidget* table = NULL;
     bool updatingParameters = false;
     void initPlots();
     void redrawPlots(Trajectory* result);

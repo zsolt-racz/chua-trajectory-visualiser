@@ -77,13 +77,13 @@ void TrajectoryCalculator::calculateTrajectoryResult(std::vector<TrajectoryResul
     double i,u1,u2;
 
     switch (type) {
-        case U1_I:
+        case I_U1:
             i = y; u1 = x; u2 = z;
             break;
-        case U2_I:
+        case I_U2:
             i = y; u1 = z; u2 = x;
             break;
-        case U1_U2:
+        case U2_U1:
             i = z; u1 = x; u2 = y;
             break;
     }
@@ -147,9 +147,9 @@ CalculatedCut* TrajectoryCalculator::calculateCrossSection(CrossSectionType type
     this->currentResult = new PartiallyCalculatedCut(type, z, xMin, xMax, xStep, yMin, yMax, yStep, tests);
 
     std::vector<std::vector<TrajectoryResult>>::iterator vector_iterator = currentResult->begin();
-    int xSize = this->currentResult->u1Size;
+    int xSize = this->currentResult->xSize;
     double x = xMin;
-    int ySize = this->currentResult->u2Size;
+    int ySize = this->currentResult->xSize;
 
     for(int j = 0; j < xSize && !this->cancelled; ++j, x+=xStep){
         std::vector<TrajectoryResult>::iterator result_iterator = vector_iterator->begin();
@@ -159,7 +159,7 @@ CalculatedCut* TrajectoryCalculator::calculateCrossSection(CrossSectionType type
 
             ++result_iterator;
         }
-        currentResult->addU1Column(&(*(vector_iterator)));
+        currentResult->addXColumn(&(*(vector_iterator)));
         ++vector_iterator;
     }
 
@@ -181,7 +181,7 @@ private:
     double z;
     std::vector<TrajectoryTest>* tests;
     TrajectoryCalculator* calculator;
-    tbb::atomic<PartiallyCalculatedCut*> currentResult;
+    PartiallyCalculatedCut* currentResult;
 
 public:
     void operator()(const tbb::blocked_range<size_t>& r) const {
@@ -190,10 +190,8 @@ public:
         }
         size_t idx = r.begin();
 
-        std::cout << "Begin: " << r.begin() << ", end: " << r.end() << "\n";
-
         std::vector<std::vector<TrajectoryResult>>::iterator vector_iterator = currentResult->begin() + idx;
-        int ySize = this->currentResult->u2Size;
+        int ySize = this->currentResult->ySize;
         for(idx = r.begin(); idx != r.end() && !calculator->cancelled; ++idx){
             double x = xMin + (idx * xStep);
             std::vector<TrajectoryResult>::iterator result_iterator = vector_iterator->begin();
@@ -203,7 +201,7 @@ public:
 
                 ++result_iterator;
             }
-            currentResult->addU1Column(&(*(vector_iterator)));
+            currentResult->addXColumn(&(*(vector_iterator)));
             ++vector_iterator;
         }
     }
@@ -226,7 +224,7 @@ public:
 CalculatedCut* TrajectoryCalculator::parallelCalculateCrossSection(CrossSectionType type, double xMin, double xMax, double xStep,double yMin, double yMax, double yStep, double z, std::vector<TrajectoryTest>* tests){
     this->currentResult = new PartiallyCalculatedCut(type, z, xMin, xMax, xStep, yMin, yMax, yStep, tests);
 
-    tbb::parallel_for(tbb::blocked_range<size_t>(0, this->currentResult->u1Size), TBBCalculateCrossSection(type, xMin, xMax, xStep, yMin, yMax, yStep, z, tests, this, this->currentResult));
+    tbb::parallel_for(tbb::blocked_range<size_t>(0, this->currentResult->xSize), TBBCalculateCrossSection(type, xMin, xMax, xStep, yMin, yMax, yStep, z, tests, this, this->currentResult));
 
     CalculatedCut* result = this->currentResult;
     this->currentResult = NULL;

@@ -1,6 +1,6 @@
 #ifndef CROSSSECTIONTYPE_H
 #define CROSSSECTIONTYPE_H
 
-enum CrossSectionType { U1_I, U2_I, U1_U2 };
+enum CrossSectionType { I_U1, I_U2, U2_U1 };
 
 #endif // CROSSSECTIONTYPE_H

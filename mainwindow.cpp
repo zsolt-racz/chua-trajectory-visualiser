@@ -13,6 +13,8 @@ MainWindow::MainWindow(QWidget *parent) :
     this->ui->trajectory->updateParameters(this->parameters);
     this->ui->crosssection->updateParameters(this->parameters);
 
+    this->ui->trajectory->setTestTable(this->ui->crosssection->findChild<TestInputWidget*>("test"));
+
     this->connect(this->ui->actionLoad_parameters, &QAction::triggered, this, &MainWindow::loadParametersAction);
     this->connect(this->ui->actionSave_parameters, &QAction::triggered, this, &MainWindow::saveParametersAction);
     this->connect(this->ui->actionExport_to_TXT, &QAction::triggered, this, &MainWindow::exportTXTAction);
@@ -50,14 +52,14 @@ void MainWindow::loadParametersFromFile(std::string filename){
     double C1, C2, R, L, I;
     double Bp, B0, m0, m1, m2;
     double ro, tmax, h0, uhmax, ihmax;
-    double n, u1_0, u2_0, i_0, t_test;
+    double n, u2_0, u1_0, i_0, t_test;
     double u1_from_u1i, u1_to_u1i, u1_step_u1i, u2_u1i, i_from_u1i, i_to_u1i, i_step_u1i;
     double i_from_u2i, u2_from_u2i, u2_to_u2i, u2_step_u2i, u1_u2i, i_to_u2i, i_step_u2i;
     double u1_from_u1u2, u1_to_u1u2, u1_step_u1u2, u2_from_u1u2, u2_to_u1u2, u2_step_u1u2, i_u1u2;
 
     std::ifstream file;
     file.open(filename);
-    file >> std::setprecision(15) >> C1 >> C2 >> R >> L >> ro >> m0 >> m1 >> i_0 >> u1_0 >> u2_0 >>
+    file >> std::setprecision(15) >> C1 >> C2 >> R >> L >> ro >> m0 >> m1 >> i_0 >> u2_0 >> u1_0 >>
                                      m2 >> I >> Bp >> B0 >> tmax >> h0 >> uhmax >> ihmax >> t_test >> n >>
                                      u1_from_u1i >> u1_to_u1i >> u1_step_u1i >> u2_u1i >> i_from_u1i >> i_to_u1i >> i_step_u1i >>
                                      i_from_u2i >> u2_from_u2i >> u2_to_u2i >> u2_step_u2i >> u1_u2i >> i_to_u2i >> i_step_u2i >>
@@ -118,6 +120,12 @@ void MainWindow::loadParametersFromFile(std::string filename){
     this->ui->crosssection->updateParameters(this->parameters);
 
 
+    this->setStatusText(filename);
+
+}
+
+
+void MainWindow::setStatusText(std::string filename){
     std::string truncatedFileName;
     if(filename.length() > 60){
         truncatedFileName = "..." + filename.substr(filename.length() - 55, 55);
@@ -127,7 +135,6 @@ void MainWindow::loadParametersFromFile(std::string filename){
 
     loadedFileLabel->setText(QString(("Loaded file: " +truncatedFileName).c_str()));
 }
-
 
 
 void MainWindow::loadParametersAction(){
@@ -162,8 +169,8 @@ void MainWindow::saveParametersAction(){
               this->ui->trajectory->findChild<QDoubleSpinBox*>("input_m0")->value() << "\t" <<
               this->ui->trajectory->findChild<QDoubleSpinBox*>("input_m1")->value() << "\t" <<
               this->ui->trajectory->findChild<QDoubleSpinBox*>("input_i_0")->value() << "\t" <<
-              this->ui->trajectory->findChild<QDoubleSpinBox*>("input_u1_0")->value() << "\t" <<
-              this->ui->trajectory->findChild<QDoubleSpinBox*>("input_u2_0")->value() << "\n" <<
+              this->ui->trajectory->findChild<QDoubleSpinBox*>("input_u2_0")->value() << "\t" <<
+              this->ui->trajectory->findChild<QDoubleSpinBox*>("input_u1_0")->value() << "\n" <<
 
               this->ui->trajectory->findChild<QDoubleSpinBox*>("input_m2")->value() << "\t" <<
               this->ui->trajectory->findChild<QDoubleSpinBox*>("input_I")->value() << "\t" <<
@@ -212,7 +219,7 @@ void MainWindow::saveParametersAction(){
               }
 
 
-              output << "\n\nC1\tC2\tR\tL\tro\tm0\tm1\ti_zp\tu1_zp\tu2_zp\n" <<
+              output << "\n\nC1\tC2\tR\tL\tro\tm0\tm1\ti_zp\tu2_zp\tu1_zp\n" <<
               "m2\tI\tBp\tBo\ttmax\tho\tuhmax\tihmax\tt_test\tn\n\n" <<
               "u1_from_u1i\tu1_to_u1i\tu1_step_u1i\tu2_u1i\ti_from_u1i\ti_to_u1i\ti_step_u1i\n" <<
               "i_from_u2i\tu2_from_u2i\tu2_to_u2i\tu2_step_u2i\tu1_u2i\ti_to_u2i\ti_step_u2i\n" <<
@@ -220,6 +227,7 @@ void MainWindow::saveParametersAction(){
 
 
     output.close();
+    this->setStatusText(fileName.toStdString());
 }
 
 void MainWindow::exportTXTAction(){

@@ -1,27 +1,27 @@
 #include "calculatedcut.h"
 
-CalculatedCut::CalculatedCut(CrossSectionType type, double i, double u1Min, double u1Max, double u1Step, double u2Min, double u2Max, double u2Step, std::vector<TrajectoryTest>* tests):
+CalculatedCut::CalculatedCut(CrossSectionType type, double z, double xMin, double xMax, double xStep, double yMin, double yMax, double yStep, std::vector<TrajectoryTest>* tests):
     type(type),
-    i(i),
-    u1Min(u1Min),
-    u1Max(u1Max),
-    u1Size((int) std::floor(std::abs(u1Max - u1Min) / u1Step) + 1),
-    u2Min(u2Min),
-    u2Max(u2Max),
-    u2Size((int) std::floor(std::abs(u2Max - u2Min) / u2Step) + 1),
+    z(z),
+    xMin(xMin),
+    xMax(xMax),
+    xSize((int) std::floor(std::abs(xMax - xMin) / xStep) + 1),
+    yMin(yMin),
+    yMax(yMax),
+    ySize((int) std::floor(std::abs(yMax - yMin) / yStep) + 1),
     tests(tests){
-    this->results = std::vector<std::vector<TrajectoryResult>>(u1Size, std::vector<TrajectoryResult>(u2Size));
+    this->results = std::vector<std::vector<TrajectoryResult>>(xSize, std::vector<TrajectoryResult>(ySize));
 }
 
-CalculatedCut::CalculatedCut(CrossSectionType type, double i, double u1Min, double u1Max, double u1Size, double u2Min, double u2Max, double u2Size, std::vector<TrajectoryTest>* tests, std::vector<std::vector<TrajectoryResult>> results):
+CalculatedCut::CalculatedCut(CrossSectionType type, double z, double xMin, double xMax, double xSize, double yMin, double yMax, double ySize, std::vector<TrajectoryTest>* tests, std::vector<std::vector<TrajectoryResult>> results):
     type(type),
-    i(i),
-    u1Min(u1Min),
-    u1Max(u1Max),
-    u1Size(u1Size),
-    u2Min(u2Min),
-    u2Max(u2Max),
-    u2Size(u2Size),
+    z(z),
+    xMin(xMin),
+    xMax(xMax),
+    xSize(xSize),
+    yMin(yMin),
+    yMax(yMax),
+    ySize(ySize),
     tests(tests),
     results(results){}
 
@@ -35,35 +35,19 @@ void CalculatedCut::writeToTxt(std::string filename) {
 
     for (std::vector<std::vector<TrajectoryResult>>::const_iterator vector_iterator = this->cbegin(); vector_iterator != this->cend(); ++vector_iterator) {
         for (std::vector<TrajectoryResult>::const_iterator result_iterator = vector_iterator->cbegin(); result_iterator != vector_iterator->cend(); ++result_iterator) {
-            output << std::setprecision(15) << this->i << "\t" << result_iterator->x << "\t" << result_iterator->y << "\t" << result_iterator->result() << "\t" << result_iterator->t << "\t" << result_iterator->divisionCount << "\n";
-        }
-    }
-
-    output.close();
-}
-
-void CalculatedCut::writeToPLY(std::string filename) {
-    std::ofstream output;
-    output.open(filename.c_str());
-
-    output << "ply" << "\n";
-    output << "format ascii 1.0" << "\n";
-    output << "element vertex " << this->results.size() << "\n";
-    output << "property float x" << "\n";
-    output << "property float y" << "\n";
-    output << "property float z" << "\n";
-    output << "end_header" << "\n";
-
-    for (std::vector<std::vector<TrajectoryResult>>::const_iterator vector_iterator = this->cbegin(); vector_iterator != this->cend(); ++vector_iterator) {
-        for (std::vector<TrajectoryResult>::const_iterator result_iterator = vector_iterator->cbegin(); result_iterator != vector_iterator->cend(); ++result_iterator) {
-            if(result_iterator->result() == TrajectoryResultType::CHA){
-                output << this->i << " " << result_iterator->x << " " << result_iterator->y << "\n";
+            if(this->type == I_U1){
+                output << std::setprecision(15) << result_iterator->y << "\t" << this->z << "\t" << result_iterator->x << "\t" << result_iterator->result() << "\t" << result_iterator->t << "\t" << result_iterator->divisionCount << "\n";
+            }else if(this->type == I_U2){
+                output << std::setprecision(15) << result_iterator->y << "\t" << result_iterator->x << "\t" << this->z << "\t" << result_iterator->result() << "\t" << result_iterator->t << "\t" << result_iterator->divisionCount << "\n";
+            }else if(this->type == U2_U1){
+                output << std::setprecision(15) << this->z << "\t" << result_iterator->y << "\t" << result_iterator->x << "\t" << result_iterator->result() << "\t" << result_iterator->t << "\t" << result_iterator->divisionCount << "\n";
             }
         }
     }
 
     output.close();
 }
+
 
 std::vector<std::vector<TrajectoryResult>>::iterator CalculatedCut::begin(){
     return this->results.begin();

@@ -7,6 +7,7 @@
 #include <iostream>
 #include <fstream>
 #include <limits>
+#include <algorithm>
 #include "Point3DT.h"
 
 class Trajectory

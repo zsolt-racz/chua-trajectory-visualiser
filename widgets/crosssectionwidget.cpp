@@ -8,6 +8,7 @@ CrossSectionWidget::CrossSectionWidget(QWidget *parent) :
     ui->setupUi(this);
 
     this->ui->progressBar->setDisabled(true);
+    this->ui->resultTable->horizontalHeader()->hide();
 
     this->calculatButtonSignalMapper = new QSignalMapper(this);
 
@@ -81,7 +82,7 @@ void CrossSectionWidget::saveCurrentResultToPng()
         return;
     }
 
-    this->ui->plot_cut->savePng(fileName, 0, 0, 1.0, -1);
+    this->ui->plot_cut->savePng(fileName, 0, 0, 1.2, -1);
 }
 
 void CrossSectionWidget::exportCurrentResultToTxt()
@@ -108,6 +109,12 @@ void CrossSectionWidget::contextMenuRequest(QPoint pos)
 
 void CrossSectionWidget::initPlot(){
     QCustomPlot* customPlot = this->ui->plot_cut;
+    QFont font = customPlot->xAxis->labelFont();
+    font.setPointSize(11);
+    customPlot->xAxis->setLabelFont(font);
+    customPlot->yAxis->setLabelFont(font);
+    customPlot->xAxis->setTickLabelFont(font);
+    customPlot->yAxis->setTickLabelFont(font);
     this->colorMap = new CrossSectionMap(customPlot->xAxis, customPlot->yAxis);
 
     //colorMap->setGradient(QCPColorGradient::gpHot);
@@ -117,17 +124,17 @@ void CrossSectionWidget::initPlot(){
 
 void CrossSectionWidget::calculateButtonPressed(QWidget* button){
     if(button == ui->button_calculate_u1i){
-        this->reCalculate(U1_I, false);
+        this->reCalculate(I_U1, false);
     }else if(button == ui->button_calculate_parallel_u1i){
-        this->reCalculate(U1_I, true);
+        this->reCalculate(I_U1, true);
     }else if(button == ui->button_calculate_u2i){
-        this->reCalculate(U2_I, false);
+        this->reCalculate(I_U2, false);
     }else if(button == ui->button_calculate_parallel_u2i){
-        this->reCalculate(U2_I, true);
+        this->reCalculate(I_U2, true);
     }else if(button == ui->button_calculate_u1u2){
-        this->reCalculate(U1_U2, false);
+        this->reCalculate(U2_U1, false);
     }else if(button == ui->button_calculate_parallel_u1u2){
-        this->reCalculate(U1_U2, true);
+        this->reCalculate(U2_U1, true);
     }
 }
 
@@ -136,7 +143,7 @@ void CrossSectionWidget::reCalculate(CrossSectionType type, bool parallel){
 
     double xMin, xMax, xStep, yMin, yMax, yStep, z;
     switch (type) {
-    case U1_I:
+    case I_U1:
         xMin = this->ui->input_u1_from_u1i->value();
         xMax = this->ui->input_u1_to_u1i->value();
         xStep = this->ui->input_u1_step_u1i->value();
@@ -147,7 +154,7 @@ void CrossSectionWidget::reCalculate(CrossSectionType type, bool parallel){
 
         this->ui->button_cancel_u1i->setEnabled(true);
         break;
-    case U2_I:
+    case I_U2:
         xMin = this->ui->input_u2_from_u2i->value();
         xMax = this->ui->input_u2_to_u2i->value();
         xStep = this->ui->input_u2_step_u2i->value();
@@ -158,7 +165,7 @@ void CrossSectionWidget::reCalculate(CrossSectionType type, bool parallel){
 
         this->ui->button_cancel_u2i->setEnabled(true);
         break;
-    case U1_U2:
+    case U2_U1:
         xMin = this->ui->input_u1_from_u1u2->value();
         xMax = this->ui->input_u1_to_u1u2->value();
         xStep = this->ui->input_u1_step_u1u2->value();
@@ -274,21 +281,21 @@ void CrossSectionWidget::calculationFinished(){
 
 void CrossSectionWidget::initForCut(CalculatedCut* cut){
     QCustomPlot* customPlot = this->ui->plot_cut;
-    if(cut->type == U1_I){
+    if(cut->type == I_U1){
         customPlot->xAxis->setLabel("u1");
         customPlot->yAxis->setLabel("i");
-    }else if(cut->type == U2_I){
+    }else if(cut->type == I_U2){
         customPlot->xAxis->setLabel("u2");
         customPlot->yAxis->setLabel("i");
-    }else if(cut->type == U1_U2){
+    }else if(cut->type == U2_U1){
         customPlot->xAxis->setLabel("u1");
         customPlot->yAxis->setLabel("u2");
     }
 
-    this->colorMap->data()->setSize(cut->u1Size, cut->u2Size);
-    this->colorMap->data()->setRange(QCPRange(cut->u1Min, cut->u1Max), QCPRange(cut->u2Min, cut->u2Max)); // and span the coordinate range -4..4 in both key (x) and value (y) dimensions
-    customPlot->xAxis->setRange(cut->u1Min, cut->u1Max);
-    customPlot->yAxis->setRange(cut->u2Min, cut->u2Max);
+    this->colorMap->data()->setSize(cut->xSize, cut->ySize);
+    this->colorMap->data()->setRange(QCPRange(cut->xMin, cut->xMax), QCPRange(cut->yMin, cut->yMax)); // and span the coordinate range -4..4 in both key (x) and value (y) dimensions
+    customPlot->xAxis->setRange(cut->xMin, cut->xMax);
+    customPlot->yAxis->setRange(cut->yMin, cut->yMax);
 }
 
 void CrossSectionWidget::reDraw(CalculatedCut* cut){
@@ -306,7 +313,7 @@ void CrossSectionWidget::reDraw(CalculatedCut* cut){
 void CrossSectionWidget::reDrawPartial(PartiallyCalculatedCut* cut){
     QCustomPlot* customPlot = this->ui->plot_cut;
 
-    for (std::list<std::vector<TrajectoryResult>*>::const_iterator vector_iterator = cut->cbeginU1Columns(); vector_iterator != cut->cendU1Columns(); ++vector_iterator) {
+    for (std::list<std::vector<TrajectoryResult>*>::const_iterator vector_iterator = cut->cbeginXColumns(); vector_iterator != cut->cendXColumns(); ++vector_iterator) {
         for (std::vector<TrajectoryResult>::const_iterator result_iterator = (*vector_iterator)->cbegin(); result_iterator != (*vector_iterator)->cend(); ++result_iterator) {
             this->colorMap->data()->setData(result_iterator->x, result_iterator->y, cut->getTestIndex(result_iterator->test));
         }
@@ -336,12 +343,12 @@ void CrossSectionWidget::updateResultTable(CalculatedCut* cut, int timeInMs){
     }
 
     QTableWidgetItem *resolution = new QTableWidgetItem;
-    resolution->setText(QString("%1 x %2").arg(cut->u1Size).arg(cut->u2Size));
+    resolution->setText(QString("%1 x %2").arg(cut->xSize).arg(cut->ySize));
 
     QTableWidgetItem *time = new QTableWidgetItem;
     time->setText(this->formatTime(timeInMs));
 
-    int allPoints = cut->u1Size * cut->u2Size;
+    int allPoints = cut->xSize * cut->ySize;
 
     float chaosPercent = ((float)chaosPoints / (float)allPoints) * 100;
     QTableWidgetItem *chaos = new QTableWidgetItem;

@@ -17,10 +17,10 @@
    </sizepolicy>
   </property>
   <property name="windowTitle">
-   <string>ChuaViz 0.72</string>
+   <string>ChuaViz 0.76</string>
   </property>
   <property name="styleSheet">
-   <string notr="true">QGroupBox,QLabel{
+   <string notr="true">QGroupBox,QLabel,QDoubleSpinBox, QHeaderView,QTableWidget,QComboBox,QTabBar,QMenu::item{
 font-size:11pt;
 }
 

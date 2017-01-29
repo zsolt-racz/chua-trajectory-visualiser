@@ -14,19 +14,18 @@ class CalculatedCut
 {
 
 public:
-    CalculatedCut(CrossSectionType type, double i, double u1Min, double u1Max, double u1Step, double u2Min, double u2Max, double u2Step, std::vector<TrajectoryTest>* tests);
+    CalculatedCut(CrossSectionType type, double z, double xMin, double xMax, double xStep, double yMin, double yMax, double yStep, std::vector<TrajectoryTest>* tests);
     ~CalculatedCut();
     CrossSectionType type;
-    const double i;
-    const double u1Min;
-    const double u1Max;
-    const int u1Size;
-    const double u2Min;
-    const double u2Max;
-    const int u2Size;
+    const double z;
+    const double xMin;
+    const double xMax;
+    const int xSize;
+    const double yMin;
+    const double yMax;
+    const int ySize;
 
     void writeToTxt(std::string filename);
-    void writeToPLY(std::string filename);
 
     std::vector<std::vector<TrajectoryResult>>::iterator begin();
     std::vector<std::vector<TrajectoryResult>>::iterator end();
@@ -36,7 +35,7 @@ public:
     int getTestIndex(const TrajectoryTest test);
     int getTestIndex(const TrajectoryTest* test);
 
-    CalculatedCut(CrossSectionType type, double i, double u1Min, double u1Max, double u1Size, double u2Min, double u2Max, double u2Size, std::vector<TrajectoryTest>* tests, std::vector<std::vector<TrajectoryResult>> results);
+    CalculatedCut(CrossSectionType type, double z, double xMin, double xMax, double xSize, double yMin, double yMax, double ySize, std::vector<TrajectoryTest>* tests, std::vector<std::vector<TrajectoryResult>> results);
 protected:
     std::vector<TrajectoryTest>* tests;
     std::vector<std::vector<TrajectoryResult>> results;

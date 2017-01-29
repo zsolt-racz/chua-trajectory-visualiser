@@ -62,9 +62,9 @@ void TestInputWidget::clearRows(){
 
 QDoubleSpinBox* TestInputWidget::createSpinBox(QWidget* parent){
     QDoubleSpinBox* result = new QDoubleSpinBox(parent);
-    result->setDecimals(8);
-    result->setMinimum(-1000);
-    result->setMaximum(1000);
+    result->setDecimals(4);
+    result->setMinimum(-999);
+    result->setMaximum(999);
 
     return result;
 }
@@ -80,12 +80,13 @@ QComboBox* TestInputWidget::createColorCombobox(QWidget* parent){
     QComboBox* result = new QComboBox(parent);
 
     result->addItem(QString("aqua"));
-    result->addItem(QString("black"));
     result->addItem(QString("blue"));
+    result->addItem(QString("brown"));
     result->addItem(QString("gray"));
     result->addItem(QString("green"));
     result->addItem(QString("lime"));
     result->addItem(QString("magenta"));
+    result->addItem(QString("orange"));
     result->addItem(QString("purple"));
     result->addItem(QString("red"));
     result->addItem(QString("yellow"));
