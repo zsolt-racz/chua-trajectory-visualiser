@@ -27,7 +27,9 @@ SOURCES += main.cpp\
     trajectorytest.cpp \
     trajectoryresult.cpp \
     crosssectionmap.cpp \
-    widgets/squarelayout.cpp
+    widgets/squarelayout.cpp \
+    widgets/circuitparameterswidget.cpp \
+    widgets/csseriewidget.cpp
 
 HEADERS  += mainwindow.h \
     qcustomplot/qcustomplot.h \
@@ -150,12 +152,16 @@ HEADERS  += mainwindow.h \
     trajectorytest.h \
     trajectoryresulttype.h \
     crosssectionmap.h \
-    widgets/squarelayout.h
+    widgets/squarelayout.h \
+    widgets/circuitparameterswidget.h \
+    widgets/csseriewidget.h
 
 FORMS    += mainwindow.ui \
     widgets/trajectorywidget.ui \
     widgets/crosssectionwidget.ui \
-    widgets/testinputwidget.ui
+    widgets/testinputwidget.ui \
+    widgets/circuitparameterswidget.ui \
+    widgets/csseriewidget.ui
 
 DISTFILES += \
     parameters.txt \
@@ -360,10 +366,10 @@ CONFIG(release, debug|release) {
         LIBS += -L"$$PWD/tbb/lib/intel64/gcc4.7" -ltbb
 QMAKE_CXXFLAGS_RELEASE -= -O
 QMAKE_CXXFLAGS_RELEASE -= -O1
-QMAKE_CXXFLAGS_RELEASE -= -O2
-QMAKE_CXXFLAGS_RELEASE += -O3
-QMAKE_CXXFLAGS_RELEASE += -march=haswell
-QMAKE_CXXFLAGS_RELEASE += -mavx2 -mfma
+QMAKE_CXXFLAGS_RELEASE += -O2
+#QMAKE_CXXFLAGS_RELEASE += -O3
+#QMAKE_CXXFLAGS_RELEASE += -march=haswell
+#QMAKE_CXXFLAGS_RELEASE += -mavx2 -mfma
     }
 
     win32{

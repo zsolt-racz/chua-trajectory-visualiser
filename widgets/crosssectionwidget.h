@@ -71,6 +71,7 @@ private slots:
     void contextMenuRequest(QPoint pos);
     void saveCurrentResultToPng();
     void exportCurrentResultToTxt();
+    void exportCurrentResultToCsv();
 };
 
 #endif // CUT_H

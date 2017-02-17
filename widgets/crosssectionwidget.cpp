@@ -55,28 +55,12 @@ CrossSectionWidget::~CrossSectionWidget()
 void CrossSectionWidget::updateParameters(CircuitParameters* parameters){
     this->parameters = parameters;
 
-    this->ui->value_c1->setText(QString::number(parameters->C1));
-    this->ui->value_c2->setText(QString::number(parameters->C2));
-    this->ui->value_l->setText(QString::number(parameters->L));
-    this->ui->value_bp->setText(QString::number(parameters->Bp));
-    this->ui->value_b0->setText(QString::number(parameters->B0));
-    this->ui->value_r->setText(QString::number(parameters->R));
-    this->ui->value_ro->setText(QString::number(parameters->ro));
-    this->ui->value_i->setText(QString::number(parameters->I));
-    this->ui->value_m0->setText(QString::number(parameters->m0));
-    this->ui->value_m1->setText(QString::number(parameters->m1));
-    this->ui->value_m2->setText(QString::number(parameters->m2));
-    this->ui->value_tmax->setText(QString::number(parameters->t_max));
-    this->ui->value_h0->setText(QString::number(parameters->h0));
-    this->ui->value_ihmax->setText(QString::number(parameters->iStepMax));
-    this->ui->value_uhmax->setText(QString::number(parameters->uStepMax));
-    this->ui->value_n->setText(QString::number(parameters->n));
-    this->ui->value_t_test->setText(QString::number(parameters->t_test));
+    this->ui->circuitparameters->setParameters(parameters);
 }
 
 void CrossSectionWidget::saveCurrentResultToPng()
 {
-    QString fileName = QFileDialog::getSaveFileName(this, QString("Save result to PNG"), QString(), QString("PNG files (*.png)"));
+    QString fileName = QFileDialog::getSaveFileName(this, QString("Export to PNG"), QString(), QString("PNG files (*.png)"));
 
     if(fileName.isEmpty()){
         return;
@@ -87,13 +71,24 @@ void CrossSectionWidget::saveCurrentResultToPng()
 
 void CrossSectionWidget::exportCurrentResultToTxt()
 {
-    QString fileName = QFileDialog::getSaveFileName(this, QString("Save result to CSV"), QString(), QString("Text files (*.txt)"));
+    QString fileName = QFileDialog::getSaveFileName(this, QString("Export to TXT"), QString(), QString("Text files (*.txt)"));
 
     if(fileName.isEmpty()){
         return;
     }
 
-    this->currentResult->writeToTxt(fileName.toStdString());
+    this->currentResult->writeToTxt(fileName.toStdString(), "\t");
+}
+
+void CrossSectionWidget::exportCurrentResultToCsv()
+{
+    QString fileName = QFileDialog::getSaveFileName(this, QString("Export to CSV"), QString(), QString("Comma-separated values (*.csv)"));
+
+    if(fileName.isEmpty()){
+        return;
+    }
+
+    this->currentResult->writeToTxt(fileName.toStdString(), ",");
 }
 
 void CrossSectionWidget::contextMenuRequest(QPoint pos)
@@ -101,8 +96,9 @@ void CrossSectionWidget::contextMenuRequest(QPoint pos)
     if(this->currentResult != NULL){
         QMenu *menu = new QMenu(this);
         menu->setAttribute(Qt::WA_DeleteOnClose);
-        menu->addAction("Save as an image", this, SLOT(saveCurrentResultToPng()));
+        menu->addAction("Export to CSV", this, SLOT(exportCurrentResultToCsv()));
         menu->addAction("Export to TXT", this, SLOT(exportCurrentResultToTxt()));
+        menu->addAction("Export to PNG", this, SLOT(saveCurrentResultToPng()));
         menu->popup(ui->plot_cut->mapToGlobal(pos));
     }
 }
@@ -141,15 +137,15 @@ void CrossSectionWidget::calculateButtonPressed(QWidget* button){
 void CrossSectionWidget::reCalculate(CrossSectionType type, bool parallel){
     this->calculator = new TrajectoryCalculator(this->parameters);
 
-    double xMin, xMax, xStep, yMin, yMax, yStep, z;
+    double xMin, xMax, xPoints, yMin, yMax, yPoints, z;
     switch (type) {
     case I_U1:
         xMin = this->ui->input_u1_from_u1i->value();
         xMax = this->ui->input_u1_to_u1i->value();
-        xStep = this->ui->input_u1_step_u1i->value();
+        xPoints = this->ui->input_u1_points_u1i->value();
         yMin = this->ui->input_i_from_u1i->value();
         yMax = this->ui->input_i_to_u1i->value();
-        yStep = this->ui->input_i_step_u1i->value();
+        yPoints = this->ui->input_i_points_u1i->value();
         z = this->ui->input_u2_u1i->value();
 
         this->ui->button_cancel_u1i->setEnabled(true);
@@ -157,10 +153,10 @@ void CrossSectionWidget::reCalculate(CrossSectionType type, bool parallel){
     case I_U2:
         xMin = this->ui->input_u2_from_u2i->value();
         xMax = this->ui->input_u2_to_u2i->value();
-        xStep = this->ui->input_u2_step_u2i->value();
+        xPoints = this->ui->input_u2_points_u2i->value();
         yMin = this->ui->input_i_from_u2i->value();
         yMax = this->ui->input_i_to_u2i->value();
-        yStep = this->ui->input_i_step_u2i->value();
+        yPoints = this->ui->input_i_points_u2i->value();
         z = this->ui->input_u1_u2i->value();
 
         this->ui->button_cancel_u2i->setEnabled(true);
@@ -168,10 +164,10 @@ void CrossSectionWidget::reCalculate(CrossSectionType type, bool parallel){
     case U2_U1:
         xMin = this->ui->input_u1_from_u1u2->value();
         xMax = this->ui->input_u1_to_u1u2->value();
-        xStep = this->ui->input_u1_step_u1u2->value();
+        xPoints = this->ui->input_u1_points_u1u2->value();
         yMin = this->ui->input_u2_from_u1u2->value();
         yMax = this->ui->input_u2_to_u1u2->value();
-        yStep = this->ui->input_u2_step_u1u2->value();
+        yPoints = this->ui->input_u2_points_u1u2->value();
         z = this->ui->input_i_u1u2->value();
 
         this->ui->button_cancel_u1u2->setEnabled(true);
@@ -182,9 +178,9 @@ void CrossSectionWidget::reCalculate(CrossSectionType type, bool parallel){
     std::vector<TrajectoryTest>* tests = this->ui->test->getTests();
     QFuture<CalculatedCut*> future;
     if(parallel){
-        future = QtConcurrent::run(std::bind(&TrajectoryCalculator::parallelCalculateCrossSection, this->calculator, type, xMin, xMax, xStep, yMin, yMax, yStep, z, tests));
+        future = QtConcurrent::run(std::bind(&TrajectoryCalculator::parallelCalculateCrossSection, this->calculator, type, xMin, xMax, xPoints, yMin, yMax, yPoints, z, tests));
     }else{
-        future = QtConcurrent::run(std::bind(&TrajectoryCalculator::calculateCrossSection, this->calculator, type, xMin, xMax, xStep, yMin, yMax, yStep, z, tests));
+        future = QtConcurrent::run(std::bind(&TrajectoryCalculator::calculateCrossSection, this->calculator, type, xMin, xMax, xPoints, yMin, yMax, yPoints, z, tests));
     }
 
     this->FutureWatcher.setFuture(future);
@@ -207,7 +203,7 @@ void CrossSectionWidget::reCalculate(CrossSectionType type, bool parallel){
     this->ui->plot_cut->setInteraction(QCP::iRangeDrag, false);
     this->ui->plot_cut->setInteraction(QCP::iRangeZoom, false);
 
-    this->updateProgressTimer.start(50);
+    this->updateProgressTimer.start(100);
     this->lastProgress = 0;
 
     if(this->currentResult != NULL){
@@ -233,6 +229,7 @@ void CrossSectionWidget::cancelCalculation(){
     this->ui->button_calculate_parallel_u1u2->setEnabled(true);
 
     this->calculator->cancelled = true;
+    this->updateProgressTimer.stop();
 
 }
 

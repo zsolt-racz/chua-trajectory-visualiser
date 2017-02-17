@@ -42,6 +42,15 @@ private slots:
     void synchronizeRangeWithIU2();
     void synchronizeRangeWithU1U2();
     void updateParametersByGui();
+    void contextMenuRequestIU1(QPoint pos);
+    void contextMenuRequestIU2(QPoint pos);
+    void contextMenuRequestU1U2(QPoint pos);
+    void exportCurrentResultToTxt();
+    void exportCurrentResultToCsv();
+    void exportCurrentResultToPly();
+    void savePlotIU1ToPng();
+    void savePlotIU2ToPng();
+    void savePlotU1U2ToPng();
 
 private:
     Ui::TrajectoryWidget *ui;

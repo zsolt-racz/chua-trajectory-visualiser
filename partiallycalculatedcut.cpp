@@ -1,7 +1,7 @@
 #include "partiallycalculatedcut.h"
 
-PartiallyCalculatedCut::PartiallyCalculatedCut(CrossSectionType type, double z, double xMin, double xMax, double xStep, double yMin, double yMax, double yStep, std::vector<TrajectoryTest>* tests):
-    CalculatedCut(type, z, xMin, xMax, xStep, yMin, yMax, yStep, tests){
+PartiallyCalculatedCut::PartiallyCalculatedCut(CrossSectionType type, double z, double xMin, double xMax, double xSize, double yMin, double yMax, double ySize, std::vector<TrajectoryTest>* tests):
+    CalculatedCut(type, z, xMin, xMax, xSize, yMin, yMax, ySize, tests){
     this->currentProgress = 0;
 }
 

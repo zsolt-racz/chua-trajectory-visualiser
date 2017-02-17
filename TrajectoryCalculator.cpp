@@ -11,7 +11,7 @@ TrajectoryCalculator::TrajectoryCalculator(CircuitParameters* parameters) :
 TrajectoryCalculator::~TrajectoryCalculator() {
 }
 
-Trajectory* TrajectoryCalculator::calculateTrajectory(double i0, double u1_0, double u2_0) {
+Trajectory* TrajectoryCalculator::calculateTrajectory(double i0, double u1_0, double u2_0, int maxPoints) {
     std::vector<Point3DT>* points = new std::vector<Point3DT>();
 
     double i = i0;
@@ -21,10 +21,11 @@ Trajectory* TrajectoryCalculator::calculateTrajectory(double i0, double u1_0, do
     double h = h0;
 
     int divisionCount = 0;
+    int pointCount = 0;
 
     // Save initial coordinates at t=0
     points->push_back(Point3DT(i0, u1_0, u2_0, 0));
-    for (double t = h; t <= t_max; t += h) {
+    for (double t = h; t <= t_max && pointCount <= maxPoints; t += h) {
         double a_i = fi(u2, i);
         double a_u1 = fu1(u1, u2, i);
         double a_u2 = fu2(u1, u2, i);
@@ -61,12 +62,16 @@ Trajectory* TrajectoryCalculator::calculateTrajectory(double i0, double u1_0, do
             h = h * this->n;
 
             points->push_back(Point3DT(i, u1, u2, t));
+            pointCount++;
         }
     }
 
     return new Trajectory(points, divisionCount);
 }
 
+Trajectory* TrajectoryCalculator::calculateTrajectory(double i0, double u1_0, double u2_0){
+    return this->calculateTrajectory(i0, u1_0, u2_0, std::numeric_limits<int>::max());
+}
 
 void TrajectoryCalculator::calculateTrajectoryResult(std::vector<TrajectoryResult>::iterator result, CrossSectionType type, double x, double y, double z, std::vector<TrajectoryTest>* tests) {
     result->x = x;
@@ -143,18 +148,22 @@ void TrajectoryCalculator::calculateTrajectoryResult(std::vector<TrajectoryResul
     result->divisionCount = divisionCount;
 }
 
-CalculatedCut* TrajectoryCalculator::calculateCrossSection(CrossSectionType type, double xMin, double xMax, double xStep,double yMin, double yMax, double yStep, double z, std::vector<TrajectoryTest>* tests){
-    this->currentResult = new PartiallyCalculatedCut(type, z, xMin, xMax, xStep, yMin, yMax, yStep, tests);
+CalculatedCut* TrajectoryCalculator::calculateCrossSection(CrossSectionType type, double xMin, double xMax, double xPoints, double yMin, double yMax, double yPoints, double z, std::vector<TrajectoryTest>* tests){
+    this->currentResult = new PartiallyCalculatedCut(type, z, xMin, xMax, xPoints, yMin, yMax, yPoints, tests);
 
     std::vector<std::vector<TrajectoryResult>>::iterator vector_iterator = currentResult->begin();
-    int xSize = this->currentResult->xSize;
-    double x = xMin;
-    int ySize = this->currentResult->xSize;
 
-    for(int j = 0; j < xSize && !this->cancelled; ++j, x+=xStep){
+    double xStep = ((xMax-xMin)/(xPoints-1));
+    double yStep = ((yMax-yMin)/(yPoints-1));
+    double x;
+    for(int j = 0; j < xPoints && !this->cancelled; ++j){
+        x=xMin+j*xStep;
         std::vector<TrajectoryResult>::iterator result_iterator = vector_iterator->begin();
-        double y = yMin;
-        for(int k = 0; k < ySize; ++k, y+=yStep){
+        double y;
+
+        for(int k = 0; k < yPoints; ++k){
+            y=yMin+k*yStep;
+
             this->calculateTrajectoryResult(result_iterator, type, x, y, z, tests);
 
             ++result_iterator;
@@ -174,10 +183,10 @@ private:
     CrossSectionType type;
     double xMin;
     double xMax;
-    double xStep;
+    double xPoints;
     double yMin;
     double yMax;
-    double yStep;
+    double yPoints;
     double z;
     std::vector<TrajectoryTest>* tests;
     TrajectoryCalculator* calculator;
@@ -190,13 +199,18 @@ public:
         }
         size_t idx = r.begin();
 
+        double xStep = ((xMax-xMin)/(this->xPoints-1));
+        double yStep = ((yMax-yMin)/(this->yPoints-1));
+
         std::vector<std::vector<TrajectoryResult>>::iterator vector_iterator = currentResult->begin() + idx;
-        int ySize = this->currentResult->ySize;
+        double x;
         for(idx = r.begin(); idx != r.end() && !calculator->cancelled; ++idx){
-            double x = xMin + (idx * xStep);
+            x = xMin + (idx * xStep);
             std::vector<TrajectoryResult>::iterator result_iterator = vector_iterator->begin();
-            double y = yMin;
-            for(int j = 0; j < ySize; ++j, y+=yStep){
+            double y;
+
+            for(int j = 0; j < this->yPoints; ++j){
+                y = yMin + (j * yStep);
                 calculator->calculateTrajectoryResult(result_iterator, type, x, y, this->z, this->tests);
 
                 ++result_iterator;
@@ -206,14 +220,14 @@ public:
         }
     }
 
-    TBBCalculateCrossSection(CrossSectionType type, double xMin, double xMax, double xStep, double yMin, double yMax, double yStep, double z, std::vector<TrajectoryTest>* tests, TrajectoryCalculator* calculator, PartiallyCalculatedCut* currentResult):
+    TBBCalculateCrossSection(CrossSectionType type, double xMin, double xMax, double xPoints, double yMin, double yMax, double yPoints, double z, std::vector<TrajectoryTest>* tests, TrajectoryCalculator* calculator, PartiallyCalculatedCut* currentResult):
         type(type),
         xMin(xMin),
         xMax(xMax),
-        xStep(xStep),
+        xPoints(xPoints),
         yMin(yMin),
         yMax(yMax),
-        yStep(yStep),
+        yPoints(yPoints),
         z(z),
         tests(tests),
         calculator(calculator),
@@ -221,10 +235,10 @@ public:
     }
 };
 
-CalculatedCut* TrajectoryCalculator::parallelCalculateCrossSection(CrossSectionType type, double xMin, double xMax, double xStep,double yMin, double yMax, double yStep, double z, std::vector<TrajectoryTest>* tests){
-    this->currentResult = new PartiallyCalculatedCut(type, z, xMin, xMax, xStep, yMin, yMax, yStep, tests);
+CalculatedCut* TrajectoryCalculator::parallelCalculateCrossSection(CrossSectionType type, double xMin, double xMax, double xPoints, double yMin, double yMax, double yPoints, double z, std::vector<TrajectoryTest>* tests){
+    this->currentResult = new PartiallyCalculatedCut(type, z, xMin, xMax, xPoints, yMin, yMax, yPoints, tests);
 
-    tbb::parallel_for(tbb::blocked_range<size_t>(0, this->currentResult->xSize), TBBCalculateCrossSection(type, xMin, xMax, xStep, yMin, yMax, yStep, z, tests, this, this->currentResult));
+    tbb::parallel_for(tbb::blocked_range<size_t>(0, this->currentResult->xSize), TBBCalculateCrossSection(type, xMin, xMax, xPoints, yMin, yMax, yPoints, z, tests, this, this->currentResult));
 
     CalculatedCut* result = this->currentResult;
     this->currentResult = NULL;

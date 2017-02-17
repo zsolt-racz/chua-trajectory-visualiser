@@ -34,11 +34,10 @@ private:
     std::string trim(const std::string& str, const std::string& whitespace);
     void loadParametersFromFile(std::string filename);
 
-    void exportTXTAction();
-    void exportPLYAction();
     void exitAction();
     void switchToTrajectoryAction();
     void switchToCrossSectionAction();
+    void switchToCSSerieAction();
     void loadParametersAction();
     void saveParametersAction();
     void setStatusText(std::string filename);

@@ -32,6 +32,10 @@ TrajectoryWidget::TrajectoryWidget(QWidget *parent) :
     this->connect(this->ui->input_n, SIGNAL(editingFinished()), this, SLOT(updateParametersByGui()));
     this->connect(this->ui->input_t_test, SIGNAL(editingFinished()), this, SLOT(updateParametersByGui()));
 
+    this->connect(this->ui->plot_iu1, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(contextMenuRequestIU1(QPoint)));
+    this->connect(this->ui->plot_iu2, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(contextMenuRequestIU2(QPoint)));
+    this->connect(this->ui->plot_u1u2, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(contextMenuRequestU1U2(QPoint)));
+
     this->animationTimer = new QTimer(this);
     this->connect(this->animationTimer, &QTimer::timeout, this, &TrajectoryWidget::animationStep);
 
@@ -492,7 +496,7 @@ int TrajectoryWidget::reCalculate(){
     clock.start();
     TrajectoryCalculator calculator = TrajectoryCalculator(this->parameters);
 
-    this->currentResult = calculator.calculateTrajectory(this->ui->input_i_0->value(), this->ui->input_u1_0->value(), this->ui->input_u2_0->value());
+    this->currentResult = calculator.calculateTrajectory(this->ui->input_i_0->value(), this->ui->input_u1_0->value(), this->ui->input_u2_0->value(), 1000000);
     return clock.elapsed();
 }
 
@@ -508,3 +512,108 @@ void TrajectoryWidget::reCalculateAndAnimate(){
     this->reCalculate();
     this->animatePlots();
 }
+
+void TrajectoryWidget::contextMenuRequestIU1(QPoint pos)
+{
+    if(this->currentResult != NULL){
+        QMenu *menu = new QMenu(this);
+        menu->setAttribute(Qt::WA_DeleteOnClose);
+        menu->addAction("Export to CSV", this, SLOT(exportCurrentResultToCsv()));
+        menu->addAction("Export to TXT", this, SLOT(exportCurrentResultToTxt()));
+        menu->addAction("Export to PLY", this, SLOT(exportCurrentResultToPly()));
+        menu->addAction("Export to PNG", this, SLOT(savePlotIU1ToPng()));
+        menu->popup(this->ui->plot_iu1->mapToGlobal(pos));
+    }
+}
+
+void TrajectoryWidget::contextMenuRequestIU2(QPoint pos)
+{
+    if(this->currentResult != NULL){
+        QMenu *menu = new QMenu(this);
+        menu->setAttribute(Qt::WA_DeleteOnClose);
+        menu->addAction("Export to CSV", this, SLOT(exportCurrentResultToCsv()));
+        menu->addAction("Export to TXT", this, SLOT(exportCurrentResultToTxt()));
+        menu->addAction("Export to PLY", this, SLOT(exportCurrentResultToPly()));
+        menu->addAction("Export to PNG", this, SLOT(savePlotIU2ToPng()));
+        menu->popup(this->ui->plot_iu2->mapToGlobal(pos));
+    }
+}
+
+void TrajectoryWidget::contextMenuRequestU1U2(QPoint pos)
+{
+    if(this->currentResult != NULL){
+        QMenu *menu = new QMenu(this);
+        menu->setAttribute(Qt::WA_DeleteOnClose);
+        menu->addAction("Export to CSV", this, SLOT(exportCurrentResultToCsv()));
+        menu->addAction("Export to TXT", this, SLOT(exportCurrentResultToTxt()));
+        menu->addAction("Export to PLY", this, SLOT(exportCurrentResultToPly()));
+        menu->addAction("Export to PNG", this, SLOT(savePlotU1U2ToPng()));
+        menu->popup(this->ui->plot_u1u2->mapToGlobal(pos));
+    }
+}
+
+
+void TrajectoryWidget::savePlotIU1ToPng()
+{
+    QString fileName = QFileDialog::getSaveFileName(this, QString("Export to PNG"), QString(), QString("PNG files (*.png)"));
+
+    if(fileName.isEmpty()){
+        return;
+    }
+
+    this->ui->plot_iu1->savePng(fileName, 0, 0, 1.2, -1);
+}
+
+void TrajectoryWidget::savePlotIU2ToPng()
+{
+    QString fileName = QFileDialog::getSaveFileName(this, QString("Export to PNG"), QString(), QString("PNG files (*.png)"));
+
+    if(fileName.isEmpty()){
+        return;
+    }
+
+    this->ui->plot_iu2->savePng(fileName, 0, 0, 1.2, -1);
+}
+
+void TrajectoryWidget::savePlotU1U2ToPng()
+{
+    QString fileName = QFileDialog::getSaveFileName(this, QString("Export to PNG"), QString(), QString("PNG files (*.png)"));
+
+    if(fileName.isEmpty()){
+        return;
+    }
+
+    this->ui->plot_u1u2->savePng(fileName, 0, 0, 1.2, -1);
+}
+
+void TrajectoryWidget::exportCurrentResultToTxt(){
+    QString fileName = QFileDialog::getSaveFileName(this, QString("Export to TXT"), QString(), QString("Text file (*.txt);;All Files (*)"));
+
+    if(fileName.isEmpty()){
+        return;
+    }
+
+    this->currentResult->writeToTXT(fileName.toStdString(), "\t");
+}
+
+void TrajectoryWidget::exportCurrentResultToCsv(){
+    QString fileName = QFileDialog::getSaveFileName(this, QString("Export to CSV"), QString(), QString("Comma-separated values (*.csv);;All Files (*)"));
+
+    if(fileName.isEmpty()){
+        return;
+    }
+
+    this->currentResult->writeToTXT(fileName.toStdString(), ",");
+}
+
+void TrajectoryWidget::exportCurrentResultToPly(){
+    QString fileName = QFileDialog::getSaveFileName(this, QString("Export to PLY"), QString(), QString("Polygon File Format (*.ply);;All Files (*)"));
+
+    if(fileName.isEmpty()){
+        return;
+    }
+
+    this->currentResult->writeToPLY(fileName.toStdString(), false);
+}
+
+

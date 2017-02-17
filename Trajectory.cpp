@@ -90,13 +90,13 @@ Point3DT Trajectory::getMins(){
 }
 
 
-void Trajectory::writeToTXT(std::string filename) {
+void Trajectory::writeToTXT(std::string filename, std::string separator) {
     std::ofstream output;
     output.open(filename.c_str());
 
     const std::vector<Point3DT>* points = this->points;
     for (std::vector<Point3DT>::const_iterator point = points->begin(); point != points->end(); ++point) {
-        output << std::setprecision(15) << point->i << "\t" << point->u1 << "\t" << point->u2 << "\t" << point->t << "\n";
+        output << std::setprecision(15) << point->i << separator << point->u1 << separator << point->u2 << separator << point->t << "\n";
     }
 
     output.close();

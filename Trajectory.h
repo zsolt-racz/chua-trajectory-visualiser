@@ -23,7 +23,7 @@ public:
     Point3DT getMaxMins();
     Point3DT getMaxes();
     Point3DT getMins();
-    void writeToTXT(std::string filename);
+    void writeToTXT(std::string filename, std::string separator);
     void writeToPLY(std::string filename, bool withEdges);
 };
 
