@@ -44,6 +44,8 @@ CalculatedCut::CalculatedCut(std::string filePath, std::vector<TrajectoryTest>* 
         for (std::vector<TrajectoryResult>::iterator result_iterator = vector_iterator->begin(); result_iterator != vector_iterator->end(); ++result_iterator) {
             double x, y, z, t, result, testIdx, divisionCount;
 
+            this->z = z;
+
             if(this->type == I_U1){
                 file >> std::setprecision(15) >> y >> z >> x >> result >> testIdx >> t >> divisionCount;
             }else if(this->type == I_U2){
@@ -57,7 +59,7 @@ CalculatedCut::CalculatedCut(std::string filePath, std::vector<TrajectoryTest>* 
             result_iterator->t = t;
             result_iterator->divisionCount = divisionCount;
 
-            if(testIdx >=0 && testIdx <= this->tests->size()){
+            if(testIdx >0 && testIdx <= this->tests->size()){
                 result_iterator->test = &this->tests->at(testIdx-1);
             }
         }

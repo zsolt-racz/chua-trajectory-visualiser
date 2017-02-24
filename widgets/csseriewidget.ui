@@ -645,6 +645,11 @@
        </attribute>
        <row>
         <property name="text">
+         <string>u1</string>
+        </property>
+       </row>
+       <row>
+        <property name="text">
          <string>Resolution</string>
         </property>
        </row>

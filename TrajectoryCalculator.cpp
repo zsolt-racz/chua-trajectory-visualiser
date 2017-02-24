@@ -11,7 +11,7 @@ TrajectoryCalculator::TrajectoryCalculator(CircuitParameters* parameters) :
 TrajectoryCalculator::~TrajectoryCalculator() {
 }
 
-Trajectory* TrajectoryCalculator::calculateTrajectory(double i0, double u1_0, double u2_0, int maxPoints) {
+Trajectory* TrajectoryCalculator::calculateTrajectory(double i0, double u1_0, double u2_0, int saveNth, int maxPoints) {
     std::vector<Point3DT>* points = new std::vector<Point3DT>();
 
     double i = i0;
@@ -22,10 +22,11 @@ Trajectory* TrajectoryCalculator::calculateTrajectory(double i0, double u1_0, do
 
     int divisionCount = 0;
     int pointCount = 0;
+    int savedPointCount = 0;
 
     // Save initial coordinates at t=0
     points->push_back(Point3DT(i0, u1_0, u2_0, 0));
-    for (double t = h; t <= t_max && pointCount <= maxPoints; t += h) {
+    for (double t = h; t <= t_max && savedPointCount <= maxPoints; t += h) {
         double a_i = fi(u2, i);
         double a_u1 = fu1(u1, u2, i);
         double a_u2 = fu2(u1, u2, i);
@@ -61,8 +62,11 @@ Trajectory* TrajectoryCalculator::calculateTrajectory(double i0, double u1_0, do
 
             h = h * this->n;
 
-            points->push_back(Point3DT(i, u1, u2, t));
-            pointCount++;
+            if(pointCount % saveNth == 0){
+                points->push_back(Point3DT(i, u1, u2, t));
+                ++savedPointCount;
+            }
+            ++pointCount;
         }
     }
 
@@ -70,7 +74,7 @@ Trajectory* TrajectoryCalculator::calculateTrajectory(double i0, double u1_0, do
 }
 
 Trajectory* TrajectoryCalculator::calculateTrajectory(double i0, double u1_0, double u2_0){
-    return this->calculateTrajectory(i0, u1_0, u2_0, std::numeric_limits<int>::max());
+    return this->calculateTrajectory(i0, u1_0, u2_0, 1, INT_MAX);
 }
 
 void TrajectoryCalculator::calculateTrajectoryResult(std::vector<TrajectoryResult>::iterator result, CrossSectionType type, double x, double y, double z, std::vector<TrajectoryTest>* tests) {

@@ -1,0 +1,7 @@
+- po dokonceni vypoctu serie rezov vrati stav ukazatela z 99%
+- opravena chyba - pad programu pri nacitani nezistenych bodov
+- do zoznamu serie rezov je pridany aj posledny rez
+- u1 a ostatne udaje po vybrani rezu su zobrazene v tabulke pod rezom
+- pridany parameter nth - urcuje, ze kazdy kolkaty bod ma byt do pamate ulozeny
+- pridany parameter pMax - urcuje max. pocet ulozenych bodov. po dosiahnuti tohto cisla alebo casu tMax vypocet skonci
+- spominane parametre sa ukladaju do suboru parameters.txt. kvoli tomu subory parameters.txt z predchadzajucich verzii nebudu spravne nacitane

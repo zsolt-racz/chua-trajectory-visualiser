@@ -54,6 +54,7 @@ void MainWindow::loadParametersFromFile(std::string filename){
     double Bp, B0, m0, m1, m2;
     double ro, tmax, h0, uhmax, ihmax;
     double n, u2_0, u1_0, i_0, t_test;
+    double nth, pMax;
     double u1_from_u1i, u1_to_u1i, u1_points_u1i, u2_u1i, i_from_u1i, i_to_u1i, i_points_u1i;
     double i_from_u2i, u2_from_u2i, u2_to_u2i, u2_points_u2i, u1_u2i, i_to_u2i, i_points_u2i;
     double u1_from_u1u2, u1_to_u1u2, u1_points_u1u2, u2_from_u1u2, u2_to_u1u2, u2_points_u1u2, i_u1u2;
@@ -62,6 +63,7 @@ void MainWindow::loadParametersFromFile(std::string filename){
     file.open(filename);
     file >> std::setprecision(15) >> C1 >> C2 >> R >> L >> ro >> m0 >> m1 >> i_0 >> u2_0 >> u1_0 >>
                                      m2 >> I >> Bp >> B0 >> tmax >> h0 >> uhmax >> ihmax >> t_test >> n >>
+                                     nth >> pMax >>
                                      u1_from_u1i >> u1_to_u1i >> u1_points_u1i >> u2_u1i >> i_from_u1i >> i_to_u1i >> i_points_u1i >>
                                      i_from_u2i >> u2_from_u2i >> u2_to_u2i >> u2_points_u2i >> u1_u2i >> i_to_u2i >> i_points_u2i >>
                                      u1_from_u1u2 >> u1_to_u1u2 >> u1_points_u1u2 >> u2_from_u1u2 >> u2_to_u1u2 >> u2_points_u1u2 >> i_u1u2;
@@ -86,7 +88,7 @@ void MainWindow::loadParametersFromFile(std::string filename){
 
     file.close();
 
-    this->parameters = new CircuitParameters(C1, C2, R, L, I, Bp, B0, m0, m1, m2, ro, tmax, h0, uhmax, ihmax, n, t_test);
+    this->parameters = new CircuitParameters(C1, C2, R, L, I, Bp, B0, m0, m1, m2, ro, tmax, h0, uhmax, ihmax, n, t_test, nth, pMax);
 
     this->ui->trajectory->findChild<QDoubleSpinBox*>("input_u1_0")->setValue(u1_0);
     this->ui->trajectory->findChild<QDoubleSpinBox*>("input_u2_0")->setValue(u2_0);
@@ -183,7 +185,10 @@ void MainWindow::saveParametersAction(){
               this->ui->trajectory->findChild<QDoubleSpinBox*>("input_uhmax")->value() << "\t" <<
               this->ui->trajectory->findChild<QDoubleSpinBox*>("input_ihmax")->value() << "\t" <<
               this->ui->trajectory->findChild<QDoubleSpinBox*>("input_t_test")->value() << "\t" <<
-              this->ui->trajectory->findChild<QDoubleSpinBox*>("input_n")->value() << "\n\n" <<
+              this->ui->trajectory->findChild<QDoubleSpinBox*>("input_n")->value() << "t" <<
+              this->ui->trajectory->findChild<QDoubleSpinBox*>("input_nth")->value() << "\t" <<
+              this->ui->trajectory->findChild<QDoubleSpinBox*>("input_pMax")->value() << "\n\n" <<
+
 
               this->ui->crosssection->findChild<QDoubleSpinBox*>("input_u1_from_u1i")->value() << "\t" <<
               this->ui->crosssection->findChild<QDoubleSpinBox*>("input_u1_to_u1i")->value() << "\t" <<
@@ -222,7 +227,7 @@ void MainWindow::saveParametersAction(){
 
 
               output << "\n\nC1\tC2\tR\tL\tro\tm0\tm1\ti_zp\tu2_zp\tu1_zp\n" <<
-              "m2\tI\tBp\tBo\ttmax\tho\tuhmax\tihmax\tt_test\tn\n\n" <<
+              "m2\tI\tBp\tBo\ttmax\tho\tuhmax\tihmax\tt_test\tn\tnth\tpMax\n" <<
               "u1_from_u1i\tu1_to_u1i\tu1_points_u1i\tu2_u1i\ti_from_u1i\ti_to_u1i\ti_points_u1i\n" <<
               "i_from_u2i\tu2_from_u2i\tu2_to_u2i\tu2_points_u2i\tu1_u2i\ti_to_u2i\ti_points_u2i\n" <<
               "u1_from_u1u2\tu1_to_u1u2\tu1_points_u1u2\tu2_from_u1u2\tu2_to_u1u2\tu2_points_u1u2\ti_u1u2";

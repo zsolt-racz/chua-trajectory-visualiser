@@ -38,6 +38,7 @@ public:
     void initPlot();
     void draw(CalculatedCut* cut);
     void initForCut(CalculatedCut* cut);
+    void updateResultTable(CalculatedCut* cut, int timeInMs);
 
 private:
     Ui::CsSerieWidget *ui;

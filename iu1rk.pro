@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
+QT       += core gui opengl
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets printsupport
 
@@ -29,7 +29,9 @@ SOURCES += main.cpp\
     crosssectionmap.cpp \
     widgets/squarelayout.cpp \
     widgets/circuitparameterswidget.cpp \
-    widgets/csseriewidget.cpp
+    widgets/csseriewidget.cpp \
+    qplot3d/QPlot3D.cpp \
+    trajectory3dwindow.cpp
 
 HEADERS  += mainwindow.h \
     qcustomplot/qcustomplot.h \
@@ -154,7 +156,9 @@ HEADERS  += mainwindow.h \
     crosssectionmap.h \
     widgets/squarelayout.h \
     widgets/circuitparameterswidget.h \
-    widgets/csseriewidget.h
+    widgets/csseriewidget.h \
+    qplot3d/QPlot3D.h \
+    trajectory3dwindow.h
 
 FORMS    += mainwindow.ui \
     widgets/trajectorywidget.ui \
@@ -343,7 +347,8 @@ DISTFILES += \
     tbb/CHANGES \
     tbb/LICENSE \
     tbb/README.md \
-    tbb/README
+    tbb/README \
+    CHANGELOG
 
 INCLUDEPATH += "$$PWD/tbb/include"
 INCLUDEPATH += "$$PWD/exprtk"

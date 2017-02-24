@@ -47,7 +47,7 @@ public:
     //exprtk::parser<double> parser;
 
     Trajectory* calculateTrajectory(double i0, double u1_0, double u2_0);
-    Trajectory* calculateTrajectory(double i0, double u1_0, double u2_0, int maxPoints);
+    Trajectory* calculateTrajectory(double i0, double u1_0, double u2_0, int saveNth, int maxPoints);
     void calculateTrajectoryResult(std::vector<TrajectoryResult>::iterator result, CrossSectionType type, double x, double y, double z, std::vector<TrajectoryTest>* tests);
     CalculatedCut* calculateCrossSection(CrossSectionType type, double xMin, double xMax, double xStep, double yMin, double yMax, double yStep, double z, std::vector<TrajectoryTest>* tests);
     CalculatedCut* parallelCalculateCrossSection(CrossSectionType type, double xMin, double xMax, double xStep, double yMin, double yMax, double yStep, double z, std::vector<TrajectoryTest>* tests);

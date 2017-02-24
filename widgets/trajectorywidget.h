@@ -9,6 +9,8 @@
 #include "circuitparameters.h"
 #include "qcustomplot/qcustomplot.h"
 #include "testinputwidget.h"
+#include "qplot3d/QPlot3D.h"
+#include "trajectory3dwindow.h"
 
 namespace Ui {
 class TrajectoryWidget;
@@ -51,11 +53,13 @@ private slots:
     void savePlotIU1ToPng();
     void savePlotIU2ToPng();
     void savePlotU1U2ToPng();
+    void show3DProjection();
 
 private:
     Ui::TrajectoryWidget *ui;
     CircuitParameters* parameters = NULL;
     TestInputWidget* table = NULL;
+    Trajectory3DWindow* window3d = NULL;
     bool updatingParameters = false;
     void initPlots();
     void redrawPlots(Trajectory* result);

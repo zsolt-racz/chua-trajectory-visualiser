@@ -25,6 +25,9 @@ CsSerieWidget::CsSerieWidget(QWidget *parent) :
 
     this->connect(&this->FutureWatcher, SIGNAL (finished()), this, SLOT (csCalculationFinished()));
     this->connect(this->ui->plot_cut, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(contextMenuRequest(QPoint)));
+
+    this->ui->resultTable->horizontalHeader()->hide();
+    this->ui->resultTable->setEnabled(false);
 }
 
 CsSerieWidget::~CsSerieWidget()
@@ -104,6 +107,17 @@ void CsSerieWidget::initForCut(CalculatedCut* cut){
     this->colorMap->data()->setRange(QCPRange(cut->xMin, cut->xMax), QCPRange(cut->yMin, cut->yMax)); // and span the coordinate range -4..4 in both key (x) and value (y) dimensions
     customPlot->xAxis->setRange(cut->xMin, cut->xMax);
     customPlot->yAxis->setRange(cut->yMin, cut->yMax);
+
+   /* QCPItemText *textLabel = new QCPItemText(customPlot);
+    customPlot->addItem(textLabel);
+    textLabel->setClipToAxisRect(false);
+    textLabel->setPositionAlignment(Qt::AlignBottom|Qt::AlignHCenter);
+    textLabel->position->setType(QCPItemPosition::ptAxisRectRatio);
+    textLabel->position->setCoords(0.5, 0.5);
+    textLabel->setText("u2 = 0");
+    textLabel->setFont(QFont(font().family(), 12));*/
+
+
 }
 
 void CsSerieWidget::draw(CalculatedCut* cut){
@@ -205,6 +219,8 @@ void CsSerieWidget::listItemSelected(QListWidgetItem* item, QListWidgetItem* pre
 
     this->initForCut(cut);
     this->draw(cut);
+    this->updateResultTable(cut, 0);
+    this->ui->resultTable->setEnabled(true);
 
     this->currentResult = cut;
 
@@ -339,7 +355,9 @@ void CsSerieWidget::csCalculationFinished(){
     this->ui->time->setDisabled(true);
     this->ui->time->setText("0:00");
 
+    this->updateCsList();
     this->ui->progressBar->setDisabled(true);
+    this->ui->progressBar->setValue(0);
     this->updateProgressTimer.stop();
 }
 
@@ -367,3 +385,53 @@ void CsSerieWidget::updateProgress()
     }
 }
 
+void CsSerieWidget::updateResultTable(CalculatedCut* cut, int timeInMs){
+    int chaosPoints = 0;
+    int lcPoints = 0;
+    int undPoints = 0;
+    for (std::vector<std::vector<TrajectoryResult>>::const_iterator vector_iterator = cut->cbegin(); vector_iterator != cut->cend(); ++vector_iterator) {
+        for (std::vector<TrajectoryResult>::const_iterator result_iterator = vector_iterator->cbegin(); result_iterator != vector_iterator->cend(); ++result_iterator) {
+            switch(result_iterator->result()){
+            case TrajectoryResultType::CHA:
+                ++chaosPoints;
+                break;
+            case TrajectoryResultType::LC:
+                ++lcPoints;
+                break;
+            case TrajectoryResultType::UNDETERMINED:
+                ++undPoints;
+                break;
+            }
+        }
+    }
+
+    QTableWidgetItem *resolution = new QTableWidgetItem;
+    resolution->setText(QString("%1 x %2").arg(cut->xSize).arg(cut->ySize));
+
+    QTableWidgetItem *time = new QTableWidgetItem;
+    time->setText(this->formatTime(timeInMs));
+
+    int allPoints = cut->xSize * cut->ySize;
+
+    QTableWidgetItem *z = new QTableWidgetItem;
+    z->setText(QString("%1").arg(cut->z, 0, 'f'));
+
+    float chaosPercent = ((float)chaosPoints / (float)allPoints) * 100;
+    QTableWidgetItem *chaos = new QTableWidgetItem;
+    chaos->setText(QString("%1% (%2)").arg(chaosPercent, 0, 'f', 2).arg(chaosPoints));
+
+    float lcPercent = ((float)lcPoints / (float)allPoints) * 100;
+    QTableWidgetItem *lc = new QTableWidgetItem;
+    lc->setText(QString("%1% (%2)").arg(lcPercent, 0, 'f', 2).arg(lcPoints));
+
+    float undPercent = ((float)undPoints / (float)allPoints) * 100;
+    QTableWidgetItem *und = new QTableWidgetItem;
+    und->setText(QString("%1% (%2)").arg(undPercent, 0, 'f', 2).arg(undPoints));
+
+    this->ui->resultTable->setItem(0,0, z);
+    this->ui->resultTable->setItem(0,1, resolution);
+    this->ui->resultTable->setItem(0,2, time);
+    this->ui->resultTable->setItem(0,3, chaos);
+    this->ui->resultTable->setItem(0,4, lc);
+    this->ui->resultTable->setItem(0,5, und);
+}

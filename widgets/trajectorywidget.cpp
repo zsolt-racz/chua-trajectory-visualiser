@@ -36,6 +36,8 @@ TrajectoryWidget::TrajectoryWidget(QWidget *parent) :
     this->connect(this->ui->plot_iu2, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(contextMenuRequestIU2(QPoint)));
     this->connect(this->ui->plot_u1u2, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(contextMenuRequestU1U2(QPoint)));
 
+    this->connect(this->ui->show_3d, SIGNAL(clicked(bool)), this, SLOT(show3DProjection()));
+
     this->animationTimer = new QTimer(this);
     this->connect(this->animationTimer, &QTimer::timeout, this, &TrajectoryWidget::animationStep);
 
@@ -274,6 +276,52 @@ void TrajectoryWidget::redrawPlots(Trajectory* result){
     this->redrawPlot(this->ui->plot_u1u2, result);
 }
 
+void TrajectoryWidget::show3DProjection(){
+    int time = this->reCalculate();
+    this->redrawResultTabe(this->currentResult, time);
+    if(this->window3d != NULL){
+        delete this->window3d;
+        this->window3d = NULL;
+    }
+    const std::vector<Point3DT>* points = this->currentResult->points;
+    Trajectory3DWindow* window3D = new Trajectory3DWindow();
+    QCurve3D* bigSpiral = new QCurve3D("Trajectory");
+    for (std::vector<Point3DT>::const_iterator point = points->begin(); point != points->end(); ++point) {
+        bigSpiral->addData(point->i, point->u2, point->u1);
+    }
+
+    bigSpiral->setColor(Qt::blue);
+    bigSpiral->setLineWidth(1);
+    window3D->addCurve(bigSpiral);
+    window3D->setAxisEqual(true);
+    window3D->xAxis().togglePlane();
+    window3D->yAxis().togglePlane();
+    window3D->zAxis().togglePlane();
+
+    std::vector<TrajectoryTest>* tests = this->table->getTests();
+    for(std::vector<TrajectoryTest>::const_iterator test = tests->cbegin(); test != tests->cend(); ++test){
+        if(test->isChaos()){
+            window3D->addTest(*test);
+        }
+    }
+
+    // Change labels on axes from the default x,y,z
+    window3D->setXLabel("i");
+    window3D->setYLabel("u2");
+    window3D->setZLabel("u1");
+
+    // Window logistics...
+    window3D->resize(1024,768);
+    window3D->move(350,10);
+    window3D->setFocus();
+    window3D->setShowAzimuthElevation(false);
+    //window3D->setWindowFlags(Qt::WindowStaysOnTopHint | Qt::FramelessWindowHint);
+    //window3D->showFullScreen();
+    window3D->show();
+
+    this->window3d = window3D;
+}
+
 void TrajectoryWidget::zoomPlot(QWheelEvent* event){
     double factor;
     QCPRange rangeU1 = this->ui->plot_iu1->xAxis->range();
@@ -496,7 +544,7 @@ int TrajectoryWidget::reCalculate(){
     clock.start();
     TrajectoryCalculator calculator = TrajectoryCalculator(this->parameters);
 
-    this->currentResult = calculator.calculateTrajectory(this->ui->input_i_0->value(), this->ui->input_u1_0->value(), this->ui->input_u2_0->value(), 1000000);
+    this->currentResult = calculator.calculateTrajectory(this->ui->input_i_0->value(), this->ui->input_u1_0->value(), this->ui->input_u2_0->value(), this->ui->input_nth->value(), this->ui->input_pmax->value());
     return clock.elapsed();
 }
 
