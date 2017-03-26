@@ -279,14 +279,14 @@ void CrossSectionWidget::calculationFinished(){
 void CrossSectionWidget::initForCut(CalculatedCut* cut){
     QCustomPlot* customPlot = this->ui->plot_cut;
     if(cut->type == I_U1){
-        customPlot->xAxis->setLabel("u1");
-        customPlot->yAxis->setLabel("i");
+        customPlot->xAxis->setLabel("u1 [V]");
+        customPlot->yAxis->setLabel("i [A]");
     }else if(cut->type == I_U2){
-        customPlot->xAxis->setLabel("u2");
-        customPlot->yAxis->setLabel("i");
+        customPlot->xAxis->setLabel("u2 [V]");
+        customPlot->yAxis->setLabel("i [A]");
     }else if(cut->type == U2_U1){
-        customPlot->xAxis->setLabel("u1");
-        customPlot->yAxis->setLabel("u2");
+        customPlot->xAxis->setLabel("u1 [V]");
+        customPlot->yAxis->setLabel("u2 [V]");
     }
 
     this->colorMap->data()->setSize(cut->xSize, cut->ySize);

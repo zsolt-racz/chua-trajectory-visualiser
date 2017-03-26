@@ -8,6 +8,7 @@
 #include <vector>
 #include "trajectorytest.h"
 #include "trajectoryresulttype.h"
+#include "customdoublespinbox.h"
 
 namespace Ui {
 class TestInputWidget;
@@ -27,8 +28,8 @@ public:
 
 private:
     Ui::TestInputWidget *ui;
-    QDoubleSpinBox* createSpinBox(QWidget* parent);
-    QDoubleSpinBox* createSpinBox(QWidget* parent, double value);
+    CustomDoubleSpinBox* createSpinBox(QWidget* parent);
+    CustomDoubleSpinBox* createSpinBox(QWidget* parent, double value);
     QComboBox* createColorCombobox(QWidget* parent);
     QComboBox* createColorCombobox(QWidget* parent, QString value);
     QComboBox* createTypeCombobox(QWidget* parent);

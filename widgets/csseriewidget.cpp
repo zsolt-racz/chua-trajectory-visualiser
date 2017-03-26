@@ -13,14 +13,29 @@ CsSerieWidget::CsSerieWidget(QWidget *parent) :
 
     this->connect(this->calculatButtonSignalMapper, SIGNAL(mapped(QWidget*)), this, SLOT(calculateButtonPressed(QWidget*)));
 
-    this->calculatButtonSignalMapper->setMapping(this->ui->button_calculate, this->ui->button_calculate);
-    this->connect(this->ui->button_calculate, SIGNAL(clicked()), this->calculatButtonSignalMapper, SLOT(map()));
+    this->calculatButtonSignalMapper->setMapping(this->ui->button_calculate_u1i, this->ui->button_calculate_u1i);
+    this->connect(this->ui->button_calculate_u1i, SIGNAL(clicked()), this->calculatButtonSignalMapper, SLOT(map()));
 
-    this->calculatButtonSignalMapper->setMapping(this->ui->button_calculate_parallel, this->ui->button_calculate_parallel);
-    this->connect(this->ui->button_calculate_parallel, SIGNAL(clicked()), this->calculatButtonSignalMapper, SLOT(map()));
+    this->calculatButtonSignalMapper->setMapping(this->ui->button_calculate_parallel_u1i, this->ui->button_calculate_parallel_u1i);
+    this->connect(this->ui->button_calculate_parallel_u1i, SIGNAL(clicked()), this->calculatButtonSignalMapper, SLOT(map()));
+
+    this->calculatButtonSignalMapper->setMapping(this->ui->button_calculate_u2i, this->ui->button_calculate_u2i);
+    this->connect(this->ui->button_calculate_u2i, SIGNAL(clicked()), this->calculatButtonSignalMapper, SLOT(map()));
+
+    this->calculatButtonSignalMapper->setMapping(this->ui->button_calculate_parallel_u2i, this->ui->button_calculate_parallel_u2i);
+    this->connect(this->ui->button_calculate_parallel_u2i, SIGNAL(clicked()), this->calculatButtonSignalMapper, SLOT(map()));
+
+    this->calculatButtonSignalMapper->setMapping(this->ui->button_calculate_u1u2, this->ui->button_calculate_u1u2);
+    this->connect(this->ui->button_calculate_u1u2, SIGNAL(clicked()), this->calculatButtonSignalMapper, SLOT(map()));
+
+    this->calculatButtonSignalMapper->setMapping(this->ui->button_calculate_parallel_u1u2, this->ui->button_calculate_parallel_u1u2);
+    this->connect(this->ui->button_calculate_parallel_u1u2, SIGNAL(clicked()), this->calculatButtonSignalMapper, SLOT(map()));
 
     this->connect(&this->updateProgressTimer, SIGNAL(timeout()), this, SLOT(updateProgress()));
-    this->connect(this->ui->button_stop, SIGNAL(clicked()), this, SLOT(cancelCalculation()));
+    this->connect(this->ui->button_cancel_u1i, SIGNAL(clicked()), this, SLOT(cancelCalculation()));
+    this->connect(this->ui->button_cancel_u2i, SIGNAL(clicked()), this, SLOT(cancelCalculation()));
+    this->connect(this->ui->button_cancel_u1u2, SIGNAL(clicked()), this, SLOT(cancelCalculation()));
+
     this->connect(this->ui->listWidget, SIGNAL(currentItemChanged(QListWidgetItem*, QListWidgetItem*)), this, SLOT(listItemSelected(QListWidgetItem*, QListWidgetItem*)));
 
     this->connect(&this->FutureWatcher, SIGNAL (finished()), this, SLOT (csCalculationFinished()));
@@ -48,6 +63,104 @@ void CsSerieWidget::setTestTable(TestInputWidget* table){
 }
 
 
+void CsSerieWidget::activateUIFor(CrossSectionType type){
+    if(type == CrossSectionType::I_U1){
+        this->ui->input_u1_from_u1i->setEnabled(true);
+        this->ui->input_u1_to_u1i->setEnabled(true);
+        this->ui->input_u1_points_u1i->setEnabled(true);
+        this->ui->input_i_from_u1i->setEnabled(true);
+        this->ui->input_i_to_u1i->setEnabled(true);
+        this->ui->input_i_points_u1i->setEnabled(true);
+        this->ui->input_u2_from_u1i->setEnabled(true);
+        this->ui->input_u2_to_u1i->setEnabled(true);
+        this->ui->input_u2_cs_u1i->setEnabled(true);
+        this->ui->button_calculate_u1i->setEnabled(true);
+        this->ui->button_calculate_parallel_u1i->setEnabled(true);
+        this->ui->tabWidget->setTabEnabled(1, true);
+    }else if(type == CrossSectionType::I_U2){
+        this->ui->input_u1_from_u2i->setEnabled(true);
+        this->ui->input_u1_to_u2i->setEnabled(true);
+        this->ui->input_u1_cs_u2i->setEnabled(true);
+        this->ui->input_i_from_u2i->setEnabled(true);
+        this->ui->input_i_to_u2i->setEnabled(true);
+        this->ui->input_i_points_u2i->setEnabled(true);
+        this->ui->input_u2_from_u2i->setEnabled(true);
+        this->ui->input_u2_to_u2i->setEnabled(true);
+        this->ui->input_u2_points_u2i->setEnabled(true);
+        this->ui->button_calculate_u2i->setEnabled(true);
+        this->ui->button_calculate_parallel_u2i->setEnabled(true);
+        this->ui->tabWidget->setTabEnabled(0, true);
+    }else if(type == CrossSectionType::U2_U1){
+        this->ui->input_u1_from_u1u2->setEnabled(true);
+        this->ui->input_u1_to_u1u2->setEnabled(true);
+        this->ui->input_u1_points_u1u2->setEnabled(true);
+        this->ui->input_i_from_u1u2->setEnabled(true);
+        this->ui->input_i_to_u1u2->setEnabled(true);
+        this->ui->input_i_cs_u1u2->setEnabled(true);
+        this->ui->input_u2_from_u1u2->setEnabled(true);
+        this->ui->input_u2_to_u1u2->setEnabled(true);
+        this->ui->input_u2_points_u1u2->setEnabled(true);
+        this->ui->button_calculate_u1u2->setEnabled(true);
+        this->ui->button_calculate_parallel_u1u2->setEnabled(true);
+        this->ui->tabWidget->setTabEnabled(2, true);
+    }
+}
+
+void CsSerieWidget::disactivateUIFor(CrossSectionType type, bool enableButtons){
+    if(type == CrossSectionType::I_U1){
+        this->ui->input_u1_from_u1i->setEnabled(false);
+        this->ui->input_u1_to_u1i->setEnabled(false);
+        this->ui->input_u1_points_u1i->setEnabled(false);
+        this->ui->input_i_from_u1i->setEnabled(false);
+        this->ui->input_i_to_u1i->setEnabled(false);
+        this->ui->input_i_points_u1i->setEnabled(false);
+        this->ui->input_u2_from_u1i->setEnabled(false);
+        this->ui->input_u2_to_u1i->setEnabled(false);
+        this->ui->input_u2_cs_u1i->setEnabled(false);
+        if(!enableButtons){
+            this->ui->button_calculate_u1i->setEnabled(false);
+            this->ui->button_calculate_parallel_u1i->setEnabled(false);
+            this->ui->tabWidget->setTabEnabled(1, false);
+        }else{
+            this->ui->tabWidget->setTabEnabled(1, true);
+        }
+    }else if(type == CrossSectionType::I_U2){
+        this->ui->input_u1_from_u2i->setEnabled(false);
+        this->ui->input_u1_to_u2i->setEnabled(false);
+        this->ui->input_u1_cs_u2i->setEnabled(false);
+        this->ui->input_i_from_u2i->setEnabled(false);
+        this->ui->input_i_to_u2i->setEnabled(false);
+        this->ui->input_i_points_u2i->setEnabled(false);
+        this->ui->input_u2_from_u2i->setEnabled(false);
+        this->ui->input_u2_to_u2i->setEnabled(false);
+        this->ui->input_u2_points_u2i->setEnabled(false);
+        if(!enableButtons){
+            this->ui->button_calculate_u2i->setEnabled(false);
+            this->ui->button_calculate_parallel_u2i->setEnabled(false);
+            this->ui->tabWidget->setTabEnabled(0, false);
+        }else{
+            this->ui->tabWidget->setTabEnabled(0, true);
+        }
+    }else if(type == CrossSectionType::U2_U1){
+        this->ui->input_u1_from_u1u2->setEnabled(false);
+        this->ui->input_u1_to_u1u2->setEnabled(false);
+        this->ui->input_u1_points_u1u2->setEnabled(false);
+        this->ui->input_i_from_u1u2->setEnabled(false);
+        this->ui->input_i_to_u1u2->setEnabled(false);
+        this->ui->input_i_cs_u1u2->setEnabled(false);
+        this->ui->input_u2_from_u1u2->setEnabled(false);
+        this->ui->input_u2_to_u1u2->setEnabled(false);
+        this->ui->input_u2_points_u1u2->setEnabled(false);
+        if(!enableButtons){
+            this->ui->button_calculate_u1u2->setEnabled(false);
+            this->ui->button_calculate_parallel_u1u2->setEnabled(false);
+            this->ui->tabWidget->setTabEnabled(2, false);
+        }else{
+            this->ui->tabWidget->setTabEnabled(2, true);
+        }
+    }
+}
+
 void CsSerieWidget::selectWorkingDirAction(){
     QString dirName = QFileDialog::getExistingDirectory(this, QString("Select directory"), QString());
 
@@ -57,19 +170,17 @@ void CsSerieWidget::selectWorkingDirAction(){
 
     this->workingDir = dirName;
     this->ui->folder_label->setText(dirName);
-    this->ui->button_calculate->setEnabled(true);
-    this->ui->button_calculate_parallel->setEnabled(true);
 
-    // If info.txt does not exist
-    this->ui->input_i_from->setEnabled(true);
-    this->ui->input_i_to->setEnabled(true);
-    this->ui->input_i_step->setEnabled(true);
-    this->ui->input_u1_from->setEnabled(true);
-    this->ui->input_u1_to->setEnabled(true);
-    this->ui->input_u1_step->setEnabled(true);
-    this->ui->input_u2_from->setEnabled(true);
-    this->ui->input_u2_to->setEnabled(true);
-    this->ui->input_u2_step->setEnabled(true);
+    if(!this->infoFileExists()){
+        this->ui->tab_u2i->setEnabled(true);
+        this->ui->tab_u1i->setEnabled(true);
+        this->ui->tab_u1u2->setEnabled(true);
+        this->activateUIFor(CrossSectionType::I_U1);
+        this->activateUIFor(CrossSectionType::I_U2);
+        this->activateUIFor(CrossSectionType::U2_U1);
+    }else{
+        this->updateUIByInfoFile();
+    }
 
     this->updateCsList();
     this->initPlot();
@@ -93,14 +204,14 @@ void CsSerieWidget::initPlot(){
 void CsSerieWidget::initForCut(CalculatedCut* cut){
     QCustomPlot* customPlot = this->ui->plot_cut;
     if(cut->type == I_U1){
-        customPlot->xAxis->setLabel("u1");
-        customPlot->yAxis->setLabel("i");
+        customPlot->xAxis->setLabel("u1 [V]");
+        customPlot->yAxis->setLabel("i [A]");
     }else if(cut->type == I_U2){
-        customPlot->xAxis->setLabel("u2");
-        customPlot->yAxis->setLabel("i");
+        customPlot->xAxis->setLabel("u2 [V]");
+        customPlot->yAxis->setLabel("i [A]");
     }else if(cut->type == U2_U1){
-        customPlot->xAxis->setLabel("u1");
-        customPlot->yAxis->setLabel("u2");
+        customPlot->xAxis->setLabel("u1 [V]");
+        customPlot->yAxis->setLabel("u2 [V]");
     }
 
     this->colorMap->data()->setSize(cut->xSize, cut->ySize);
@@ -228,10 +339,18 @@ void CsSerieWidget::listItemSelected(QListWidgetItem* item, QListWidgetItem* pre
 
 
 void CsSerieWidget::calculateButtonPressed(QWidget* button){
-    if(button == ui->button_calculate){
+    if(button == ui->button_calculate_u1i){
+        this->calculate(I_U1, false);
+    }else if(button == ui->button_calculate_parallel_u1i){
+        this->calculate(I_U1, true);
+    }else if(button == ui->button_calculate_u2i){
         this->calculate(I_U2, false);
-    }else if(button == ui->button_calculate_parallel){
+    }else if(button == ui->button_calculate_parallel_u2i){
         this->calculate(I_U2, true);
+    }else if(button == ui->button_calculate_u1u2){
+        this->calculate(U2_U1, false);
+    }else if(button == ui->button_calculate_parallel_u1u2){
+        this->calculate(U2_U1, true);
     }
 }
 
@@ -285,21 +404,196 @@ void CsSerieWidget::calculateParallelCsSerie(CrossSectionType type, double xMin,
 
             delete cut;
         }
+        file.close();
     }
 }
 
-void CsSerieWidget::calculate(CrossSectionType type, bool parallel){
-    double xMin, xMax, xStep, yMin, yMax, yStep, zMin, zMax, zStep;
+void CsSerieWidget::updateUIByInfoFile(){
+    std::string filePath = this->workingDir.toStdString() + "/info.txt";
+    std::ifstream file(filePath);
 
-    xMin = this->ui->input_u2_from->value();
-    xMax = this->ui->input_u2_to->value();
-    xStep = this->ui->input_u2_step->value();
-    yMin = this->ui->input_i_from->value();
-    yMax = this->ui->input_i_to->value();
-    yStep = this->ui->input_i_step->value();
-    zMin = this->ui->input_u1_from->value();
-    zMax = this->ui->input_u1_to->value();
-    zStep = this->ui->input_u1_step->value();
+    int typeInt;
+    CrossSectionType type;
+
+    file >> typeInt;
+    type = static_cast<CrossSectionType>(typeInt);
+
+    if(type == I_U1){
+        double i_from_u1i_cs, i_to_u1i_cs, i_points_u1i_cs, u2_from_u1i_cs, u2_to_u1i_cs, u2_points_u1i_cs, u1_from_u1i_cs, u1_to_u1i_cs, u1_points_u1i_cs;
+        file >> u2_from_u1i_cs >> u2_to_u1i_cs >> u2_points_u1i_cs >> u1_from_u1i_cs >> u1_to_u1i_cs >> u1_points_u1i_cs >> i_from_u1i_cs >> i_to_u1i_cs >> i_points_u1i_cs;
+
+        this->ui->input_i_from_u1i->setValue(i_from_u1i_cs);
+        this->ui->input_i_to_u1i->setValue(i_to_u1i_cs);
+        this->ui->input_i_points_u1i->setValue(i_points_u1i_cs);
+        this->ui->input_u2_from_u1i->setValue(u2_from_u1i_cs);
+        this->ui->input_u2_to_u1i->setValue(u2_to_u1i_cs);
+        this->ui->input_u2_cs_u1i->setValue(u2_points_u1i_cs);
+        this->ui->input_u1_from_u1i->setValue(u1_from_u1i_cs);
+        this->ui->input_u1_to_u1i->setValue(u1_to_u1i_cs);
+        this->ui->input_u1_points_u1i->setValue(u1_points_u1i_cs);
+
+        this->disactivateUIFor(I_U1, true);
+        this->disactivateUIFor(I_U2);
+        this->disactivateUIFor(U2_U1);
+
+        this->ui->tabWidget->setCurrentIndex(1);
+
+    }else if(type == I_U2){
+        double i_from_u2i_cs, i_to_u2i_cs, i_points_u2i_cs, u2_from_u2i_cs, u2_to_u2i_cs, u2_points_u2i_cs, u1_from_u2i_cs, u1_to_u2i_cs, u1_points_u2i_cs;
+        file >> u2_from_u2i_cs >> u2_to_u2i_cs >> u2_points_u2i_cs >> u1_from_u2i_cs >> u1_to_u2i_cs >> u1_points_u2i_cs >> i_from_u2i_cs >> i_to_u2i_cs >> i_points_u2i_cs;
+
+        this->ui->input_i_from_u2i->setValue(i_from_u2i_cs);
+        this->ui->input_i_to_u2i->setValue(i_to_u2i_cs);
+        this->ui->input_i_points_u2i->setValue(i_points_u2i_cs);
+        this->ui->input_u2_from_u2i->setValue(u2_from_u2i_cs);
+        this->ui->input_u2_to_u2i->setValue(u2_to_u2i_cs);
+        this->ui->input_u2_points_u2i->setValue(u2_points_u2i_cs);
+        this->ui->input_u1_from_u2i->setValue(u1_from_u2i_cs);
+        this->ui->input_u1_to_u2i->setValue(u1_to_u2i_cs);
+        this->ui->input_u1_cs_u2i->setValue(u1_points_u2i_cs);
+
+        this->disactivateUIFor(I_U1);
+        this->disactivateUIFor(I_U2, true);
+        this->disactivateUIFor(U2_U1);
+
+        this->ui->tabWidget->setCurrentIndex(0);
+
+    }else if(type == U2_U1){
+        double i_from_u1u2_cs, i_to_u1u2_cs, i_points_u1u2_cs, u2_from_u1u2_cs, u2_to_u1u2_cs, u2_points_u1u2_cs, u1_from_u1u2_cs, u1_to_u1u2_cs, u1_points_u1u2_cs;
+        file >> u2_from_u1u2_cs >> u2_to_u1u2_cs >> u2_points_u1u2_cs >> u1_from_u1u2_cs >> u1_to_u1u2_cs >> u1_points_u1u2_cs >> i_from_u1u2_cs >> i_to_u1u2_cs >> i_points_u1u2_cs;
+
+        this->ui->input_i_from_u1u2->setValue(i_from_u1u2_cs);
+        this->ui->input_i_to_u1u2->setValue(i_to_u1u2_cs);
+        this->ui->input_i_cs_u1u2->setValue(i_points_u1u2_cs);
+        this->ui->input_u2_from_u1u2->setValue(u2_from_u1u2_cs);
+        this->ui->input_u2_to_u1u2->setValue(u2_to_u1u2_cs);
+        this->ui->input_u2_points_u1u2->setValue(u2_points_u1u2_cs);
+        this->ui->input_u1_from_u1u2->setValue(u1_from_u1u2_cs);
+        this->ui->input_u1_to_u1u2->setValue(u1_to_u1u2_cs);
+        this->ui->input_u1_points_u1u2->setValue(u1_points_u1u2_cs);
+
+        this->disactivateUIFor(I_U1);
+        this->disactivateUIFor(I_U2);
+        this->disactivateUIFor(U2_U1, true);
+
+        this->ui->tabWidget->setCurrentIndex(2);
+    }
+
+
+    file.close();
+}
+
+bool CsSerieWidget::infoFileExists(){
+    std::string filePath = this->workingDir.toStdString() + "/info.txt";
+
+    std::ifstream file(filePath);
+    bool result = file.good();
+    file.close();
+
+    return result;
+}
+
+void CsSerieWidget::writeInfoFile(CrossSectionType type){
+    std::string filePath = this->workingDir.toStdString() + "/info.txt";
+
+    if(!this->infoFileExists()){
+        std::ofstream infoOutput(filePath);
+
+        if(type == I_U1){
+            infoOutput << type << std::setprecision(15) << "\n" <<
+            this->ui->input_u2_from_u1i->value() << "\t" <<
+            this->ui->input_u2_to_u1i->value() << "\t" <<
+            this->ui->input_u2_cs_u1i->value()  << "\n" <<
+            this->ui->input_i_from_u1i->value() << "\t" <<
+            this->ui->input_i_to_u1i->value() << "\t" <<
+            this->ui->input_i_points_u1i->value() << "\n" <<
+            this->ui->input_u1_from_u1i->value() << "\t" <<
+            this->ui->input_u1_to_u1i->value() << "\t" <<
+            this->ui->input_u1_points_u1i->value();
+
+        }else if(type == I_U2){
+            infoOutput << type << std::setprecision(15) << "\n" <<
+            this->ui->input_u1_from_u2i->value() << "\t" <<
+            this->ui->input_u1_to_u2i->value() << "\t" <<
+            this->ui->input_u1_cs_u2i->value() << "\n" <<
+            this->ui->input_i_from_u2i->value() << "\t" <<
+            this->ui->input_i_to_u2i->value() << "\t" <<
+            this->ui->input_i_points_u2i->value() << "\n" <<
+            this->ui->input_u2_from_u2i->value() << "\t" <<
+            this->ui->input_u2_to_u2i->value() << "\t" <<
+            this->ui->input_u2_points_u2i->value();
+        }else if(type == U2_U1){
+            infoOutput << type << std::setprecision(15) << "\n" <<
+            this->ui->input_u1_from_u1u2->value() << "\t" <<
+            this->ui->input_u1_to_u1u2->value() << "\t" <<
+            this->ui->input_u1_points_u1u2->value() << "\n" <<
+            this->ui->input_i_from_u1u2->value() << "\t" <<
+            this->ui->input_i_to_u1u2->value() << "\t" <<
+            this->ui->input_i_cs_u1u2->value() << "\n" <<
+            this->ui->input_u2_from_u1u2->value() << "\t" <<
+            this->ui->input_u2_to_u1u2->value() << "\t" <<
+            this->ui->input_u2_points_u1u2->value();
+        }
+        infoOutput.close();
+    }
+}
+
+
+void CsSerieWidget::calculate(CrossSectionType type, bool parallel){
+    double xMin, xMax, xPoints, yMin, yMax, yPoints, zMin, zMax, zPoints;
+    switch (type) {
+    case I_U1:
+        xMin = this->ui->input_u1_from_u1i->value();
+        xMax = this->ui->input_u1_to_u1i->value();
+        xPoints = this->ui->input_u1_points_u1i->value();
+        yMin = this->ui->input_i_from_u1i->value();
+        yMax = this->ui->input_i_to_u1i->value();
+        yPoints = this->ui->input_i_points_u1i->value();
+        zMin = this->ui->input_u2_from_u1i->value();
+        zMax = this->ui->input_u2_to_u1i->value();
+        zPoints = this->ui->input_u2_cs_u1i->value();
+
+        this->ui->button_cancel_u1i->setEnabled(true);
+        break;
+    case I_U2:
+        xMin = this->ui->input_u2_from_u2i->value();
+        xMax = this->ui->input_u2_to_u2i->value();
+        xPoints = this->ui->input_u2_points_u2i->value();
+        yMin = this->ui->input_i_from_u2i->value();
+        yMax = this->ui->input_i_to_u2i->value();
+        yPoints = this->ui->input_i_points_u2i->value();
+        zMin = this->ui->input_u1_from_u2i->value();
+        zMax = this->ui->input_u1_to_u2i->value();
+        zPoints = this->ui->input_u1_cs_u2i->value();
+
+        this->ui->button_cancel_u2i->setEnabled(true);
+        break;
+    case U2_U1:
+        xMin = this->ui->input_u1_from_u1u2->value();
+        xMax = this->ui->input_u1_to_u1u2->value();
+        xPoints = this->ui->input_u1_points_u1u2->value();
+        yMin = this->ui->input_u2_from_u1u2->value();
+        yMax = this->ui->input_u2_to_u1u2->value();
+        yPoints = this->ui->input_u2_points_u1u2->value();
+        zMin = this->ui->input_i_from_u1u2->value();
+        zMax = this->ui->input_i_to_u1u2->value();
+        zPoints = this->ui->input_i_cs_u1u2->value();
+
+        this->ui->button_cancel_u1u2->setEnabled(true);
+        break;
+    }
+
+    if(!this->infoFileExists()){
+        this->writeInfoFile(type);
+        this->updateUIByInfoFile();
+    }
+
+    this->ui->button_calculate_u1i->setDisabled(true);
+    this->ui->button_calculate_parallel_u1i->setDisabled(true);
+    this->ui->button_calculate_u2i->setDisabled(true);
+    this->ui->button_calculate_parallel_u2i->setDisabled(true);
+    this->ui->button_calculate_u1u2->setDisabled(true);
+    this->ui->button_calculate_parallel_u1u2->setDisabled(true);
 
     this->calculator = new TrajectoryCalculator(this->parameters);
 
@@ -309,9 +603,9 @@ void CsSerieWidget::calculate(CrossSectionType type, bool parallel){
 
 
     if(parallel){
-        future = QtConcurrent::run(std::bind(&CsSerieWidget::calculateParallelCsSerie, this, type, xMin, xMax, xStep, yMin, yMax, yStep, zMin, zMax, zStep, tests, this->workingDir.toStdString()));
+        future = QtConcurrent::run(std::bind(&CsSerieWidget::calculateParallelCsSerie, this, type, xMin, xMax, xPoints, yMin, yMax, yPoints, zMin, zMax, zPoints, tests, this->workingDir.toStdString()));
     }else{
-        future = QtConcurrent::run(std::bind(&CsSerieWidget::calculateCsSerie, this, type, xMin, xMax, xStep, yMin, yMax, yStep, zMin, zMax, zStep, tests, this->workingDir.toStdString()));
+        future = QtConcurrent::run(std::bind(&CsSerieWidget::calculateCsSerie, this, type, xMin, xMax, xPoints, yMin, yMax, yPoints, zMin, zMax, zPoints, tests, this->workingDir.toStdString()));
     }
 
     this->FutureWatcher.setFuture(future);
@@ -321,10 +615,8 @@ void CsSerieWidget::calculate(CrossSectionType type, bool parallel){
     this->lastProgress = 0;
     this->updateProgressTimer.start(100);
 
-    this->ui->button_calculate->setDisabled(true);
-    this->ui->button_calculate_parallel->setDisabled(true);
+    this->updateCsList();
 
-    this->ui->button_stop->setEnabled(true);
     this->ui->time->setEnabled(true);
     this->ui->progressBar->setEnabled(true);
 
@@ -334,9 +626,16 @@ void CsSerieWidget::cancelCalculation(){
     //this->ui->progressBar->setValue(0);
     this->ui->progressBar->setDisabled(true);
 
-    this->ui->button_stop->setDisabled(true);
-    this->ui->button_calculate->setEnabled(true);
-    this->ui->button_calculate_parallel->setEnabled(true);
+    this->ui->button_calculate_u1i->setEnabled(true);
+    this->ui->button_calculate_parallel_u1i->setEnabled(true);
+    this->ui->button_calculate_u2i->setEnabled(true);
+    this->ui->button_calculate_parallel_u2i->setEnabled(true);
+    this->ui->button_calculate_u1u2->setEnabled(true);
+    this->ui->button_calculate_parallel_u1u2->setEnabled(true);
+
+    this->ui->button_cancel_u1i->setDisabled(true);
+    this->ui->button_cancel_u2i->setDisabled(true);
+    this->ui->button_cancel_u1u2->setDisabled(true);
 
     this->ui->time->setDisabled(true);
     this->ui->time->setText("0:00");
@@ -348,9 +647,17 @@ void CsSerieWidget::cancelCalculation(){
 }
 
 void CsSerieWidget::csCalculationFinished(){
-    this->ui->button_stop->setDisabled(true);
-    this->ui->button_calculate->setEnabled(true);
-    this->ui->button_calculate_parallel->setEnabled(true);
+    this->ui->button_calculate_u1i->setEnabled(true);
+    this->ui->button_calculate_parallel_u1i->setEnabled(true);
+    this->ui->button_calculate_u2i->setEnabled(true);
+    this->ui->button_calculate_parallel_u2i->setEnabled(true);
+    this->ui->button_calculate_u1u2->setEnabled(true);
+    this->ui->button_calculate_parallel_u1u2->setEnabled(true);
+
+    this->ui->button_cancel_u1i->setDisabled(true);
+    this->ui->button_cancel_u2i->setDisabled(true);
+    this->ui->button_cancel_u1u2->setDisabled(true);
+
 
     this->ui->time->setDisabled(true);
     this->ui->time->setText("0:00");

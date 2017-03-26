@@ -3,6 +3,7 @@
 
 #include <QWidget>
 #include "circuitparameters.h"
+#include "utils.h"
 
 namespace Ui {
 class CircuitParametersWidget;

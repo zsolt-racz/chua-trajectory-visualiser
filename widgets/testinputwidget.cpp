@@ -11,9 +11,6 @@ TestInputWidget::TestInputWidget(QWidget *parent) :
     this->connect(this->ui->add_lc, SIGNAL(clicked()), this, SLOT(addLCRow()));
     this->connect(this->ui->delete_selection, SIGNAL(clicked()), this, SLOT(removeSelectedRows()));
 
-    //this->addRow("Atraktor 1", QString("Chaos"), QString("aqua"), -0.25, 0.25, -5.25, -4.75, -5, 5);
-    //this->addRow("LC", QString("LC"), QString("gray"), -1000, 1000, -1000, 1000, -30, 30);
-
 }
 
 void TestInputWidget::addRow(QString name, QString type, QString color, double u1Lo, double u1Hi, double u2Lo, double u2Hi, double iLo, double iHi){
@@ -43,7 +40,7 @@ void TestInputWidget::addChaosRow(){
 }
 
 void TestInputWidget::addLCRow(){
-    this->addRow("", QString("LC"), "", -1000, 1000, -1000, 1000, -1000, 1000);
+    this->addRow("", QString("LC"), "", -9999, 9999, -9999, 9999, -9999, 9999);
 }
 
 void TestInputWidget::removeSelectedRows(){
@@ -60,17 +57,17 @@ void TestInputWidget::clearRows(){
     table->setRowCount(0);
 }
 
-QDoubleSpinBox* TestInputWidget::createSpinBox(QWidget* parent){
-    QDoubleSpinBox* result = new QDoubleSpinBox(parent);
+CustomDoubleSpinBox* TestInputWidget::createSpinBox(QWidget* parent){
+    CustomDoubleSpinBox* result = new CustomDoubleSpinBox(parent);
     result->setDecimals(4);
-    result->setMinimum(-999);
-    result->setMaximum(999);
+    result->setMinimum(-9999);
+    result->setMaximum(9999);
 
     return result;
 }
 
-QDoubleSpinBox* TestInputWidget::createSpinBox(QWidget* parent, double value){
-    QDoubleSpinBox* result = this->createSpinBox(parent);
+CustomDoubleSpinBox* TestInputWidget::createSpinBox(QWidget* parent, double value){
+    CustomDoubleSpinBox* result = this->createSpinBox(parent);
     result->setValue(value);
 
     return result;

@@ -34,7 +34,10 @@
           </widget>
          </item>
          <item>
-          <widget class="QDoubleSpinBox" name="input_C1">
+          <widget class="CustomDoubleSpinBox" name="input_C1">
+           <property name="showGroupSeparator" stdset="0">
+            <bool>true</bool>
+           </property>
            <property name="decimals">
             <number>15</number>
            </property>
@@ -58,7 +61,10 @@
           </widget>
          </item>
          <item>
-          <widget class="QDoubleSpinBox" name="input_C2">
+          <widget class="CustomDoubleSpinBox" name="input_C2">
+           <property name="showGroupSeparator" stdset="0">
+            <bool>true</bool>
+           </property>
            <property name="decimals">
             <number>15</number>
            </property>
@@ -82,7 +88,10 @@
           </widget>
          </item>
          <item>
-          <widget class="QDoubleSpinBox" name="input_R">
+          <widget class="CustomDoubleSpinBox" name="input_R">
+           <property name="showGroupSeparator" stdset="0">
+            <bool>true</bool>
+           </property>
            <property name="decimals">
             <number>15</number>
            </property>
@@ -106,7 +115,10 @@
           </widget>
          </item>
          <item>
-          <widget class="QDoubleSpinBox" name="input_L">
+          <widget class="CustomDoubleSpinBox" name="input_L">
+           <property name="showGroupSeparator" stdset="0">
+            <bool>true</bool>
+           </property>
            <property name="decimals">
             <number>15</number>
            </property>
@@ -130,7 +142,10 @@
           </widget>
          </item>
          <item>
-          <widget class="QDoubleSpinBox" name="input_I">
+          <widget class="CustomDoubleSpinBox" name="input_I">
+           <property name="showGroupSeparator" stdset="0">
+            <bool>true</bool>
+           </property>
            <property name="decimals">
             <number>15</number>
            </property>
@@ -158,7 +173,10 @@
           </widget>
          </item>
          <item>
-          <widget class="QDoubleSpinBox" name="input_Bp">
+          <widget class="CustomDoubleSpinBox" name="input_Bp">
+           <property name="showGroupSeparator" stdset="0">
+            <bool>true</bool>
+           </property>
            <property name="decimals">
             <number>15</number>
            </property>
@@ -182,7 +200,10 @@
           </widget>
          </item>
          <item>
-          <widget class="QDoubleSpinBox" name="input_B0">
+          <widget class="CustomDoubleSpinBox" name="input_B0">
+           <property name="showGroupSeparator" stdset="0">
+            <bool>true</bool>
+           </property>
            <property name="decimals">
             <number>15</number>
            </property>
@@ -206,7 +227,10 @@
           </widget>
          </item>
          <item>
-          <widget class="QDoubleSpinBox" name="input_m0">
+          <widget class="CustomDoubleSpinBox" name="input_m0">
+           <property name="showGroupSeparator" stdset="0">
+            <bool>true</bool>
+           </property>
            <property name="decimals">
             <number>15</number>
            </property>
@@ -230,7 +254,10 @@
           </widget>
          </item>
          <item>
-          <widget class="QDoubleSpinBox" name="input_m1">
+          <widget class="CustomDoubleSpinBox" name="input_m1">
+           <property name="showGroupSeparator" stdset="0">
+            <bool>true</bool>
+           </property>
            <property name="decimals">
             <number>15</number>
            </property>
@@ -254,7 +281,10 @@
           </widget>
          </item>
          <item>
-          <widget class="QDoubleSpinBox" name="input_m2">
+          <widget class="CustomDoubleSpinBox" name="input_m2">
+           <property name="showGroupSeparator" stdset="0">
+            <bool>true</bool>
+           </property>
            <property name="decimals">
             <number>15</number>
            </property>
@@ -278,7 +308,10 @@
           </widget>
          </item>
          <item>
-          <widget class="QDoubleSpinBox" name="input_ro">
+          <widget class="CustomDoubleSpinBox" name="input_ro">
+           <property name="showGroupSeparator" stdset="0">
+            <bool>true</bool>
+           </property>
            <property name="decimals">
             <number>15</number>
            </property>
@@ -306,7 +339,10 @@
           </widget>
          </item>
          <item>
-          <widget class="QDoubleSpinBox" name="input_tmax">
+          <widget class="CustomDoubleSpinBox" name="input_tmax">
+           <property name="showGroupSeparator" stdset="0">
+            <bool>true</bool>
+           </property>
            <property name="decimals">
             <number>15</number>
            </property>
@@ -330,7 +366,10 @@
           </widget>
          </item>
          <item>
-          <widget class="QDoubleSpinBox" name="input_h0">
+          <widget class="CustomDoubleSpinBox" name="input_h0">
+           <property name="showGroupSeparator" stdset="0">
+            <bool>true</bool>
+           </property>
            <property name="decimals">
             <number>15</number>
            </property>
@@ -354,7 +393,10 @@
           </widget>
          </item>
          <item>
-          <widget class="QDoubleSpinBox" name="input_uhmax">
+          <widget class="CustomDoubleSpinBox" name="input_uhmax">
+           <property name="showGroupSeparator" stdset="0">
+            <bool>true</bool>
+           </property>
            <property name="decimals">
             <number>15</number>
            </property>
@@ -378,7 +420,10 @@
           </widget>
          </item>
          <item>
-          <widget class="QDoubleSpinBox" name="input_ihmax">
+          <widget class="CustomDoubleSpinBox" name="input_ihmax">
+           <property name="showGroupSeparator" stdset="0">
+            <bool>true</bool>
+           </property>
            <property name="decimals">
             <number>15</number>
            </property>
@@ -402,7 +447,10 @@
           </widget>
          </item>
          <item>
-          <widget class="QDoubleSpinBox" name="input_t_test">
+          <widget class="CustomDoubleSpinBox" name="input_t_test">
+           <property name="showGroupSeparator" stdset="0">
+            <bool>true</bool>
+           </property>
            <property name="decimals">
             <number>15</number>
            </property>
@@ -429,7 +477,10 @@
           </widget>
          </item>
          <item>
-          <widget class="QDoubleSpinBox" name="input_n">
+          <widget class="CustomDoubleSpinBox" name="input_n">
+           <property name="showGroupSeparator" stdset="0">
+            <bool>true</bool>
+           </property>
            <property name="decimals">
             <number>15</number>
            </property>
@@ -503,155 +554,170 @@
     </layout>
    </item>
    <item>
-    <layout class="QHBoxLayout" name="horizontalLayout_14" stretch="3,0,0">
-     <item>
-      <layout class="QHBoxLayout" name="horizontalLayout_16" stretch="0,0,0,0,0,0,0,0,0,0">
-       <property name="spacing">
-        <number>6</number>
-       </property>
-       <property name="rightMargin">
-        <number>0</number>
-       </property>
-       <item>
-        <widget class="QLabel" name="label_14">
-         <property name="text">
-          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;right&quot;&gt;izp =&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QDoubleSpinBox" name="input_i_0">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="decimals">
-          <number>15</number>
-         </property>
-         <property name="minimum">
-          <double>-999999.989999999990687</double>
-         </property>
-         <property name="maximum">
-          <double>999999.989999999990687</double>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QLabel" name="label_15">
-         <property name="text">
-          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;right&quot;&gt;u1zp =&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QDoubleSpinBox" name="input_u1_0">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="decimals">
-          <number>15</number>
-         </property>
-         <property name="minimum">
-          <double>-999999.989999999990687</double>
-         </property>
-         <property name="maximum">
-          <double>999999.989999999990687</double>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QLabel" name="label_16">
-         <property name="text">
-          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;right&quot;&gt;u2zp&lt;span style=&quot; vertical-align:sub;&quot;/&gt;=&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QDoubleSpinBox" name="input_u2_0">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="decimals">
-          <number>15</number>
-         </property>
-         <property name="minimum">
-          <double>-999999.989999999990687</double>
-         </property>
-         <property name="maximum">
-          <double>999999.989999999990687</double>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QLabel" name="label_21">
-         <property name="text">
-          <string>nth</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QSpinBox" name="input_nth">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="minimum">
-          <number>1</number>
-         </property>
-         <property name="maximum">
-          <number>1000</number>
-         </property>
-         <property name="value">
-          <number>1</number>
-         </property>
-         <property name="displayIntegerBase">
-          <number>10</number>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QLabel" name="label_22">
-         <property name="text">
-          <string>pMax</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QSpinBox" name="input_pmax">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="minimum">
-          <number>1</number>
-         </property>
-         <property name="maximum">
-          <number>10000000</number>
-         </property>
-         <property name="value">
-          <number>1000000</number>
-         </property>
-         <property name="displayIntegerBase">
-          <number>10</number>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </item>
+    <layout class="QHBoxLayout" name="horizontalLayout_14" stretch="0,0">
      <item>
       <layout class="QHBoxLayout" name="horizontalLayout_17">
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_16" stretch="0,0,0,0,0,0,0,0,0,0">
+         <property name="spacing">
+          <number>6</number>
+         </property>
+         <property name="rightMargin">
+          <number>0</number>
+         </property>
+         <item>
+          <widget class="QLabel" name="label_16">
+           <property name="text">
+            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;right&quot;&gt;u2zp&lt;span style=&quot; vertical-align:sub;&quot;/&gt;=&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="CustomDoubleSpinBox" name="input_u2_0">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="showGroupSeparator" stdset="0">
+            <bool>true</bool>
+           </property>
+           <property name="decimals">
+            <number>15</number>
+           </property>
+           <property name="minimum">
+            <double>-999999.989999999990687</double>
+           </property>
+           <property name="maximum">
+            <double>999999.989999999990687</double>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="label_15">
+           <property name="text">
+            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;right&quot;&gt;u1zp =&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="CustomDoubleSpinBox" name="input_u1_0">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="showGroupSeparator" stdset="0">
+            <bool>true</bool>
+           </property>
+           <property name="decimals">
+            <number>15</number>
+           </property>
+           <property name="minimum">
+            <double>-999999.989999999990687</double>
+           </property>
+           <property name="maximum">
+            <double>999999.989999999990687</double>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="label_14">
+           <property name="text">
+            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;right&quot;&gt;izp =&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="CustomDoubleSpinBox" name="input_i_0">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="showGroupSeparator" stdset="0">
+            <bool>true</bool>
+           </property>
+           <property name="decimals">
+            <number>15</number>
+           </property>
+           <property name="minimum">
+            <double>-999999.989999999990687</double>
+           </property>
+           <property name="maximum">
+            <double>999999.989999999990687</double>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="label_21">
+           <property name="text">
+            <string>nth</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="CustomSpinBox" name="input_nth">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="showGroupSeparator" stdset="0">
+            <bool>true</bool>
+           </property>
+           <property name="minimum">
+            <number>1</number>
+           </property>
+           <property name="maximum">
+            <number>1000</number>
+           </property>
+           <property name="value">
+            <number>1</number>
+           </property>
+           <property name="displayIntegerBase">
+            <number>10</number>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="label_22">
+           <property name="text">
+            <string>pMax</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="CustomSpinBox" name="input_pmax">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="showGroupSeparator" stdset="0">
+            <bool>true</bool>
+           </property>
+           <property name="minimum">
+            <number>1</number>
+           </property>
+           <property name="maximum">
+            <number>10000000</number>
+           </property>
+           <property name="value">
+            <number>1000000</number>
+           </property>
+           <property name="displayIntegerBase">
+            <number>10</number>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
        <item>
         <widget class="QPushButton" name="button_animate">
          <property name="text">
@@ -687,7 +753,7 @@
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout_22" stretch="0,0,0">
      <item>
-      <widget class="QCustomPlot" name="plot_iu1" native="true">
+      <widget class="QCustomPlot" name="plot_iu2" native="true">
        <property name="sizePolicy">
         <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
          <horstretch>0</horstretch>
@@ -706,7 +772,7 @@
       </widget>
      </item>
      <item>
-      <widget class="QCustomPlot" name="plot_iu2" native="true">
+      <widget class="QCustomPlot" name="plot_iu1" native="true">
        <property name="sizePolicy">
         <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
          <horstretch>0</horstretch>
@@ -753,6 +819,16 @@
    <extends>QWidget</extends>
    <header>qcustomplot/qcustomplot.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>CustomSpinBox</class>
+   <extends>QSpinBox</extends>
+   <header>widgets/customspinbox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>CustomDoubleSpinBox</class>
+   <extends>QDoubleSpinBox</extends>
+   <header>widgets/customdoublespinbox.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

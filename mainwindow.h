@@ -3,6 +3,8 @@
 
 #include <QMainWindow>
 #include <QLabel>
+#include <QString>
+#include <QLocale>
 
 #include "ui_mainwindow.h"
 #include "Point3DT.h"
@@ -22,6 +24,9 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
+
+protected:
+    void closeEvent(QCloseEvent* event);
 
 private slots:
     void parametersChangedInTrajectory(CircuitParameters* parameters);

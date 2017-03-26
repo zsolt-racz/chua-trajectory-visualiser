@@ -96,7 +96,7 @@ void Trajectory::writeToTXT(std::string filename, std::string separator) {
 
     const std::vector<Point3DT>* points = this->points;
     for (std::vector<Point3DT>::const_iterator point = points->begin(); point != points->end(); ++point) {
-        output << std::setprecision(15) << point->i << separator << point->u1 << separator << point->u2 << separator << point->t << "\n";
+        output << std::setprecision(15) << point->i << separator << point->u2 << separator << point->u1 << separator << point->t << "\n";
     }
 
     output.close();
@@ -121,7 +121,7 @@ void Trajectory::writeToPLY(std::string filename, bool withEdges) {
     output << "end_header" << "\n";
 
     for (std::vector<Point3DT>::const_iterator point = points->begin(); point != points->end(); ++point) {
-        output << point->i << " " << point->u1 << " " << point->u2 << "\n";
+        output << point->i << " " << point->u2 << " " << point->u1 << "\n";
     }
 
     if (withEdges) {

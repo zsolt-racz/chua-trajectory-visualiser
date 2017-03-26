@@ -31,7 +31,9 @@ SOURCES += main.cpp\
     widgets/circuitparameterswidget.cpp \
     widgets/csseriewidget.cpp \
     qplot3d/QPlot3D.cpp \
-    trajectory3dwindow.cpp
+    widgets/customspinbox.cpp \
+    utils.cpp \
+    widgets/customdoublespinbox.cpp
 
 HEADERS  += mainwindow.h \
     qcustomplot/qcustomplot.h \
@@ -158,7 +160,9 @@ HEADERS  += mainwindow.h \
     widgets/circuitparameterswidget.h \
     widgets/csseriewidget.h \
     qplot3d/QPlot3D.h \
-    trajectory3dwindow.h
+    widgets/customspinbox.h \
+    utils.h \
+    widgets/customdoublespinbox.h
 
 FORMS    += mainwindow.ui \
     widgets/trajectorywidget.ui \
@@ -361,7 +365,11 @@ CONFIG(debug, debug|release) {
     }
 
     win32{
-        LIBS += -L"C:\\Users\\rzsol\\Desktop\\chua-trajectory-visualiser\\tbb\\lib\\ia32\\vc12" -ltbb_debug
+        win32:contains(QMAKE_HOST.arch, x86_64) {
+            LIBS += -L"$$PWD\\tbb\\lib\\intel64\\vc12" -ltbb_debug -lopengl32d -lglu32d
+        } else {
+            LIBS += -L"$$PWD\\tbb\\lib\\ia32\\vc12" -ltbb_debug -lopengl32d -lglu32d
+        }
         QMAKE_CXXFLAGS += -bigobj
     }
 }
@@ -378,7 +386,11 @@ QMAKE_CXXFLAGS_RELEASE += -O2
     }
 
     win32{
-        LIBS += -L"C:\\Users\\rzsol\\Desktop\\chua-trajectory-visualiser\\tbb\\lib\\ia32\\vc12" -ltbb
+        win32:contains(QMAKE_HOST.arch, x86_64) {
+            LIBS += -L"$$PWD\\tbb\\lib\\intel64\\vc12" -ltbb -lopengl32 -lglu32
+        } else {
+            LIBS += -L"$$PWD\\tbb\\lib\\ia32\\vc12" -ltbb -lopengl32 -lglu32
+        }
         QMAKE_CXXFLAGS += -bigobj
     }
 }

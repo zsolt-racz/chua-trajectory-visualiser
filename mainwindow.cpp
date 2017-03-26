@@ -4,6 +4,8 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
+
+
     ui->setupUi(this);
 
     this->loadedFileLabel = new QLabel();
@@ -59,6 +61,10 @@ void MainWindow::loadParametersFromFile(std::string filename){
     double i_from_u2i, u2_from_u2i, u2_to_u2i, u2_points_u2i, u1_u2i, i_to_u2i, i_points_u2i;
     double u1_from_u1u2, u1_to_u1u2, u1_points_u1u2, u2_from_u1u2, u2_to_u1u2, u2_points_u1u2, i_u1u2;
 
+    double i_from_u2i_cs, i_to_u2i_cs, i_points_u2i_cs, u2_from_u2i_cs, u2_to_u2i_cs, u2_points_u2i_cs, u1_from_u2i_cs, u1_to_u2i_cs, u1_points_u2i_cs;
+    double i_from_u1i_cs, i_to_u1i_cs, i_points_u1i_cs, u2_from_u1i_cs, u2_to_u1i_cs, u2_points_u1i_cs, u1_from_u1i_cs, u1_to_u1i_cs, u1_points_u1i_cs;
+    double i_from_u1u2_cs, i_to_u1u2_cs, i_points_u1u2_cs, u2_from_u1u2_cs, u2_to_u1u2_cs, u2_points_u1u2_cs, u1_from_u1u2_cs, u1_to_u1u2_cs, u1_points_u1u2_cs;
+
     std::ifstream file;
     file.open(filename);
     file >> std::setprecision(15) >> C1 >> C2 >> R >> L >> ro >> m0 >> m1 >> i_0 >> u2_0 >> u1_0 >>
@@ -85,6 +91,9 @@ void MainWindow::loadParametersFromFile(std::string filename){
         this->ui->crosssection->findChild<TestInputWidget*>("test")->addRow(QString::fromStdString(name), QString::fromStdString(type), QString::fromStdString(color), u1Lo, u1Hi, u2Lo, u2Hi, iLo, iHi);
     }
 
+    file >> u2_from_u2i_cs >> u2_to_u2i_cs >> u2_points_u2i_cs >> u1_from_u2i_cs >> u1_to_u2i_cs >> u1_points_u2i_cs >> i_from_u2i_cs >> i_to_u2i_cs >> i_points_u2i_cs;
+    file >> u2_from_u1i_cs >> u2_to_u1i_cs >> u2_points_u1i_cs >> u1_from_u1i_cs >> u1_to_u1i_cs >> u1_points_u1i_cs >> i_from_u1i_cs >> i_to_u1i_cs >> i_points_u1i_cs;
+    file >> u2_from_u1u2_cs >> u2_to_u1u2_cs >> u2_points_u1u2_cs >> u1_from_u1u2_cs >> u1_to_u1u2_cs >> u1_points_u1u2_cs >> i_from_u1u2_cs >> i_to_u1u2_cs >> i_points_u1u2_cs;
 
     file.close();
 
@@ -96,36 +105,63 @@ void MainWindow::loadParametersFromFile(std::string filename){
 
     this->ui->crosssection->findChild<QDoubleSpinBox*>("input_u1_from_u1i")->setValue(u1_from_u1i);
     this->ui->crosssection->findChild<QDoubleSpinBox*>("input_u1_to_u1i")->setValue(u1_to_u1i);
-    this->ui->crosssection->findChild<QDoubleSpinBox*>("input_u1_points_u1i")->setValue(u1_points_u1i);
+    this->ui->crosssection->findChild<QSpinBox*>("input_u1_points_u1i")->setValue(u1_points_u1i);
     this->ui->crosssection->findChild<QDoubleSpinBox*>("input_u2_u1i")->setValue(u2_u1i);
     this->ui->crosssection->findChild<QDoubleSpinBox*>("input_i_from_u1i")->setValue(i_from_u1i);
     this->ui->crosssection->findChild<QDoubleSpinBox*>("input_i_to_u1i")->setValue(i_to_u1i);
-    this->ui->crosssection->findChild<QDoubleSpinBox*>("input_i_points_u1i")->setValue(i_points_u1i);
+    this->ui->crosssection->findChild<QSpinBox*>("input_i_points_u1i")->setValue(i_points_u1i);
 
     this->ui->crosssection->findChild<QDoubleSpinBox*>("input_i_from_u2i")->setValue(i_from_u2i);
     this->ui->crosssection->findChild<QDoubleSpinBox*>("input_u2_from_u2i")->setValue(u2_from_u2i);
     this->ui->crosssection->findChild<QDoubleSpinBox*>("input_u2_to_u2i")->setValue(u2_to_u2i);
-    this->ui->crosssection->findChild<QDoubleSpinBox*>("input_u2_points_u2i")->setValue(u2_points_u2i);
+    this->ui->crosssection->findChild<QSpinBox*>("input_u2_points_u2i")->setValue(u2_points_u2i);
     this->ui->crosssection->findChild<QDoubleSpinBox*>("input_u1_u2i")->setValue(u1_u2i);
     this->ui->crosssection->findChild<QDoubleSpinBox*>("input_i_to_u2i")->setValue(i_to_u2i);
-    this->ui->crosssection->findChild<QDoubleSpinBox*>("input_i_points_u2i")->setValue(i_points_u2i);
+    this->ui->crosssection->findChild<QSpinBox*>("input_i_points_u2i")->setValue(i_points_u2i);
 
     this->ui->crosssection->findChild<QDoubleSpinBox*>("input_u1_from_u1u2")->setValue(u1_from_u1u2);
     this->ui->crosssection->findChild<QDoubleSpinBox*>("input_u1_to_u1u2")->setValue(u1_to_u1u2);
-    this->ui->crosssection->findChild<QDoubleSpinBox*>("input_u1_points_u1u2")->setValue(u1_points_u1u2);
+    this->ui->crosssection->findChild<QSpinBox*>("input_u1_points_u1u2")->setValue(u1_points_u1u2);
     this->ui->crosssection->findChild<QDoubleSpinBox*>("input_u2_from_u1u2")->setValue(u2_from_u1u2);
     this->ui->crosssection->findChild<QDoubleSpinBox*>("input_u2_to_u1u2")->setValue(u2_to_u1u2);
-    this->ui->crosssection->findChild<QDoubleSpinBox*>("input_u2_points_u1u2")->setValue(u2_points_u1u2);
+    this->ui->crosssection->findChild<QSpinBox*>("input_u2_points_u1u2")->setValue(u2_points_u1u2);
     this->ui->crosssection->findChild<QDoubleSpinBox*>("input_i_u1u2")->setValue(i_u1u2);
 
+    this->ui->csserie->findChild<QDoubleSpinBox*>("input_i_from_u2i")->setValue(i_from_u2i_cs);
+    this->ui->csserie->findChild<QDoubleSpinBox*>("input_i_to_u2i")->setValue(i_to_u2i_cs);
+    this->ui->csserie->findChild<QSpinBox*>("input_i_points_u2i")->setValue(i_points_u2i_cs);
+    this->ui->csserie->findChild<QDoubleSpinBox*>("input_u2_from_u2i")->setValue(u2_from_u2i_cs);
+    this->ui->csserie->findChild<QDoubleSpinBox*>("input_u2_to_u2i")->setValue(u2_to_u2i_cs);
+    this->ui->csserie->findChild<QSpinBox*>("input_u2_points_u2i")->setValue(u2_points_u2i_cs);
+    this->ui->csserie->findChild<QDoubleSpinBox*>("input_u1_from_u2i")->setValue(u1_from_u2i_cs);
+    this->ui->csserie->findChild<QDoubleSpinBox*>("input_u1_to_u2i")->setValue(u1_to_u2i_cs);
+    this->ui->csserie->findChild<QSpinBox*>("input_u1_cs_u2i")->setValue(u1_points_u2i_cs);
+
+    this->ui->csserie->findChild<QDoubleSpinBox*>("input_i_from_u1i")->setValue(i_from_u1i_cs);
+    this->ui->csserie->findChild<QDoubleSpinBox*>("input_i_to_u1i")->setValue(i_to_u1i_cs);
+    this->ui->csserie->findChild<QSpinBox*>("input_i_points_u1i")->setValue(i_points_u1i_cs);
+    this->ui->csserie->findChild<QDoubleSpinBox*>("input_u2_from_u1i")->setValue(u2_from_u1i_cs);
+    this->ui->csserie->findChild<QDoubleSpinBox*>("input_u2_to_u1i")->setValue(u2_to_u1i_cs);
+    this->ui->csserie->findChild<QSpinBox*>("input_u2_cs_u1i")->setValue(u2_points_u1i_cs);
+    this->ui->csserie->findChild<QDoubleSpinBox*>("input_u1_from_u1i")->setValue(u1_from_u1i_cs);
+    this->ui->csserie->findChild<QDoubleSpinBox*>("input_u1_to_u1i")->setValue(u1_to_u1i_cs);
+    this->ui->csserie->findChild<QSpinBox*>("input_u1_points_u1i")->setValue(u1_points_u1i_cs);
+
+    this->ui->csserie->findChild<QDoubleSpinBox*>("input_i_from_u1u2")->setValue(i_from_u1u2_cs);
+    this->ui->csserie->findChild<QDoubleSpinBox*>("input_i_to_u1u2")->setValue(i_to_u1u2_cs);
+    this->ui->csserie->findChild<QSpinBox*>("input_i_cs_u1u2")->setValue(i_points_u1u2_cs);
+    this->ui->csserie->findChild<QDoubleSpinBox*>("input_u2_from_u1u2")->setValue(u2_from_u1u2_cs);
+    this->ui->csserie->findChild<QDoubleSpinBox*>("input_u2_to_u1u2")->setValue(u2_to_u1u2_cs);
+    this->ui->csserie->findChild<QSpinBox*>("input_u2_points_u1u2")->setValue(u2_points_u1u2_cs);
+    this->ui->csserie->findChild<QDoubleSpinBox*>("input_u1_from_u1u2")->setValue(u1_from_u1u2_cs);
+    this->ui->csserie->findChild<QDoubleSpinBox*>("input_u1_to_u1u2")->setValue(u1_to_u1u2_cs);
+    this->ui->csserie->findChild<QSpinBox*>("input_u1_points_u1u2")->setValue(u1_points_u1u2_cs);
 
     this->ui->trajectory->updateParameters(this->parameters);
     this->ui->crosssection->updateParameters(this->parameters);
     this->ui->csserie->updateParameters(this->parameters);
 
-
     this->setStatusText(filename);
-
 }
 
 
@@ -185,33 +221,33 @@ void MainWindow::saveParametersAction(){
               this->ui->trajectory->findChild<QDoubleSpinBox*>("input_uhmax")->value() << "\t" <<
               this->ui->trajectory->findChild<QDoubleSpinBox*>("input_ihmax")->value() << "\t" <<
               this->ui->trajectory->findChild<QDoubleSpinBox*>("input_t_test")->value() << "\t" <<
-              this->ui->trajectory->findChild<QDoubleSpinBox*>("input_n")->value() << "t" <<
-              this->ui->trajectory->findChild<QDoubleSpinBox*>("input_nth")->value() << "\t" <<
-              this->ui->trajectory->findChild<QDoubleSpinBox*>("input_pMax")->value() << "\n\n" <<
+              this->ui->trajectory->findChild<QDoubleSpinBox*>("input_n")->value() << "\t" <<
+              this->ui->trajectory->findChild<QSpinBox*>("input_nth")->value() << "\t" <<
+              this->ui->trajectory->findChild<QSpinBox*>("input_pmax")->value() << "\n\n" <<
 
 
               this->ui->crosssection->findChild<QDoubleSpinBox*>("input_u1_from_u1i")->value() << "\t" <<
               this->ui->crosssection->findChild<QDoubleSpinBox*>("input_u1_to_u1i")->value() << "\t" <<
-              this->ui->crosssection->findChild<QDoubleSpinBox*>("input_u1_points_u1i")->value() << "\t" <<
+              this->ui->crosssection->findChild<QSpinBox*>("input_u1_points_u1i")->value() << "\t" <<
               this->ui->crosssection->findChild<QDoubleSpinBox*>("input_u2_u1i")->value() << "\t" <<
               this->ui->crosssection->findChild<QDoubleSpinBox*>("input_i_from_u1i")->value() << "\t" <<
               this->ui->crosssection->findChild<QDoubleSpinBox*>("input_i_to_u1i")->value() << "\t" <<
-              this->ui->crosssection->findChild<QDoubleSpinBox*>("input_i_points_u1i")->value() << "\n" <<
+              this->ui->crosssection->findChild<QSpinBox*>("input_i_points_u1i")->value() << "\n" <<
 
               this->ui->crosssection->findChild<QDoubleSpinBox*>("input_i_from_u2i")->value() << "\t" <<
               this->ui->crosssection->findChild<QDoubleSpinBox*>("input_u2_from_u2i")->value() << "\t" <<
               this->ui->crosssection->findChild<QDoubleSpinBox*>("input_u2_to_u2i")->value() << "\t" <<
-              this->ui->crosssection->findChild<QDoubleSpinBox*>("input_u2_points_u2i")->value() << "\t" <<
+              this->ui->crosssection->findChild<QSpinBox*>("input_u2_points_u2i")->value() << "\t" <<
               this->ui->crosssection->findChild<QDoubleSpinBox*>("input_u1_u2i")->value() << "\t" <<
               this->ui->crosssection->findChild<QDoubleSpinBox*>("input_i_to_u2i")->value() << "\t" <<
-              this->ui->crosssection->findChild<QDoubleSpinBox*>("input_i_points_u2i")->value() << "\n" <<
+              this->ui->crosssection->findChild<QSpinBox*>("input_i_points_u2i")->value() << "\n" <<
 
               this->ui->crosssection->findChild<QDoubleSpinBox*>("input_u1_from_u1u2")->value() << "\t" <<
               this->ui->crosssection->findChild<QDoubleSpinBox*>("input_u1_to_u1u2")->value() << "\t" <<
-              this->ui->crosssection->findChild<QDoubleSpinBox*>("input_u1_points_u1u2")->value() << "\t" <<
+              this->ui->crosssection->findChild<QSpinBox*>("input_u1_points_u1u2")->value() << "\t" <<
               this->ui->crosssection->findChild<QDoubleSpinBox*>("input_u2_from_u1u2")->value() << "\t" <<
               this->ui->crosssection->findChild<QDoubleSpinBox*>("input_u2_to_u1u2")->value() << "\t" <<
-              this->ui->crosssection->findChild<QDoubleSpinBox*>("input_u2_points_u1u2")->value() << "\t" <<
+              this->ui->crosssection->findChild<QSpinBox*>("input_u2_points_u1u2")->value() << "\t" <<
               this->ui->crosssection->findChild<QDoubleSpinBox*>("input_i_u1u2")->value() << "\n\n" <<
               tests->size() << "\n";
 
@@ -225,6 +261,36 @@ void MainWindow::saveParametersAction(){
                  output << test->name << "\t" << typeString << "\t"  << test->color << "\t"  << test->u1Lo << "\t" << test->u1Hi << "\t" << test->u2Lo << "\t" << test->u2Hi << "\t" << test->iLo << "\t" << test->iHi << "\n";
               }
 
+              output <<
+              this->ui->csserie->findChild<QDoubleSpinBox*>("input_u2_from_u2i")->value() << "\t" <<
+              this->ui->csserie->findChild<QDoubleSpinBox*>("input_u2_to_u2i")->value() << "\t" <<
+              this->ui->csserie->findChild<QSpinBox*>("input_u2_points_u2i")->value() << "\t" <<
+              this->ui->csserie->findChild<QDoubleSpinBox*>("input_u1_from_u2i")->value() << "\t" <<
+              this->ui->csserie->findChild<QDoubleSpinBox*>("input_u1_to_u2i")->value() << "\t" <<
+              this->ui->csserie->findChild<QSpinBox*>("input_u1_cs_u2i")->value() << "\t" <<
+              this->ui->csserie->findChild<QDoubleSpinBox*>("input_i_from_u2i")->value() << "\t" <<
+              this->ui->csserie->findChild<QDoubleSpinBox*>("input_i_to_u2i")->value() << "\t" <<
+              this->ui->csserie->findChild<QSpinBox*>("input_i_points_u2i")->value() << "\n\n" <<
+
+              this->ui->csserie->findChild<QDoubleSpinBox*>("input_u2_from_u1i")->value() << "\t" <<
+              this->ui->csserie->findChild<QDoubleSpinBox*>("input_u2_to_u1i")->value() << "\t" <<
+              this->ui->csserie->findChild<QSpinBox*>("input_u2_cs_u1i")->value() << "\t" <<
+              this->ui->csserie->findChild<QDoubleSpinBox*>("input_u1_from_u1i")->value() << "\t" <<
+              this->ui->csserie->findChild<QDoubleSpinBox*>("input_u1_to_u1i")->value() << "\t" <<
+              this->ui->csserie->findChild<QSpinBox*>("input_u1_points_u1i")->value() << "\t" <<
+              this->ui->csserie->findChild<QDoubleSpinBox*>("input_i_to_u1i")->value() << "\t" <<
+              this->ui->csserie->findChild<QDoubleSpinBox*>("input_i_to_u1i")->value() << "\t" <<
+              this->ui->csserie->findChild<QSpinBox*>("input_i_points_u1i")->value() << "\n\n" <<
+
+              this->ui->csserie->findChild<QDoubleSpinBox*>("input_u2_from_u1u2")->value() << "\t" <<
+              this->ui->csserie->findChild<QDoubleSpinBox*>("input_u2_to_u1u2")->value() << "\t" <<
+              this->ui->csserie->findChild<QSpinBox*>("input_u2_points_u1u2")->value() << "\t" <<
+              this->ui->csserie->findChild<QDoubleSpinBox*>("input_u1_from_u1u2")->value() << "\t" <<
+              this->ui->csserie->findChild<QDoubleSpinBox*>("input_u1_to_u1u2")->value() << "\t" <<
+              this->ui->csserie->findChild<QSpinBox*>("input_u1_points_u1u2")->value() << "\t" <<
+              this->ui->csserie->findChild<QDoubleSpinBox*>("input_i_from_u1u2")->value() << "\t" <<
+              this->ui->csserie->findChild<QDoubleSpinBox*>("input_i_to_u1u2")->value() << "\t" <<
+              this->ui->csserie->findChild<QSpinBox*>("input_i_cs_u1u2")->value() << "\n\n";
 
               output << "\n\nC1\tC2\tR\tL\tro\tm0\tm1\ti_zp\tu2_zp\tu1_zp\n" <<
               "m2\tI\tBp\tBo\ttmax\tho\tuhmax\tihmax\tt_test\tn\tnth\tpMax\n" <<
@@ -239,8 +305,11 @@ void MainWindow::saveParametersAction(){
 
 void MainWindow::exitAction()
 {
-    close();
     qApp->quit();
+}
+
+void MainWindow::closeEvent(QCloseEvent* event){
+    qApp->closeAllWindows();
 }
 
 void MainWindow::switchToTrajectoryAction(){
@@ -259,3 +328,4 @@ MainWindow::~MainWindow()
 {
     delete ui;
 }
+

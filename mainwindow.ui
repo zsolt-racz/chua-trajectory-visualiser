@@ -17,7 +17,7 @@
    </sizepolicy>
   </property>
   <property name="windowTitle">
-   <string>ChuaViz 0.9</string>
+   <string>ChuaViz 0.95 </string>
   </property>
   <property name="styleSheet">
    <string notr="true">QGroupBox,QLabel,QDoubleSpinBox,QSpinBox, QHeaderView,QTableWidget,QComboBox,QTabBar,QMenu::item{
@@ -148,7 +148,7 @@ font-size:10.5pt;
   </action>
   <action name="actionCrossSection">
    <property name="text">
-    <string>Cross section</string>
+    <string>Cross-section</string>
    </property>
   </action>
   <action name="actionCS_Serie">

@@ -6,7 +6,7 @@
 ** it under the terms of the GNU General Public License as published by
 ** the Free Software Foundation, either version 3 of the License, or
 ** (at your option) any later version.
-** 
+**
 ** This program is distributed in the hope that it will be useful,
 ** but WITHOUT ANY WARRANTY; without even the implied warranty of
 ** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -49,10 +49,10 @@ class QRange {
 };
 
 /*!
-  The QCurve3D class is a container for the data representing a 3D-curve. 
-  The class also encaspulates attributes associated with the 
+  The QCurve3D class is a container for the data representing a 3D-curve.
+  The class also encaspulates attributes associated with the
 
-  Example: 
+  Example:
   \code
   // Setup the curve
   QCurve aCurve("Simple Line");
@@ -66,7 +66,7 @@ class QRange {
 
   // Change the value of the last point
   aCurve[aCurve.size()-1].setZ(3.0);
-  
+
   \endcode
  */
 class QCurve3D: public QObject{
@@ -99,8 +99,8 @@ class QCurve3D: public QObject{
   int  size() const { return mVertices.size(); }
 
   // Operators
-  QVector3D& operator[](int i);  
-  const QVector3D& operator[](int i) const;  
+  QVector3D& operator[](int i);
+  const QVector3D& operator[](int i) const;
 
  protected:
   void draw() const;
@@ -111,8 +111,49 @@ class QCurve3D: public QObject{
   int     mLineWidth;
 
   QVector<QVector3D> mVertices;
-  QVector<GLushort>  mFaces;  
   QRange mRange;
+
+};
+
+class QBox3D: public QObject{
+ Q_OBJECT
+   friend class QPlot3D;
+ public:
+   QBox3D(double xLo, double xHi, double yLo, double yHi, double zLo, double zHi);
+   // Setters
+   void setColor(QColor color) { mColor = color; }
+   void setLineWidth(int value) { mLineWidth = value; }
+   void setName(QString name) { mName = name; }
+   //void setFill(bool fill) { mFill = fill; }
+
+   // Getters
+   QColor color() const { return mColor; }
+   double lineWidth() const { return mLineWidth; }
+   QString name() const { return mName;}
+   //double fill() const { return mFill; }
+
+   double xLo() const {return mXLo;}
+   double xHi() const {return mXHi;}
+   double yLo() const {return mYLo;}
+   double yHi() const {return mYHi;}
+   double zLo() const {return mZLo;}
+   double zHi() const {return mZHi;}
+
+protected:
+ void draw() const;
+
+ private:
+   QString mName;
+   QColor mColor;
+   double mLineWidth;
+   //bool mFill;
+
+   double mXLo;
+   double mXHi;
+   double mYLo;
+   double mYHi;
+   double mZLo;
+   double mZHi;
 
 };
 
@@ -123,7 +164,7 @@ class QCurve3D: public QObject{
   \code
   // Don't draw plane
   mPlot->yAxis().setShowPlane(false);
-  
+
 
   \endcode
  */
@@ -175,14 +216,14 @@ class QAxis: public QObject  {
   void toggleAxisBox()  {mShowAxisBox = !mShowAxisBox; }
   void toggleAdjustView()  {mAdjustPlaneView = !mAdjustPlaneView; }
 
- protected: 
+ protected:
   void draw() const;
   void drawAxisBox() const;
   void setPlot(QPlot3D* plot) { mPlot = plot; }
   void setXLabel(QString label) { mXLabel = label; }
   void setYLabel(QString label) { mYLabel = label; }
   double mScale;
-  
+
  private:
   void drawAxisPlane() const;
   void drawAxis(QVector<double> ticksX, QVector3D min, QVector3D max, QColor color,QVector3D normal) const;
@@ -209,7 +250,7 @@ class QAxis: public QObject  {
 
   User interactions like rotation, zooming and panning  with the mouse is included int QPlot3D.
 
-  Example: 
+  Example:
   \code
   // Setup a plot
   QPlot3D mPlot;
@@ -223,19 +264,19 @@ class QAxis: public QObject  {
 
   // Add the curve to the plot
   mPlot.addCurve(&aCurve);
-  
+
   // Remove legends
   mPlot.setShowLegend(false);
-  
+
   // Change view
   mPlot.setAzimuth(45.0)
   mPlot.setElevation(45.0)
-  
+
   // Raise the plot window.
   mPlot.show();
   mPlot.setFocus();
 
-  
+
  */
 class QPlot3D: public QGLWidget {
   Q_OBJECT
@@ -246,19 +287,21 @@ class QPlot3D: public QGLWidget {
 
   void addCurve(QCurve3D* curve);
   bool removeCurve(QCurve3D* curve);
-  void clear() { mCurves.clear(); }
+  void addBox(QBox3D* box);
+  bool removeBox(QBox3D* box);
+  void clear() { mCurves.clear(); mBoxes.clear(); }
   void setBackgroundColor(QColor color);
   void setLegendFont(QFont font) { mLegendFont = font; }
   QFont legendFont() const { return mLegendFont; }
-    
+
   double    zoom()  const { return mTranslate.z(); }
   QVector3D pan()   const { return mTranslate;     }
   QColor    background() const { return mBackgroundColor; }
-  double    azimuth() const { 
+  double    azimuth() const {
       double tAzimuth = -mRotation.z();
       return tAzimuth - floor(tAzimuth/360.0)*360.0;
   }
-  double    elevation() const { 
+  double    elevation() const {
     if (mRotation.x() > 180)
       return  mRotation.x() - floor(mRotation.x()/90.0)*90.0;
     if (mRotation.x() < -180)
@@ -306,7 +349,7 @@ class QPlot3D: public QGLWidget {
    void rescaleAxis();
    void axisEqual();
    void axisTight();
-   
+
  protected:
   void initializeGL();
   void paintGL();
@@ -315,6 +358,7 @@ class QPlot3D: public QGLWidget {
   void mouseMoveEvent(QMouseEvent* event);
   void mouseDoubleClickEvent(QMouseEvent* event);
   void wheelEvent(QWheelEvent* event);
+  void keyReleaseEvent(QKeyEvent* event);
   QRect textSize(QString) const;
   QVector3D toScreenCoordinates(const QVector3D& worldCoord) const ;
   QVector3D toScreenCoordinates(double worldX, double worldY, double worldZ) const ;
@@ -325,6 +369,7 @@ class QPlot3D: public QGLWidget {
 
  private:
    QList<QCurve3D*> mCurves;
+   QList<QBox3D*> mBoxes;
    QPoint mLastMousePos;
    QColor mBackgroundColor;
 

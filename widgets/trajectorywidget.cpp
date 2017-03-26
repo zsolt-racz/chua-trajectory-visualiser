@@ -122,11 +122,12 @@ void TrajectoryWidget::initPlots(){
     iu1Plot->addPlottable(iu1EndPoint);
     iu1EndPoint->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssCrossCircle, 10));
     iu1EndPoint->setPen(QPen(QColor(192,16,16)));
-    iu1Plot->xAxis->setLabel("u1");
-    iu1Plot->yAxis->setLabel("i");
+    iu1Plot->xAxis->setLabel("u1 [V]");
+    iu1Plot->yAxis->setLabel("i [A]");
     this->connect(iu1Plot, &QCustomPlot::mouseDoubleClick, this, &TrajectoryWidget::resetPlots);
     this->connect(iu1Plot, &QCustomPlot::mouseWheel, this, &TrajectoryWidget::zoomPlot);
     this->connect(iu1Plot, SIGNAL(afterReplot()), this, SLOT(synchronizeRangeWithIU1()));
+    iu1Plot->setAntialiasedElements(QCP::aeAll);
 
     QCustomPlot* iu2Plot = ui->plot_iu2;
     iu2Plot->xAxis->setLabelFont(font);
@@ -145,11 +146,12 @@ void TrajectoryWidget::initPlots(){
     iu2Plot->addPlottable(iu2EndPoint);
     iu2EndPoint->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssCrossCircle, 10));
     iu2EndPoint->setPen(QPen(QColor(192,16,16)));
-    iu2Plot->xAxis->setLabel("u2");
-    iu2Plot->yAxis->setLabel("i");
+    iu2Plot->xAxis->setLabel("u2 [V]");
+    iu2Plot->yAxis->setLabel("i [A]");
     this->connect(iu2Plot, &QCustomPlot::mouseDoubleClick, this, &TrajectoryWidget::resetPlots);
     this->connect(iu2Plot, &QCustomPlot::mouseWheel, this, &TrajectoryWidget::zoomPlot);
     this->connect(iu2Plot, SIGNAL(afterReplot()), this, SLOT(synchronizeRangeWithIU2()));
+    iu2Plot->setAntialiasedElements(QCP::aeAll);
 
     QCustomPlot* u1u2Plot = ui->plot_u1u2;
     u1u2Plot->xAxis->setLabelFont(font);
@@ -168,11 +170,12 @@ void TrajectoryWidget::initPlots(){
     u1u2Plot->addPlottable(u1u2EndPoint);
     u1u2EndPoint->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssCrossCircle, 10));
     u1u2EndPoint->setPen(QPen(QColor(192,16,16)));
-    u1u2Plot->xAxis->setLabel("u1");
-    u1u2Plot->yAxis->setLabel("u2");
+    u1u2Plot->xAxis->setLabel("u1 [V]");
+    u1u2Plot->yAxis->setLabel("u2 [V]");
     this->connect(u1u2Plot, &QCustomPlot::mouseDoubleClick, this, &TrajectoryWidget::resetPlots);
     this->connect(u1u2Plot, &QCustomPlot::mouseWheel, this, &TrajectoryWidget::zoomPlot);
     this->connect(u1u2Plot, SIGNAL(afterReplot()), this, SLOT(synchronizeRangeWithU1U2()));
+    u1u2Plot->setAntialiasedElements(QCP::aeAll);
 }
 
 void TrajectoryWidget::redrawPlot(QCustomPlot* plot, Trajectory* result){
@@ -280,11 +283,14 @@ void TrajectoryWidget::show3DProjection(){
     int time = this->reCalculate();
     this->redrawResultTabe(this->currentResult, time);
     if(this->window3d != NULL){
+
+
         delete this->window3d;
         this->window3d = NULL;
     }
     const std::vector<Point3DT>* points = this->currentResult->points;
-    Trajectory3DWindow* window3D = new Trajectory3DWindow();
+    QPlot3D* window3D = new QPlot3D();
+
     QCurve3D* bigSpiral = new QCurve3D("Trajectory");
     for (std::vector<Point3DT>::const_iterator point = points->begin(); point != points->end(); ++point) {
         bigSpiral->addData(point->i, point->u2, point->u1);
@@ -301,7 +307,36 @@ void TrajectoryWidget::show3DProjection(){
     std::vector<TrajectoryTest>* tests = this->table->getTests();
     for(std::vector<TrajectoryTest>::const_iterator test = tests->cbegin(); test != tests->cend(); ++test){
         if(test->isChaos()){
-            window3D->addTest(*test);
+           /* QBox3D* box = new QBox3D(test->iLo, test->iHi, test->u2Lo, test->u2Hi, test->u1Lo, test->u1Hi);
+            box->setColor(QColor(QString::fromStdString(test->color)));
+            box->setName(QString::fromStdString(test->name));
+            window3D->addBox(&(*box));
+*/
+            QCurve3D* cube = new QCurve3D(QString::fromStdString(test->name));
+
+                cube->addData(test->iHi,test->u2Hi,test->u1Hi);
+                cube->addData(test->iHi,test->u2Lo,test->u1Hi);
+                cube->addData(test->iHi,test->u2Lo,test->u1Lo);
+                cube->addData(test->iHi,test->u2Hi,test->u1Lo);
+                cube->addData(test->iHi,test->u2Hi,test->u1Hi);
+                cube->addData(test->iLo,test->u2Hi,test->u1Hi);
+                cube->addData(test->iLo,test->u2Lo,test->u1Hi);
+                cube->addData(test->iLo,test->u2Lo,test->u1Hi);
+                cube->addData(test->iLo,test->u2Lo,test->u1Lo);
+                cube->addData(test->iLo,test->u2Hi,test->u1Lo);
+                cube->addData(test->iLo,test->u2Hi,test->u1Hi);
+                cube->addData(test->iLo,test->u2Lo,test->u1Hi);
+                cube->addData(test->iHi,test->u2Lo,test->u1Hi);
+                cube->addData(test->iHi,test->u2Lo,test->u1Lo);
+                cube->addData(test->iLo,test->u2Lo,test->u1Lo);
+                cube->addData(test->iLo,test->u2Hi,test->u1Lo);
+                cube->addData(test->iHi,test->u2Hi,test->u1Lo);
+
+                cube->setColor(QColor(QString::fromStdString(test->color)));
+                cube->setLineWidth(3);
+
+
+                window3D->addCurve(cube);
         }
     }
 
@@ -460,13 +495,13 @@ void TrajectoryWidget::resetPlotRanges(){
 void TrajectoryWidget::redrawResultTabe(Trajectory* result, int time){
     QTableWidgetItem *points = new QTableWidgetItem;
 
-    points->setText(QString::number(result->points->size()));
+    points->setText(Utils::formatNumber((int)result->points->size()));
 
     QTableWidgetItem *divisions = new QTableWidgetItem;
-    divisions->setText(QString::number(result->divisionCount));
+    divisions->setText(Utils::formatNumber(result->divisionCount));
 
     QTableWidgetItem *type = new QTableWidgetItem;
-    type->setText(QString("%1 ms").arg(time));
+    type->setText(Utils::formatNumber(time, 3) + " ms");
 
     double tMax;
     if(result->points->size() == 0){
@@ -476,7 +511,7 @@ void TrajectoryWidget::redrawResultTabe(Trajectory* result, int time){
     }
 
     QTableWidgetItem *intTime = new QTableWidgetItem;
-    intTime->setText(QString("%1 s").arg(tMax));
+    intTime->setText(Utils::formatNumber(tMax, 3) + " s");
 
     this->ui->resultTable->setItem(0,0, points);
     this->ui->resultTable->setItem(0,1, divisions);
@@ -609,7 +644,7 @@ void TrajectoryWidget::savePlotIU1ToPng()
         return;
     }
 
-    this->ui->plot_iu1->savePng(fileName, 0, 0, 1.2, -1);
+    this->ui->plot_iu1->savePng(fileName, 0, 0, 3, -1);
 }
 
 void TrajectoryWidget::savePlotIU2ToPng()
@@ -620,7 +655,7 @@ void TrajectoryWidget::savePlotIU2ToPng()
         return;
     }
 
-    this->ui->plot_iu2->savePng(fileName, 0, 0, 1.2, -1);
+    this->ui->plot_iu2->savePng(fileName, 0, 0, 3, -1);
 }
 
 void TrajectoryWidget::savePlotU1U2ToPng()
@@ -631,7 +666,7 @@ void TrajectoryWidget::savePlotU1U2ToPng()
         return;
     }
 
-    this->ui->plot_u1u2->savePng(fileName, 0, 0, 1.2, -1);
+    this->ui->plot_u1u2->savePng(fileName, 0, 0, 3, -1);
 }
 
 void TrajectoryWidget::exportCurrentResultToTxt(){

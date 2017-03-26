@@ -53,6 +53,11 @@ private:
     CrossSectionMap *colorMap = NULL;
     std::string generateFileName(int cs_num);
     CalculatedCut* currentResult = NULL;
+    void writeInfoFile(CrossSectionType type);
+    void activateUIFor(CrossSectionType type);
+    void disactivateUIFor(CrossSectionType type, bool enableButtons = false);
+    void updateUIByInfoFile();
+    bool infoFileExists();
 
     double progress;
     double lastProgress;
