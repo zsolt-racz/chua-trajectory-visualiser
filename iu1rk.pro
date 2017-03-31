@@ -20,8 +20,6 @@ SOURCES += main.cpp\
     Trajectory.cpp \
     widgets/trajectorywidget.cpp \
     circuitparameters.cpp \
-    calculatedcut.cpp \
-    partiallycalculatedcut.cpp \
     widgets/crosssectionwidget.cpp \
     widgets/testinputwidget.cpp \
     trajectorytest.cpp \
@@ -33,7 +31,9 @@ SOURCES += main.cpp\
     qplot3d/QPlot3D.cpp \
     widgets/customspinbox.cpp \
     utils.cpp \
-    widgets/customdoublespinbox.cpp
+    widgets/customdoublespinbox.cpp \
+    calculatedcrosssection.cpp \
+    partiallycalculatedcrosssection.cpp
 
 HEADERS  += mainwindow.h \
     qcustomplot/qcustomplot.h \
@@ -42,8 +42,6 @@ HEADERS  += mainwindow.h \
     Trajectory.h \
     widgets/trajectorywidget.h \
     circuitparameters.h \
-    calculatedcut.h \
-    partiallycalculatedcut.h \
     crosssectiontype.h \
     tbb/include/serial/tbb/parallel_for.h \
     tbb/include/serial/tbb/tbb_annotate.h \
@@ -162,7 +160,9 @@ HEADERS  += mainwindow.h \
     qplot3d/QPlot3D.h \
     widgets/customspinbox.h \
     utils.h \
-    widgets/customdoublespinbox.h
+    widgets/customdoublespinbox.h \
+    calculatedcrosssection.h \
+    partiallycalculatedcrosssection.h
 
 FORMS    += mainwindow.ui \
     widgets/trajectorywidget.ui \

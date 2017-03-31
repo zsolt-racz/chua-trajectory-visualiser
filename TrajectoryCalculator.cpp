@@ -77,9 +77,9 @@ Trajectory* TrajectoryCalculator::calculateTrajectory(double i0, double u1_0, do
     return this->calculateTrajectory(i0, u1_0, u2_0, 1, INT_MAX);
 }
 
-void TrajectoryCalculator::calculateTrajectoryResult(std::vector<TrajectoryResult>::iterator result, CrossSectionType type, double x, double y, double z, std::vector<TrajectoryTest>* tests) {
-    result->x = x;
-    result->y = y;
+void TrajectoryCalculator::calculateTrajectoryResult(std::vector<TrajectoryResult>::iterator result, CrossSectionType type, double column, double row, double depth, std::vector<TrajectoryTest>* tests) {
+    result->column = column;
+    result->row = row;
 
     int divisionCount = 0;
 
@@ -87,13 +87,13 @@ void TrajectoryCalculator::calculateTrajectoryResult(std::vector<TrajectoryResul
 
     switch (type) {
         case I_U1:
-            i = y; u1 = x; u2 = z;
+            i = row; u1 = column; u2 = depth;
             break;
         case I_U2:
-            i = y; u1 = z; u2 = x;
+            i = row; u1 = depth; u2 = column;
             break;
         case U2_U1:
-            i = z; u1 = x; u2 = y;
+            i = depth; u1 = column; u2 = row;
             break;
     }
 
@@ -152,31 +152,31 @@ void TrajectoryCalculator::calculateTrajectoryResult(std::vector<TrajectoryResul
     result->divisionCount = divisionCount;
 }
 
-CalculatedCut* TrajectoryCalculator::calculateCrossSection(CrossSectionType type, double xMin, double xMax, double xPoints, double yMin, double yMax, double yPoints, double z, std::vector<TrajectoryTest>* tests){
-    this->currentResult = new PartiallyCalculatedCut(type, z, xMin, xMax, xPoints, yMin, yMax, yPoints, tests);
+CalculatedCrossSection* TrajectoryCalculator::calculateCrossSection(CrossSectionType type, double columnMin, double columnMax, double columnCount, double rowMin, double rowMax, double rowCount, double depth, std::vector<TrajectoryTest>* tests){
+    this->currentResult = new PartiallyCalculatedCrossSection(type, columnMin, columnMax, columnCount, rowMin, rowMax, rowCount, depth, tests);
 
     std::vector<std::vector<TrajectoryResult>>::iterator vector_iterator = currentResult->begin();
 
-    double xStep = ((xMax-xMin)/(xPoints-1));
-    double yStep = ((yMax-yMin)/(yPoints-1));
-    double x;
-    for(int j = 0; j < xPoints && !this->cancelled; ++j){
-        x=xMin+j*xStep;
+    double columnStep = ((columnMax-columnMin)/(columnCount-1));
+    double rowStep = ((rowMax-rowMin)/(rowCount-1));
+    double column;
+    for(int j = 0; j < columnCount && !this->cancelled; ++j){
+        column=columnMin+j*columnStep;
         std::vector<TrajectoryResult>::iterator result_iterator = vector_iterator->begin();
-        double y;
+        double row;
 
-        for(int k = 0; k < yPoints; ++k){
-            y=yMin+k*yStep;
+        for(int k = 0; k < rowCount; ++k){
+            row=rowMin+k*rowStep;
 
-            this->calculateTrajectoryResult(result_iterator, type, x, y, z, tests);
+            this->calculateTrajectoryResult(result_iterator, type, column, row, depth, tests);
 
             ++result_iterator;
         }
-        currentResult->addXColumn(&(*(vector_iterator)));
+        currentResult->addColumn(&(*(vector_iterator)));
         ++vector_iterator;
     }
 
-    CalculatedCut* result = this->currentResult;
+    CalculatedCrossSection* result = this->currentResult;
     this->currentResult = NULL;
 
     return result;
@@ -185,16 +185,16 @@ CalculatedCut* TrajectoryCalculator::calculateCrossSection(CrossSectionType type
 class TBBCalculateCrossSection {
 private:
     CrossSectionType type;
-    double xMin;
-    double xMax;
-    double xPoints;
-    double yMin;
-    double yMax;
-    double yPoints;
-    double z;
+    double columnMin;
+    double columnMax;
+    double columnCount;
+    double rowMin;
+    double rowMax;
+    double rowCount;
+    double depth;
     std::vector<TrajectoryTest>* tests;
     TrajectoryCalculator* calculator;
-    PartiallyCalculatedCut* currentResult;
+    PartiallyCalculatedCrossSection* currentResult;
 
 public:
     void operator()(const tbb::blocked_range<size_t>& r) const {
@@ -203,48 +203,48 @@ public:
         }
         size_t idx = r.begin();
 
-        double xStep = ((xMax-xMin)/(this->xPoints-1));
-        double yStep = ((yMax-yMin)/(this->yPoints-1));
+        double columnStep = ((columnMax-columnMin)/(this->columnCount-1));
+        double rowStep = ((rowMax-rowMin)/(this->rowCount-1));
 
         std::vector<std::vector<TrajectoryResult>>::iterator vector_iterator = currentResult->begin() + idx;
-        double x;
+        double column;
         for(idx = r.begin(); idx != r.end() && !calculator->cancelled; ++idx){
-            x = xMin + (idx * xStep);
+            column = columnMin + (idx * columnStep);
             std::vector<TrajectoryResult>::iterator result_iterator = vector_iterator->begin();
-            double y;
+            double row;
 
-            for(int j = 0; j < this->yPoints; ++j){
-                y = yMin + (j * yStep);
-                calculator->calculateTrajectoryResult(result_iterator, type, x, y, this->z, this->tests);
+            for(int j = 0; j < this->rowCount; ++j){
+                row = rowMin + (j * rowStep);
+                calculator->calculateTrajectoryResult(result_iterator, type, column, row, this->depth, this->tests);
 
                 ++result_iterator;
             }
-            currentResult->addXColumn(&(*(vector_iterator)));
+            currentResult->addColumn(&(*(vector_iterator)));
             ++vector_iterator;
         }
     }
 
-    TBBCalculateCrossSection(CrossSectionType type, double xMin, double xMax, double xPoints, double yMin, double yMax, double yPoints, double z, std::vector<TrajectoryTest>* tests, TrajectoryCalculator* calculator, PartiallyCalculatedCut* currentResult):
+    TBBCalculateCrossSection(CrossSectionType type, double columnMin, double columnMax, double columnCount, double rowMin, double rowMax, double rowCount, double depth, std::vector<TrajectoryTest>* tests, TrajectoryCalculator* calculator, PartiallyCalculatedCrossSection* currentResult):
         type(type),
-        xMin(xMin),
-        xMax(xMax),
-        xPoints(xPoints),
-        yMin(yMin),
-        yMax(yMax),
-        yPoints(yPoints),
-        z(z),
+        columnMin(columnMin),
+        columnMax(columnMax),
+        columnCount(columnCount),
+        rowMin(rowMin),
+        rowMax(rowMax),
+        rowCount(rowCount),
+        depth(depth),
         tests(tests),
         calculator(calculator),
         currentResult(currentResult)  {
     }
 };
 
-CalculatedCut* TrajectoryCalculator::parallelCalculateCrossSection(CrossSectionType type, double xMin, double xMax, double xPoints, double yMin, double yMax, double yPoints, double z, std::vector<TrajectoryTest>* tests){
-    this->currentResult = new PartiallyCalculatedCut(type, z, xMin, xMax, xPoints, yMin, yMax, yPoints, tests);
+CalculatedCrossSection* TrajectoryCalculator::parallelCalculateCrossSection(CrossSectionType type, double columnMin, double columnMax, double columnCount, double rowMin, double rowMax, double rowCount, double depth, std::vector<TrajectoryTest>* tests){
+    this->currentResult = new PartiallyCalculatedCrossSection(type, columnMin, columnMax, columnCount, rowMin, rowMax, rowCount, depth, tests);
 
-    tbb::parallel_for(tbb::blocked_range<size_t>(0, this->currentResult->xSize), TBBCalculateCrossSection(type, xMin, xMax, xPoints, yMin, yMax, yPoints, z, tests, this, this->currentResult));
+    tbb::parallel_for(tbb::blocked_range<size_t>(0, this->currentResult->columnCount), TBBCalculateCrossSection(type, columnMin, columnMax, columnCount, rowMin, rowMax, rowCount, depth, tests, this, this->currentResult));
 
-    CalculatedCut* result = this->currentResult;
+    CalculatedCrossSection* result = this->currentResult;
     this->currentResult = NULL;
 
     return result;
@@ -274,6 +274,6 @@ bool TrajectoryCalculator::hasPartialResult(){
     return this->currentResult != NULL;
 }
 
-PartiallyCalculatedCut* TrajectoryCalculator::partialResult(){
+PartiallyCalculatedCrossSection* TrajectoryCalculator::partialResult(){
     return this->currentResult;
 }

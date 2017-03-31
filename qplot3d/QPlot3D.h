@@ -72,6 +72,7 @@ class QRange {
 class QCurve3D: public QObject{
   Q_OBJECT
    friend class QPlot3D;
+   friend class QBox3D;
 
  public:
   QCurve3D();
@@ -119,7 +120,7 @@ class QBox3D: public QObject{
  Q_OBJECT
    friend class QPlot3D;
  public:
-   QBox3D(double xLo, double xHi, double yLo, double yHi, double zLo, double zHi);
+   QBox3D(double xLo, double xHi, double yLo, double yHi, double zLo, double zHi, int borderWidth = 0);
    // Setters
    void setColor(QColor color) { mColor = color; }
    void setLineWidth(int value) { mLineWidth = value; }
@@ -129,7 +130,9 @@ class QBox3D: public QObject{
    // Getters
    QColor color() const { return mColor; }
    double lineWidth() const { return mLineWidth; }
+   int borderWidth() const { return mBorderWidth; }
    QString name() const { return mName;}
+   QRange range() const { return mRange; }
    //double fill() const { return mFill; }
 
    double xLo() const {return mXLo;}
@@ -146,14 +149,15 @@ protected:
    QString mName;
    QColor mColor;
    double mLineWidth;
-   //bool mFill;
+   int mBorderWidth;
 
-   double mXLo;
-   double mXHi;
-   double mYLo;
-   double mYHi;
-   double mZLo;
-   double mZHi;
+   const double mXLo;
+   const double mXHi;
+   const double mYLo;
+   const double mYHi;
+   const double mZLo;
+   const double mZHi;
+   QRange mRange;
 
 };
 

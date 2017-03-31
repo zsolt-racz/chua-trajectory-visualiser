@@ -17,7 +17,7 @@
    </sizepolicy>
   </property>
   <property name="windowTitle">
-   <string>ChuaViz 0.95 </string>
+   <string>ChuaViz 0.98</string>
   </property>
   <property name="styleSheet">
    <string notr="true">QGroupBox,QLabel,QDoubleSpinBox,QSpinBox, QHeaderView,QTableWidget,QComboBox,QTabBar,QMenu::item{
@@ -92,8 +92,15 @@ font-size:10.5pt;
     <addaction name="actionCrossSection"/>
     <addaction name="actionCS_Serie"/>
    </widget>
+   <widget class="QMenu" name="menuHelp">
+    <property name="title">
+     <string>Help</string>
+    </property>
+    <addaction name="actionAbout"/>
+   </widget>
    <addaction name="menuS_bo"/>
    <addaction name="menuView"/>
+   <addaction name="menuHelp"/>
   </widget>
   <action name="actionLoad_parameters">
    <property name="checkable">
@@ -145,15 +152,29 @@ font-size:10.5pt;
    <property name="text">
     <string>Trajectory</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+1</string>
+   </property>
   </action>
   <action name="actionCrossSection">
    <property name="text">
     <string>Cross-section</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+2</string>
+   </property>
   </action>
   <action name="actionCS_Serie">
    <property name="text">
     <string>CS Serie</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+3</string>
+   </property>
+  </action>
+  <action name="actionAbout">
+   <property name="text">
+    <string>About Chuaviz</string>
    </property>
   </action>
  </widget>

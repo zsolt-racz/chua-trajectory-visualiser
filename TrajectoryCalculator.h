@@ -8,8 +8,8 @@
 #include "circuitparameters.h"
 #include "Trajectory.h"
 #include "trajectoryresult.h"
-#include "partiallycalculatedcut.h"
-#include "calculatedcut.h"
+#include "partiallycalculatedcrosssection.h"
+#include "calculatedcrosssection.h"
 #include "tbb/tbb.h"
 #include "crosssectiontype.h"
 #include "trajectorytest.h"
@@ -48,12 +48,12 @@ public:
 
     Trajectory* calculateTrajectory(double i0, double u1_0, double u2_0);
     Trajectory* calculateTrajectory(double i0, double u1_0, double u2_0, int saveNth, int maxPoints);
-    void calculateTrajectoryResult(std::vector<TrajectoryResult>::iterator result, CrossSectionType type, double x, double y, double z, std::vector<TrajectoryTest>* tests);
-    CalculatedCut* calculateCrossSection(CrossSectionType type, double xMin, double xMax, double xStep, double yMin, double yMax, double yStep, double z, std::vector<TrajectoryTest>* tests);
-    CalculatedCut* parallelCalculateCrossSection(CrossSectionType type, double xMin, double xMax, double xStep, double yMin, double yMax, double yStep, double z, std::vector<TrajectoryTest>* tests);
+    void calculateTrajectoryResult(std::vector<TrajectoryResult>::iterator result, CrossSectionType type, double column, double row, double depth, std::vector<TrajectoryTest>* tests);
+    CalculatedCrossSection* calculateCrossSection(CrossSectionType type, double columnMin, double columnMax, double columnCount, double rowMin, double rowMax, double rowCount, double depth, std::vector<TrajectoryTest>* tests);
+    CalculatedCrossSection* parallelCalculateCrossSection(CrossSectionType type, double columnMin, double columnMax, double columnCount, double rowMin, double rowMax, double rowCount, double depth, std::vector<TrajectoryTest>* tests);
 
     bool hasPartialResult();
-    PartiallyCalculatedCut* partialResult();
+    PartiallyCalculatedCrossSection* partialResult();
 
 private:
     inline double fu1(double u1, double u2, double i);
@@ -62,7 +62,7 @@ private:
     inline double abs(double n);
 
 
-    PartiallyCalculatedCut* currentResult = NULL;
+    PartiallyCalculatedCrossSection* currentResult = NULL;
 
 };
 

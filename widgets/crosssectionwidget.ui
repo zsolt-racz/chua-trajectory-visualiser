@@ -1002,7 +1002,20 @@
                  </property>
                 </widget>
                </item>
-               <item row="3" column="3">
+               <item row="1" column="2">
+                <widget class="QLabel" name="label_62">
+                 <property name="maximumSize">
+                  <size>
+                   <width>60</width>
+                   <height>16777215</height>
+                  </size>
+                 </property>
+                 <property name="text">
+                  <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;right&quot;&gt;u2 to&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="3">
                 <widget class="CustomDoubleSpinBox" name="input_u2_to_u1u2">
                  <property name="sizePolicy">
                   <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
@@ -1027,8 +1040,8 @@
                  </property>
                 </widget>
                </item>
-               <item row="3" column="2">
-                <widget class="QLabel" name="label_62">
+               <item row="1" column="4">
+                <widget class="QLabel" name="label_63">
                  <property name="maximumSize">
                   <size>
                    <width>60</width>
@@ -1036,11 +1049,11 @@
                   </size>
                  </property>
                  <property name="text">
-                  <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;right&quot;&gt;u2 to&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                  <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;right&quot;&gt;points&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                  </property>
                 </widget>
                </item>
-               <item row="3" column="5">
+               <item row="1" column="5">
                 <widget class="CustomSpinBox" name="input_u2_points_u1u2">
                  <property name="sizePolicy">
                   <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
@@ -1056,19 +1069,6 @@
                  </property>
                  <property name="maximum">
                   <number>9999</number>
-                 </property>
-                </widget>
-               </item>
-               <item row="3" column="4">
-                <widget class="QLabel" name="label_63">
-                 <property name="maximumSize">
-                  <size>
-                   <width>60</width>
-                   <height>16777215</height>
-                  </size>
-                 </property>
-                 <property name="text">
-                  <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;right&quot;&gt;points&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                  </property>
                 </widget>
                </item>
@@ -1140,11 +1140,6 @@
              <string>Elapsed time:</string>
             </property>
            </widget>
-           <zorder>progressBar</zorder>
-           <zorder>time</zorder>
-           <zorder>label</zorder>
-           <zorder>tabWidget</zorder>
-           <zorder>tabWidget</zorder>
           </widget>
          </item>
         </layout>
@@ -1269,15 +1264,15 @@
    <container>1</container>
   </customwidget>
   <customwidget>
+   <class>CustomSpinBox</class>
+   <extends>QSpinBox</extends>
+   <header>widgets/customspinbox.h</header>
+  </customwidget>
+  <customwidget>
    <class>TestInputWidget</class>
    <extends>QWidget</extends>
    <header>widgets/testinputwidget.h</header>
    <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>CustomSpinBox</class>
-   <extends>QSpinBox</extends>
-   <header>widgets/customspinbox.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

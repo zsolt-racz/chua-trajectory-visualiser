@@ -176,7 +176,7 @@ void CrossSectionWidget::reCalculate(CrossSectionType type, bool parallel){
 
 
     std::vector<TrajectoryTest>* tests = this->ui->test->getTests();
-    QFuture<CalculatedCut*> future;
+    QFuture<CalculatedCrossSection*> future;
     if(parallel){
         future = QtConcurrent::run(std::bind(&TrajectoryCalculator::parallelCalculateCrossSection, this->calculator, type, xMin, xMax, xPoints, yMin, yMax, yPoints, z, tests));
     }else{
@@ -236,7 +236,7 @@ void CrossSectionWidget::cancelCalculation(){
 void CrossSectionWidget::calculationFinished(){
     int time = this->clock.elapsed();
 
-    CalculatedCut* cut = this->FutureWatcher.result();
+    CalculatedCrossSection* cut = this->FutureWatcher.result();
     this->updateProgressTimer.stop();
 
     this->ui->button_cancel_u1i->setDisabled(true);
@@ -276,7 +276,7 @@ void CrossSectionWidget::calculationFinished(){
 }
 
 
-void CrossSectionWidget::initForCut(CalculatedCut* cut){
+void CrossSectionWidget::initForCut(CalculatedCrossSection* cut){
     QCustomPlot* customPlot = this->ui->plot_cut;
     if(cut->type == I_U1){
         customPlot->xAxis->setLabel("u1 [V]");
@@ -289,37 +289,37 @@ void CrossSectionWidget::initForCut(CalculatedCut* cut){
         customPlot->yAxis->setLabel("u2 [V]");
     }
 
-    this->colorMap->data()->setSize(cut->xSize, cut->ySize);
-    this->colorMap->data()->setRange(QCPRange(cut->xMin, cut->xMax), QCPRange(cut->yMin, cut->yMax)); // and span the coordinate range -4..4 in both key (x) and value (y) dimensions
-    customPlot->xAxis->setRange(cut->xMin, cut->xMax);
-    customPlot->yAxis->setRange(cut->yMin, cut->yMax);
+    this->colorMap->data()->setSize(cut->columnCount, cut->rowCount);
+    this->colorMap->data()->setRange(QCPRange(cut->columnMin, cut->columnMax), QCPRange(cut->rowMin, cut->rowMax)); // and span the coordinate range -4..4 in both key (x) and value (y) dimensions
+    customPlot->xAxis->setRange(cut->columnMin, cut->columnMax);
+    customPlot->yAxis->setRange(cut->rowMin, cut->rowMax);
 }
 
-void CrossSectionWidget::reDraw(CalculatedCut* cut){
+void CrossSectionWidget::reDraw(CalculatedCrossSection* cut){
     QCustomPlot* customPlot = this->ui->plot_cut;
 
     for (std::vector<std::vector<TrajectoryResult>>::const_iterator vector_iterator = cut->cbegin(); vector_iterator != cut->cend(); ++vector_iterator) {
         for (std::vector<TrajectoryResult>::const_iterator result_iterator = vector_iterator->cbegin(); result_iterator != vector_iterator->cend(); ++result_iterator) {
-            this->colorMap->data()->setData(result_iterator->x, result_iterator->y, cut->getTestIndex(result_iterator->test));
+            this->colorMap->data()->setData(result_iterator->column, result_iterator->row, cut->getTestIndex(result_iterator->test));
         }
     }
 
     customPlot->replot();
 }
 
-void CrossSectionWidget::reDrawPartial(PartiallyCalculatedCut* cut){
+void CrossSectionWidget::reDrawPartial(PartiallyCalculatedCrossSection* cut){
     QCustomPlot* customPlot = this->ui->plot_cut;
 
-    for (std::list<std::vector<TrajectoryResult>*>::const_iterator vector_iterator = cut->cbeginXColumns(); vector_iterator != cut->cendXColumns(); ++vector_iterator) {
+    for (std::list<std::vector<TrajectoryResult>*>::const_iterator vector_iterator = cut->cbeginColumns(); vector_iterator != cut->cendColumns(); ++vector_iterator) {
         for (std::vector<TrajectoryResult>::const_iterator result_iterator = (*vector_iterator)->cbegin(); result_iterator != (*vector_iterator)->cend(); ++result_iterator) {
-            this->colorMap->data()->setData(result_iterator->x, result_iterator->y, cut->getTestIndex(result_iterator->test));
+            this->colorMap->data()->setData(result_iterator->column, result_iterator->row, cut->getTestIndex(result_iterator->test));
         }
     }
 
     customPlot->replot();
 }
 
-void CrossSectionWidget::updateResultTable(CalculatedCut* cut, int timeInMs){
+void CrossSectionWidget::updateResultTable(CalculatedCrossSection* cut, int timeInMs){
     int chaosPoints = 0;
     int lcPoints = 0;
     int undPoints = 0;
@@ -340,12 +340,12 @@ void CrossSectionWidget::updateResultTable(CalculatedCut* cut, int timeInMs){
     }
 
     QTableWidgetItem *resolution = new QTableWidgetItem;
-    resolution->setText(QString("%1 x %2").arg(cut->xSize).arg(cut->ySize));
+    resolution->setText(QString("%1 x %2").arg(cut->columnCount).arg(cut->rowCount));
 
     QTableWidgetItem *time = new QTableWidgetItem;
     time->setText(this->formatTime(timeInMs));
 
-    int allPoints = cut->xSize * cut->ySize;
+    int allPoints = cut->columnCount * cut->rowCount;
 
     float chaosPercent = ((float)chaosPoints / (float)allPoints) * 100;
     QTableWidgetItem *chaos = new QTableWidgetItem;
@@ -386,7 +386,7 @@ void CrossSectionWidget::updateProgressBar()
         return;
     }
 
-    PartiallyCalculatedCut* cut = this->calculator->partialResult();
+    PartiallyCalculatedCrossSection* cut = this->calculator->partialResult();
 
     if(cut->progress() == this->lastProgress){
         return;

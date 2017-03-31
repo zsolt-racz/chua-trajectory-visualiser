@@ -30,6 +30,7 @@ protected:
 
 private slots:
     void parametersChangedInTrajectory(CircuitParameters* parameters);
+    void aboutAction();
 
 private:
     Ui::MainWindow* ui;

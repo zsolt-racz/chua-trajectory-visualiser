@@ -5,8 +5,8 @@
 #include "trajectoryresulttype.h"
 
 struct TrajectoryResult{
-    double x;
-    double y;
+    double column;
+    double row;
     const TrajectoryTest* test = NULL;
     double t;
     double divisionCount;

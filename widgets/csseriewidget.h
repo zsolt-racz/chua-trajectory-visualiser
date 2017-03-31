@@ -11,7 +11,7 @@
 #include <QSignalMapper>
 #include <QTimer>
 #include "TrajectoryCalculator.h"
-#include "calculatedcut.h"
+#include "calculatedcrosssection.h"
 #include "circuitparameters.h"
 #include "widgets/testinputwidget.h"
 #include "crosssectiontype.h"
@@ -20,6 +20,19 @@
 namespace Ui {
 class CsSerieWidget;
 }
+
+struct InfoFile{
+    CrossSectionType type;
+    double xMax;
+    double xMin;
+    double xSize;
+    double yMax;
+    double yMin;
+    double ySize;
+    double zMax;
+    double zMin;
+    double zSize;
+};
 
 class CsSerieWidget : public QWidget
 {
@@ -36,9 +49,9 @@ public:
     void calculateParallelCsSerie(CrossSectionType type, double xMin, double xMax, double xStep,double yMin, double yMax, double yStep, double zMin, double zMax, double zStep, std::vector<TrajectoryTest>* tests, std::string directory);
     void updateCsList();
     void initPlot();
-    void draw(CalculatedCut* cut);
-    void initForCut(CalculatedCut* cut);
-    void updateResultTable(CalculatedCut* cut, int timeInMs);
+    void draw(CalculatedCrossSection* cut);
+    void initForCut(CalculatedCrossSection* cut);
+    void updateResultTable(CalculatedCrossSection* cut, int timeInMs);
 
 private:
     Ui::CsSerieWidget *ui;
@@ -52,11 +65,13 @@ private:
     QString formatTime(int timeInMs);
     CrossSectionMap *colorMap = NULL;
     std::string generateFileName(int cs_num);
-    CalculatedCut* currentResult = NULL;
-    void writeInfoFile(CrossSectionType type);
+    CalculatedCrossSection* currentResult = NULL;
+    InfoFile createInfoFileByUi(CrossSectionType type);
+    InfoFile parseInfoFile();
+    void writeInfoFile(InfoFile infoFile);
     void activateUIFor(CrossSectionType type);
     void disactivateUIFor(CrossSectionType type, bool enableButtons = false);
-    void updateUIByInfoFile();
+    void updateUIByInfoFile(InfoFile infoFile);
     bool infoFileExists();
 
     double progress;

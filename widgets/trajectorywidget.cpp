@@ -307,12 +307,12 @@ void TrajectoryWidget::show3DProjection(){
     std::vector<TrajectoryTest>* tests = this->table->getTests();
     for(std::vector<TrajectoryTest>::const_iterator test = tests->cbegin(); test != tests->cend(); ++test){
         if(test->isChaos()){
-           /* QBox3D* box = new QBox3D(test->iLo, test->iHi, test->u2Lo, test->u2Hi, test->u1Lo, test->u1Hi);
+           QBox3D* box = new QBox3D(test->iLo, test->iHi, test->u2Lo, test->u2Hi, test->u1Lo, test->u1Hi, 2);
             box->setColor(QColor(QString::fromStdString(test->color)));
             box->setName(QString::fromStdString(test->name));
             window3D->addBox(&(*box));
-*/
-            QCurve3D* cube = new QCurve3D(QString::fromStdString(test->name));
+
+            /*QCurve3D* cube = new QCurve3D(QString::fromStdString(test->name));
 
                 cube->addData(test->iHi,test->u2Hi,test->u1Hi);
                 cube->addData(test->iHi,test->u2Lo,test->u1Hi);
@@ -336,7 +336,7 @@ void TrajectoryWidget::show3DProjection(){
                 cube->setLineWidth(3);
 
 
-                window3D->addCurve(cube);
+                window3D->addCurve(cube);*/
         }
     }
 

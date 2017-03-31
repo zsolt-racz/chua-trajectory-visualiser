@@ -24,6 +24,7 @@ MainWindow::MainWindow(QWidget *parent) :
     this->connect(this->ui->actionTrajectory, &QAction::triggered, this, &MainWindow::switchToTrajectoryAction);
     this->connect(this->ui->actionCrossSection, &QAction::triggered, this, &MainWindow::switchToCrossSectionAction);
     this->connect(this->ui->actionCS_Serie, &QAction::triggered, this, &MainWindow::switchToCSSerieAction);
+    this->connect(this->ui->actionAbout, SIGNAL(triggered(bool)), this, SLOT(aboutAction()));
 
     this->connect(this->ui->trajectory, SIGNAL(parametersChanged(CircuitParameters*)), this, SLOT(parametersChangedInTrajectory(CircuitParameters*)));
 }
@@ -261,7 +262,7 @@ void MainWindow::saveParametersAction(){
                  output << test->name << "\t" << typeString << "\t"  << test->color << "\t"  << test->u1Lo << "\t" << test->u1Hi << "\t" << test->u2Lo << "\t" << test->u2Hi << "\t" << test->iLo << "\t" << test->iHi << "\n";
               }
 
-              output <<
+              output << "\n" <<
               this->ui->csserie->findChild<QDoubleSpinBox*>("input_u2_from_u2i")->value() << "\t" <<
               this->ui->csserie->findChild<QDoubleSpinBox*>("input_u2_to_u2i")->value() << "\t" <<
               this->ui->csserie->findChild<QSpinBox*>("input_u2_points_u2i")->value() << "\t" <<
@@ -270,7 +271,7 @@ void MainWindow::saveParametersAction(){
               this->ui->csserie->findChild<QSpinBox*>("input_u1_cs_u2i")->value() << "\t" <<
               this->ui->csserie->findChild<QDoubleSpinBox*>("input_i_from_u2i")->value() << "\t" <<
               this->ui->csserie->findChild<QDoubleSpinBox*>("input_i_to_u2i")->value() << "\t" <<
-              this->ui->csserie->findChild<QSpinBox*>("input_i_points_u2i")->value() << "\n\n" <<
+              this->ui->csserie->findChild<QSpinBox*>("input_i_points_u2i")->value() << "\n" <<
 
               this->ui->csserie->findChild<QDoubleSpinBox*>("input_u2_from_u1i")->value() << "\t" <<
               this->ui->csserie->findChild<QDoubleSpinBox*>("input_u2_to_u1i")->value() << "\t" <<
@@ -278,9 +279,9 @@ void MainWindow::saveParametersAction(){
               this->ui->csserie->findChild<QDoubleSpinBox*>("input_u1_from_u1i")->value() << "\t" <<
               this->ui->csserie->findChild<QDoubleSpinBox*>("input_u1_to_u1i")->value() << "\t" <<
               this->ui->csserie->findChild<QSpinBox*>("input_u1_points_u1i")->value() << "\t" <<
+              this->ui->csserie->findChild<QDoubleSpinBox*>("input_i_from_u1i")->value() << "\t" <<
               this->ui->csserie->findChild<QDoubleSpinBox*>("input_i_to_u1i")->value() << "\t" <<
-              this->ui->csserie->findChild<QDoubleSpinBox*>("input_i_to_u1i")->value() << "\t" <<
-              this->ui->csserie->findChild<QSpinBox*>("input_i_points_u1i")->value() << "\n\n" <<
+              this->ui->csserie->findChild<QSpinBox*>("input_i_points_u1i")->value() << "\n" <<
 
               this->ui->csserie->findChild<QDoubleSpinBox*>("input_u2_from_u1u2")->value() << "\t" <<
               this->ui->csserie->findChild<QDoubleSpinBox*>("input_u2_to_u1u2")->value() << "\t" <<
@@ -290,17 +291,26 @@ void MainWindow::saveParametersAction(){
               this->ui->csserie->findChild<QSpinBox*>("input_u1_points_u1u2")->value() << "\t" <<
               this->ui->csserie->findChild<QDoubleSpinBox*>("input_i_from_u1u2")->value() << "\t" <<
               this->ui->csserie->findChild<QDoubleSpinBox*>("input_i_to_u1u2")->value() << "\t" <<
-              this->ui->csserie->findChild<QSpinBox*>("input_i_cs_u1u2")->value() << "\n\n";
+              this->ui->csserie->findChild<QSpinBox*>("input_i_cs_u1u2")->value() << "\n";
 
               output << "\n\nC1\tC2\tR\tL\tro\tm0\tm1\ti_zp\tu2_zp\tu1_zp\n" <<
-              "m2\tI\tBp\tBo\ttmax\tho\tuhmax\tihmax\tt_test\tn\tnth\tpMax\n" <<
+              "m2\tI\tBp\tBo\ttmax\tho\tuhmax\tihmax\tt_test\tn\tnth\tpMax\n\n" <<
               "u1_from_u1i\tu1_to_u1i\tu1_points_u1i\tu2_u1i\ti_from_u1i\ti_to_u1i\ti_points_u1i\n" <<
               "i_from_u2i\tu2_from_u2i\tu2_to_u2i\tu2_points_u2i\tu1_u2i\ti_to_u2i\ti_points_u2i\n" <<
-              "u1_from_u1u2\tu1_to_u1u2\tu1_points_u1u2\tu2_from_u1u2\tu2_to_u1u2\tu2_points_u1u2\ti_u1u2";
+              "u1_from_u1u2\tu1_to_u1u2\tu1_points_u1u2\tu2_from_u1u2\tu2_to_u1u2\tu2_points_u1u2\ti_u1u2\n\n" <<
+              "number_of_tests\n" <<
+              "test_name\ttest_type\ttest_color\ttest_u1Lo\ttest_u1Hi\ttest_u2Lo\ttest_u2Hi\ttest_iLo\ttest_iHi\n...\n\nCS serie\n" <<
+              "u2_from_u2i\tu2_to_u2i\tu2_points_u2i\tu1_from_u2i\tu1_to_u2i\tu1_cs_u2i\ti_from_u2i\ti_to_u2i\ti_points_u2i\n" <<
+              "u2_from_u1i\tu2_to_u1i\tu2_cs_u1i\tu1_from_u1i\tu1_to_u1i\tu1_points_u1i\ti_to_u1i\ti_to_u1i\ti_points_u1i\n" <<
+              "u2_from_u1u2\tu2_to_u1u2\tu2_points_u1u2\tu1_from_u1u2\tu1_to_u1u2\tu1_points_u1u2\ti_from_u1u2\ti_from_u1u2\ti_to_u1u2\ti_cs_u1u2\n";
 
 
     output.close();
     this->setStatusText(fileName.toStdString());
+}
+
+void MainWindow::aboutAction(){
+    QMessageBox::about(this, "About Chuaviz", "<h3>Chuaviz 0.98</h3><p>Chuaviz is a tool to research chaotic phenomena by taking place in Chua's circuit.</p><p>Zsolt Rácz, 2017, Technical University of Košice</p>");
 }
 
 void MainWindow::exitAction()

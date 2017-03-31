@@ -31,6 +31,58 @@ static void Draw3DPlane(QVector3D topLeft, QVector3D bottomRight, QColor color) 
   glEnd();
 }
 
+static void Draw3DBox(const QBox3D* box){
+    QColor color = box->color();
+
+
+    /*Draw3DPlane(QVector3D(xLo(),yHi(),zLo()), QVector3D(xHi(), yLo(),zLo()), color());
+    Draw3DPlane(QVector3D(xLo(),yHi(),zHi()), QVector3D(xHi(), yLo(),zHi()), color());
+    Draw3DPlane(QVector3D(xLo(),yHi(),zLo()), QVector3D(xLo(), yLo(),zHi()), color());
+    Draw3DPlane(QVector3D(xHi(),yHi(),zLo()), QVector3D(xHi(), yLo(),zHi()), color());
+
+    Draw3DPlane(QVector3D(xLo(),yHi(),zHi()), QVector3D(xHi(), yHi(),zLo()), color());*/
+
+    glColor4f(color.redF(), color.greenF(), color.blueF(), color.alphaF());
+    glBegin(GL_QUADS);                // Begin drawing the color cube with 6 quads
+       // Top face (y = 1.0f)
+       // Define vertices in counter-clockwise (CCW) order with normal pointing out
+       glVertex3f(box->xHi(), box->yHi(), box->zLo());
+       glVertex3f(box->xLo(), box->yHi(), box->zLo());
+       glVertex3f(box->xLo(), box->yHi(), box->zHi());
+       glVertex3f(box->xHi(), box->yHi(), box->zHi());
+
+       // Bottom face (y = -1.0f)
+       glVertex3f( box->xHi(), box->yLo(),  box->zHi());
+       glVertex3f(box->xLo(), box->yLo(),  box->zHi());
+       glVertex3f(box->xLo(), box->yLo(), box->zLo());
+       glVertex3f( box->xHi(), box->yLo(), box->zLo());
+
+       // Front face  (z = 1.0f)
+       glVertex3f( box->xHi(),  box->yHi(), box->zHi());
+       glVertex3f(box->xLo(),  box->yHi(), box->zHi());
+       glVertex3f(box->xLo(), box->yLo(), box->zHi());
+       glVertex3f( box->xHi(), box->yLo(), box->zHi());
+
+       // Back face (z = -1.0f)
+       glVertex3f( box->xHi(), box->yLo(), box->zLo());
+       glVertex3f(box->xLo(), box->yLo(), box->zLo());
+       glVertex3f(box->xLo(),  box->yHi(), box->zLo());
+       glVertex3f( box->xHi(),  box->yHi(), box->zLo());
+
+       // Left face (x = -1.0f)
+       glVertex3f(box->xLo(), box->yHi(),  box->zHi());
+       glVertex3f(box->xLo(),  box->yHi(), box->zLo());
+       glVertex3f(box->xLo(), box->yLo(), box->zLo());
+       glVertex3f(box->xLo(), box->yLo(),  box->zHi());
+
+       // Right face (x = 1.0f)
+       glVertex3f(box->xHi(),  box->yHi(), box->zLo());
+       glVertex3f(box->xHi(),  box->yHi(),  box->zHi());
+       glVertex3f(box->xHi(), box->yLo(),  box->zHi());
+       glVertex3f(box->xHi(), box->yLo(), box->zLo());
+    glEnd();  // End of drawing color-cube
+}
+
 static void Draw2DPlane(QVector2D topLeft, QVector2D bottomRight, QColor color) {
   glColor4f(color.redF(), color.greenF(), color.blueF(), color.alphaF());
   glBegin(GL_QUADS);
@@ -154,27 +206,52 @@ void QCurve3D::draw() const {
 // QBOX3D
 ////////////////////////////////////////////////////////////////////////////////
 
-QBox3D::QBox3D(double xLo, double xHi, double yLo, double yHi, double zLo, double zHi):
+QBox3D::QBox3D(double xLo, double xHi, double yLo, double yHi, double zLo, double zHi, int borderWidth):
   mXLo(xLo),
   mXHi(xHi),
   mYLo(yLo),
   mYHi(yHi),
   mZLo(zLo),
   mZHi(zHi),
+  mBorderWidth(borderWidth),
   mName(""),
   mColor(0,0,0),
   mLineWidth(1)
 {
+    this->mRange.setIfMin(QVector3D(xLo, yLo, zLo));
+    this->mRange.setIfMax(QVector3D(xHi, yHi, zHi));
 }
 
 void QBox3D::draw() const{
-    Draw3DPlane(QVector3D(xLo(),yHi(),0), QVector3D(xHi(), yLo(),0), color());
-    //Draw3DPlane(QVector3D(xLo(),yHi(),zLo()), QVector3D(xHi(), yLo(),zLo()), color());
-    //Draw3DPlane(QVector3D(xLo(),yHi(),zHi()), QVector3D(xHi(), yLo(),zHi()), color());
-    //Draw3DPlane(QVector3D(xLo(),yHi(),zLo()), QVector3D(xLo(), yLo(),zHi()), color());
-    //Draw3DPlane(QVector3D(xHi(),yHi(),zLo()), QVector3D(xHi(), yLo(),zHi()), color());
+    Draw3DBox(this);
 
-    //Draw3DPlane(QVector3D(xLo(),yHi(),zHi()), QVector3D(xHi(), yHi(),zLo()), color());
+    if(this->borderWidth()){
+        QCurve3D* cubeFrame = new QCurve3D();
+
+        cubeFrame->addData(this->xHi(),this->yHi(),this->zHi());
+        cubeFrame->addData(this->xHi(),this->yLo(),this->zHi());
+        cubeFrame->addData(this->xHi(),this->yLo(),this->zLo());
+        cubeFrame->addData(this->xHi(),this->yHi(),this->zLo());
+        cubeFrame->addData(this->xHi(),this->yHi(),this->zHi());
+        cubeFrame->addData(this->xLo(),this->yHi(),this->zHi());
+        cubeFrame->addData(this->xLo(),this->yLo(),this->zHi());
+        cubeFrame->addData(this->xLo(),this->yLo(),this->zHi());
+        cubeFrame->addData(this->xLo(),this->yLo(),this->zLo());
+        cubeFrame->addData(this->xLo(),this->yHi(),this->zLo());
+        cubeFrame->addData(this->xLo(),this->yHi(),this->zHi());
+        cubeFrame->addData(this->xLo(),this->yLo(),this->zHi());
+        cubeFrame->addData(this->xHi(),this->yLo(),this->zHi());
+        cubeFrame->addData(this->xHi(),this->yLo(),this->zLo());
+        cubeFrame->addData(this->xLo(),this->yLo(),this->zLo());
+        cubeFrame->addData(this->xLo(),this->yHi(),this->zLo());
+        cubeFrame->addData(this->xHi(),this->yHi(),this->zLo());
+
+        cubeFrame->setColor(QColor(this->color().red()*0.9, this->color().green()*0.9, this->color().blue()*0.9));
+        cubeFrame->setLineWidth(this->borderWidth());
+
+        cubeFrame->draw();
+        delete cubeFrame;
+    }
 }
 
 
@@ -626,6 +703,7 @@ void QPlot3D::initializeGL() {
 
   glEnable(GL_MULTISAMPLE);
 
+
   glEnable(GL_BLEND);
   glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 
@@ -651,17 +729,23 @@ void QPlot3D::paintGL() {
   mYAxis.draw();
   mZAxis.draw();
 
+
+
+  glEnable(GL_DEPTH_TEST);
+  // DRAW BOXES
+  const int nBoxes = mBoxes.size();
+  for(int i = 0; i < nBoxes; i++) {
+    mBoxes[i]->draw();
+  }
+
   // DRAW CURVES
   const int nCurves = mCurves.size();
   for(int i = 0; i < nCurves; i++) {
     mCurves[i]->draw();
   }
 
-  // DRAW BOXES
-  const int nBoxes = mBoxes.size();
-  for(int i = 0; i < nBoxes; i++) {
-    mBoxes[i]->draw();
-  }
+
+  glDisable(GL_DEPTH_TEST);
 
   // DRAW AXIS BOX
   mXAxis.drawAxisBox();
@@ -700,7 +784,7 @@ void QPlot3D::drawLegend(){
 
 
   double tWidth  = 5 + 20 + 5 + textWidth + 5;
-  double tHeight = 5 + nrCurves*textHeight + 5;
+  double tHeight = 5 + (nrCurves+nrBoxes)*textHeight + 5;
   double x0 = width()-tWidth-5;
   double y0 = 5;
 
@@ -732,7 +816,23 @@ void QPlot3D::drawLegend(){
     x0 += 30;
     glColor4f(0,0,0,1);
     y0 += textHeight;
-    renderTextAtScreenCoordinates((int)x0,(int)y0,mCurves[i]->name(),mLegendFont);
+    renderTextAtScreenCoordinates((int)x0,(int)y0 - 6,mCurves[i]->name(),mLegendFont);
+  }
+
+  for (int i = 0; i < nrBoxes; i++) {
+
+    x0 = width()-tWidth-5;
+
+    enable2D();
+    Draw2DPlane(QVector2D(x0+(30-0.5*textHeight)/2,   y0+0.25*textHeight),
+           QVector2D(x0+(30-0.5*textHeight)/2+(0.5*textHeight),y0+0.75*textHeight),
+           mBoxes[i]->color());
+    disable2D();
+
+    x0 += 30;
+    glColor4f(0,0,0,1);
+    y0 += textHeight ;
+    renderTextAtScreenCoordinates((int)x0,(int)y0 - 6,mBoxes[i]->name(),mLegendFont);
   }
 
 
@@ -850,6 +950,7 @@ void QPlot3D::addCurve(QCurve3D* curve) {
 
 void QPlot3D::addBox(QBox3D* box){
   mBoxes.push_back(box);
+  rescaleAxis();
   updateGL();
     /*if(!fill){
 
@@ -898,6 +999,11 @@ void QPlot3D::rescaleAxis() {
   for(int i = 0; i < tSize; i++) {
     tRange.setIfMin(mCurves[i]->range());
     tRange.setIfMax(mCurves[i]->range());
+  }
+  tSize = mBoxes.size();
+  for(int i = 0; i < tSize; i++) {
+    tRange.setIfMin(mBoxes[i]->range());
+    tRange.setIfMax(mBoxes[i]->range());
   }
   mXAxis.setRange(tRange);
   mYAxis.setRange(tRange);

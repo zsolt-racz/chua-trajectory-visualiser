@@ -42,18 +42,18 @@ private:
     Ui::CrossSectionWidget *ui;
     CircuitParameters* parameters = NULL;
     TrajectoryCalculator* calculator = NULL;
-    CalculatedCut* currentResult = NULL;
+    CalculatedCrossSection* currentResult = NULL;
     CrossSectionMap *colorMap = NULL;
     std::tuple<double, double, double> map(std::tuple<double, double, double> &parameters);
 
     void initPlot();
-    void initForCut(CalculatedCut* cut);
+    void initForCut(CalculatedCrossSection* cut);
     void reCalculate(CrossSectionType type, bool parallel);
-    void reDraw(CalculatedCut* cut);
-    void reDrawPartial(PartiallyCalculatedCut* cut);
-    void updateResultTable(CalculatedCut* cut, int timeInMs);
+    void reDraw(CalculatedCrossSection* cut);
+    void reDrawPartial(PartiallyCalculatedCrossSection* cut);
+    void updateResultTable(CalculatedCrossSection* cut, int timeInMs);
     QString formatTime(int timeInMs);
-    QFutureWatcher<CalculatedCut*> FutureWatcher;
+    QFutureWatcher<CalculatedCrossSection*> FutureWatcher;
     QTimer updateProgressTimer;
     QTime clock;
     QSignalMapper* calculatButtonSignalMapper;
@@ -61,7 +61,7 @@ private:
     double lastProgress;
 
 signals:
-    void reCalculated(CalculatedCut* cut);
+    void reCalculated(CalculatedCrossSection* cut);
 
 private slots:
     void calculateButtonPressed(QWidget* button);
