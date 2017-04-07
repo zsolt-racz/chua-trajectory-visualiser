@@ -21,7 +21,7 @@
 class TrajectoryCalculator{
 
 public:
-    TrajectoryCalculator(double C1, double C2, double L, double Bp, double B0, double R, double ro, double I, double m0, double m1, double m2, double t_max, double h0, double iStepMax, double uStepMax, double n, double t_test);
+    TrajectoryCalculator(double C1, double C2, double L, double Bp, double B0, double R, double ro, double I, double m0, double m1, double m2, double t_max, double h0, double iStepMax, double uStepMax, double n, double t_test, VACharacteristic vaChar, double va_h0, double va_h1, double va_h2, double va_h3);
     TrajectoryCalculator(CircuitParameters* parameters);
     ~TrajectoryCalculator();
 
@@ -42,6 +42,11 @@ public:
     const double uStepMax;
     const double n;
     const double t_test;
+    const VACharacteristic vaChar;
+    const double va_h0;
+    const double va_h1;
+    const double va_h2;
+    const double va_h3;
     bool cancelled = false;
 
     //exprtk::parser<double> parser;
@@ -54,6 +59,7 @@ public:
 
     bool hasPartialResult();
     PartiallyCalculatedCrossSection* partialResult();
+    inline double g(double u1);
 
 private:
     inline double fu1(double u1, double u2, double i);

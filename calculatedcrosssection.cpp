@@ -54,12 +54,15 @@ CalculatedCrossSection::CalculatedCrossSection(CrossSectionType type, double col
             if(this->type == I_U1){
                 result_iterator->column = y;
                 result_iterator->row = z;
+                depth = x;
             }else if(this->type == I_U2){
                 result_iterator->column = x;
                 result_iterator->row = z;
+                depth = y;
             }else if(this->type == U2_U1){
                 result_iterator->column = y;
                 result_iterator->row = x;
+                depth = z;
             }
 
             result_iterator->t = t;
@@ -79,12 +82,20 @@ CalculatedCrossSection::~CalculatedCrossSection(){
     //delete this->tests;
 }
 
-void CalculatedCrossSection::writeToTxt(std::string filename, std::string separator) {
+void CalculatedCrossSection::writeToTxt(std::string filename, std::string separator, bool append, bool undeterminedOnly) {
     std::ofstream output;
-    output.open(filename.c_str());
+
+    if(append){
+        output.open(filename.c_str(), std::ios_base::app | std::ios_base::out);
+    }else{
+        output.open(filename.c_str());
+    }
 
     for (std::vector<std::vector<TrajectoryResult>>::const_iterator vector_iterator = this->cbegin(); vector_iterator != this->cend(); ++vector_iterator) {
         for (std::vector<TrajectoryResult>::const_iterator result_iterator = vector_iterator->cbegin(); result_iterator != vector_iterator->cend(); ++result_iterator) {
+            if(undeterminedOnly && result_iterator->result() != TrajectoryResultType::UNDETERMINED){
+                continue;
+            }
             int testId = this->getTestIndex(result_iterator->test);
             double x, y, z;
             if(this->type == I_U1){

@@ -5,6 +5,8 @@
 #include <QColor>
 #include <QSpinBox>
 #include <QComboBox>
+#include <QCheckBox>
+#include <QHBoxLayout>
 #include <vector>
 #include "trajectorytest.h"
 #include "trajectoryresulttype.h"
@@ -23,7 +25,7 @@ public:
     ~TestInputWidget();
 
     void clearRows();
-    void addRow(QString name, QString type, QString color, double u1Lo, double u1Hi, double u2Lo, double u2Hi, double iLo, double iHi);
+    void addRow(QString name, QString type, bool wait, QString color, double u1Lo, double u1Hi, double u2Lo, double u2Hi, double iLo, double iHi);
     std::vector<TrajectoryTest>* getTests();
 
 private:
@@ -34,6 +36,7 @@ private:
     QComboBox* createColorCombobox(QWidget* parent, QString value);
     QComboBox* createTypeCombobox(QWidget* parent);
     QComboBox* createTypeCombobox(QWidget* parent, QString value);
+    QCheckBox* createTypeCheckbox(QWidget* parent, bool checked);
 
 private slots:
     void addChaosRow();

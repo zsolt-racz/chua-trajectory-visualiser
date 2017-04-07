@@ -90,6 +90,8 @@ private slots:
     void saveCurrentResultToPng();
     void exportCurrentResultToTxt();
     void exportCurrentResultToCsv();
+    void exportUndeterminedToTxt();
+    void exportUndeterminedToCsv();
 };
 
 #endif // CSSERIEWIDGET_H

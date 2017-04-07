@@ -162,7 +162,8 @@ HEADERS  += mainwindow.h \
     utils.h \
     widgets/customdoublespinbox.h \
     calculatedcrosssection.h \
-    partiallycalculatedcrosssection.h
+    partiallycalculatedcrosssection.h \
+    vacharacteristic.h
 
 FORMS    += mainwindow.ui \
     widgets/trajectorywidget.ui \
@@ -394,3 +395,6 @@ QMAKE_CXXFLAGS_RELEASE += -O2
         QMAKE_CXXFLAGS += -bigobj
     }
 }
+
+RESOURCES += \
+    images.qrc

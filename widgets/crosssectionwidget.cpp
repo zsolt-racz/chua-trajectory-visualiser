@@ -66,7 +66,7 @@ void CrossSectionWidget::saveCurrentResultToPng()
         return;
     }
 
-    this->ui->plot_cut->savePng(fileName, 0, 0, 1.2, -1);
+    this->ui->plot_cut->savePng(fileName, 0, 0, 3, -1);
 }
 
 void CrossSectionWidget::exportCurrentResultToTxt()
@@ -91,13 +91,39 @@ void CrossSectionWidget::exportCurrentResultToCsv()
     this->currentResult->writeToTxt(fileName.toStdString(), ",");
 }
 
+void CrossSectionWidget::exportUndeterminedToTxt()
+{
+    QString fileName = QFileDialog::getSaveFileName(this, QString("Export undetermined points to TXT"), QString(), QString("Text files (*.txt)"));
+
+    if(fileName.isEmpty()){
+        return;
+    }
+
+    this->currentResult->writeToTxt(fileName.toStdString(), "\t", false, true);
+}
+
+void CrossSectionWidget::exportUndeterminedToCsv()
+{
+    QString fileName = QFileDialog::getSaveFileName(this, QString("Export undetermined points to CSV"), QString(), QString("Comma-separated values (*.csv)"));
+
+    if(fileName.isEmpty()){
+        return;
+    }
+
+    this->currentResult->writeToTxt(fileName.toStdString(), ",", false, true);
+}
+
+
+
 void CrossSectionWidget::contextMenuRequest(QPoint pos)
 {
     if(this->currentResult != NULL){
         QMenu *menu = new QMenu(this);
         menu->setAttribute(Qt::WA_DeleteOnClose);
         menu->addAction("Export to CSV", this, SLOT(exportCurrentResultToCsv()));
+        menu->addAction("Export undetermined points to CSV", this, SLOT(exportUndeterminedToCsv()));
         menu->addAction("Export to TXT", this, SLOT(exportCurrentResultToTxt()));
+        menu->addAction("Export undetermined points to TXT", this, SLOT(exportUndeterminedToTxt()));
         menu->addAction("Export to PNG", this, SLOT(saveCurrentResultToPng()));
         menu->popup(ui->plot_cut->mapToGlobal(pos));
     }
@@ -203,7 +229,7 @@ void CrossSectionWidget::reCalculate(CrossSectionType type, bool parallel){
     this->ui->plot_cut->setInteraction(QCP::iRangeDrag, false);
     this->ui->plot_cut->setInteraction(QCP::iRangeZoom, false);
 
-    this->updateProgressTimer.start(100);
+    this->updateProgressTimer.start(250);
     this->lastProgress = 0;
 
     if(this->currentResult != NULL){
@@ -254,7 +280,7 @@ void CrossSectionWidget::calculationFinished(){
     this->ui->progressBar->setDisabled(true);
 
     this->ui->time->setDisabled(true);
-    this->ui->time->setText("0:00");
+    this->ui->time->setText(Utils::formatTime(0));
 
 
     this->initForCut(cut);
@@ -343,7 +369,7 @@ void CrossSectionWidget::updateResultTable(CalculatedCrossSection* cut, int time
     resolution->setText(QString("%1 x %2").arg(cut->columnCount).arg(cut->rowCount));
 
     QTableWidgetItem *time = new QTableWidgetItem;
-    time->setText(this->formatTime(timeInMs));
+    time->setText(Utils::formatTime(timeInMs));
 
     int allPoints = cut->columnCount * cut->rowCount;
 
@@ -366,12 +392,6 @@ void CrossSectionWidget::updateResultTable(CalculatedCrossSection* cut, int time
     this->ui->resultTable->setItem(0,4, und);
 }
 
-QString CrossSectionWidget::formatTime(int timeInMs){
-    int elapsedMins = timeInMs/1000/60;
-    int elapsedSeconds = timeInMs/1000 - std::floor(timeInMs/1000/60)*60;
-    return QString("%1:%2").arg(elapsedMins).arg(elapsedSeconds,2, 10, QChar('0'));
-}
-
 void CrossSectionWidget::updateProgressBar()
 {
     if(this->calculator->cancelled){
@@ -379,7 +399,7 @@ void CrossSectionWidget::updateProgressBar()
     }
 
     int elapsed = this->clock.elapsed();
-    QString formattedTime = this->formatTime(elapsed);
+    QString formattedTime = Utils::formatTime(elapsed);
     this->ui->time->setText(formattedTime);
 
     if(!this->calculator->hasPartialResult()){

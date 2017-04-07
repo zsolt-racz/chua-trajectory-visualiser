@@ -1,6 +1,6 @@
 #include "trajectorytest.h"
 
-TrajectoryTest::TrajectoryTest(std::string name, TrajectoryResultType type, std::string color, double u1Lo, double u1Hi, double u2Lo, double u2Hi, double iLo, double iHi): name(name), type(type), color(color), u1Lo(u1Lo), u1Hi(u1Hi), u2Lo(u2Lo), u2Hi(u2Hi), iLo(iLo), iHi(iHi)
+TrajectoryTest::TrajectoryTest(std::string name, TrajectoryResultType type, bool wait, std::string color, double u1Lo, double u1Hi, double u2Lo, double u2Hi, double iLo, double iHi): name(name), type(type), wait(wait), color(color), u1Lo(u1Lo), u1Hi(u1Hi), u2Lo(u2Lo), u2Hi(u2Hi), iLo(iLo), iHi(iHi)
 {
 
 }
@@ -28,6 +28,7 @@ bool TrajectoryTest::operator==(const TrajectoryTest& tt) const {
     return
         this->name == tt.name &&
         this->type == tt.type &&
+        this->wait == tt.wait &&
         this->color == tt.color &&
         this->u1Lo == tt.u1Lo &&
         this->u1Hi == tt.u1Hi &&

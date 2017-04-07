@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1300</width>
-    <height>659</height>
+    <height>776</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -1523,7 +1523,7 @@
              </rect>
             </property>
             <property name="text">
-             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;right&quot;&gt;0:00&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;right&quot;&gt;0:00:00&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
             </property>
            </widget>
            <widget class="QLabel" name="label">
@@ -1594,7 +1594,7 @@
        <property name="minimumSize">
         <size>
          <width>0</width>
-         <height>0</height>
+         <height>350</height>
         </size>
        </property>
        <property name="contextMenuPolicy">
@@ -1655,6 +1655,11 @@
    <container>1</container>
   </customwidget>
   <customwidget>
+   <class>CustomSpinBox</class>
+   <extends>QSpinBox</extends>
+   <header>widgets/customspinbox.h</header>
+  </customwidget>
+  <customwidget>
    <class>CustomDoubleSpinBox</class>
    <extends>QDoubleSpinBox</extends>
    <header>widgets/customdoublespinbox.h</header>
@@ -1665,12 +1670,49 @@
    <header>widgets/circuitparameterswidget.h</header>
    <container>1</container>
   </customwidget>
-  <customwidget>
-   <class>CustomSpinBox</class>
-   <extends>QSpinBox</extends>
-   <header>widgets/customspinbox.h</header>
-  </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>folder_button</tabstop>
+  <tabstop>tabWidget</tabstop>
+  <tabstop>input_u2_from_u2i</tabstop>
+  <tabstop>input_u2_to_u2i</tabstop>
+  <tabstop>input_u2_points_u2i</tabstop>
+  <tabstop>input_u1_from_u2i</tabstop>
+  <tabstop>input_u1_to_u2i</tabstop>
+  <tabstop>input_u1_cs_u2i</tabstop>
+  <tabstop>input_i_from_u2i</tabstop>
+  <tabstop>input_i_to_u2i</tabstop>
+  <tabstop>input_i_points_u2i</tabstop>
+  <tabstop>button_calculate_u2i</tabstop>
+  <tabstop>button_calculate_parallel_u2i</tabstop>
+  <tabstop>button_cancel_u2i</tabstop>
+  <tabstop>input_u2_from_u1i</tabstop>
+  <tabstop>input_u2_to_u1i</tabstop>
+  <tabstop>input_u2_cs_u1i</tabstop>
+  <tabstop>input_u1_from_u1i</tabstop>
+  <tabstop>input_u1_to_u1i</tabstop>
+  <tabstop>input_u1_points_u1i</tabstop>
+  <tabstop>input_i_from_u1i</tabstop>
+  <tabstop>input_i_to_u1i</tabstop>
+  <tabstop>input_i_points_u1i</tabstop>
+  <tabstop>button_calculate_u1i</tabstop>
+  <tabstop>button_calculate_parallel_u1i</tabstop>
+  <tabstop>button_cancel_u1i</tabstop>
+  <tabstop>input_u2_from_u1u2</tabstop>
+  <tabstop>input_u2_to_u1u2</tabstop>
+  <tabstop>input_u2_points_u1u2</tabstop>
+  <tabstop>input_u1_from_u1u2</tabstop>
+  <tabstop>input_u1_to_u1u2</tabstop>
+  <tabstop>input_u1_points_u1u2</tabstop>
+  <tabstop>input_i_from_u1u2</tabstop>
+  <tabstop>input_i_to_u1u2</tabstop>
+  <tabstop>input_i_cs_u1u2</tabstop>
+  <tabstop>button_calculate_u1u2</tabstop>
+  <tabstop>button_calculate_parallel_u1u2</tabstop>
+  <tabstop>button_cancel_u1u2</tabstop>
+  <tabstop>listWidget</tabstop>
+  <tabstop>resultTable</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

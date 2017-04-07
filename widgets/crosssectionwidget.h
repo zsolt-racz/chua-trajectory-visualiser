@@ -72,6 +72,8 @@ private slots:
     void saveCurrentResultToPng();
     void exportCurrentResultToTxt();
     void exportCurrentResultToCsv();
+    void exportUndeterminedToTxt();
+    void exportUndeterminedToCsv();
 };
 
 #endif // CUT_H

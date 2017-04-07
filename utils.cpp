@@ -28,6 +28,14 @@ QString Utils::formatNumber(int value){
     return s;
 }
 
+QString Utils::formatTime(int timeInMs){
+    int elapsedHours = timeInMs/1000/60/60;
+    int elapsedMins = timeInMs/1000/60 - std::floor(elapsedHours)*60;
+    int elapsedSeconds = timeInMs/1000 - std::floor(elapsedHours)*60*60 - std::floor(elapsedMins)*60;
+
+    return QString("%1:%2:%3").arg(elapsedHours).arg(elapsedMins,2, 10, QChar('0')).arg(elapsedSeconds,2, 10, QChar('0'));
+}
+
 double Utils::parseDouble(const QString text){
     QLocale locale(QLocale::English, QLocale::UnitedStates);
 

@@ -15,8 +15,9 @@ class Trajectory
 {
 public:
     Trajectory(std::vector<Point3DT>* points, int divisionCount);
+    Trajectory(std::string filePath);
     ~Trajectory();
-    const std::vector<Point3DT>* points;
+    std::vector<Point3DT>* points;
 
     const int divisionCount;
 

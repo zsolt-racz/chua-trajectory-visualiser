@@ -5,6 +5,22 @@ Trajectory::Trajectory(std::vector<Point3DT>* points, int divisionCount): points
 
 }
 
+Trajectory::Trajectory(std::string filePath): points(new std::vector<Point3DT>()), divisionCount(0)
+{
+    std::ifstream file;
+    file.open(filePath);
+
+    if(!file.good()){
+        return;
+    }
+
+    while(!file.eof()){
+        double u2, u1, i, t;
+        file >> std::setprecision(15) >> i >> u2 >> u1 >> t;
+        points->push_back(Point3DT(i, u1, u2, t));
+    }
+}
+
 Trajectory::~Trajectory(){
     delete points;
 }

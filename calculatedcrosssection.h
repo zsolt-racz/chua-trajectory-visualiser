@@ -28,7 +28,7 @@ public:
     double rowMax;
     int rowCount;
 
-    void writeToTxt(std::string filename, std::string separator);
+    void writeToTxt(std::string filename, std::string separator, bool append = false, bool undeterminedOnly = false);
 
     std::vector<std::vector<TrajectoryResult>>::iterator begin();
     std::vector<std::vector<TrajectoryResult>>::iterator end();

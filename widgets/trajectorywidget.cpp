@@ -10,7 +10,6 @@ TrajectoryWidget::TrajectoryWidget(QWidget *parent) :
 
     this->connect(this->ui->button_calculate, SIGNAL(clicked()), this, SLOT(reCalculateAndReDraw()));
     this->connect(this->ui->button_animate, SIGNAL(clicked()), this, SLOT(reCalculateAndAnimate()));
-    this->connect(this->ui->button_animate_stop, SIGNAL(clicked()), this, SLOT(stopAnimation()));
 
 
     // Update parameters if one of the inputs is changed
@@ -31,10 +30,19 @@ TrajectoryWidget::TrajectoryWidget(QWidget *parent) :
     this->connect(this->ui->input_uhmax, SIGNAL(editingFinished()), this, SLOT(updateParametersByGui()));
     this->connect(this->ui->input_n, SIGNAL(editingFinished()), this, SLOT(updateParametersByGui()));
     this->connect(this->ui->input_t_test, SIGNAL(editingFinished()), this, SLOT(updateParametersByGui()));
+    this->connect(this->ui->input_va_h0, SIGNAL(editingFinished()), this, SLOT(updateParametersByGui()));
+    this->connect(this->ui->input_va_h1, SIGNAL(editingFinished()), this, SLOT(updateParametersByGui()));
+    this->connect(this->ui->input_va_h2, SIGNAL(editingFinished()), this, SLOT(updateParametersByGui()));
+    this->connect(this->ui->input_va_h3, SIGNAL(editingFinished()), this, SLOT(updateParametersByGui()));
 
     this->connect(this->ui->plot_iu1, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(contextMenuRequestIU1(QPoint)));
     this->connect(this->ui->plot_iu2, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(contextMenuRequestIU2(QPoint)));
     this->connect(this->ui->plot_u1u2, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(contextMenuRequestU1U2(QPoint)));
+
+    this->connect(this->ui->va_three, SIGNAL(toggled(bool)), this, SLOT(VAThreeSegmentChanged(bool)));
+    this->connect(this->ui->va_five, SIGNAL(toggled(bool)), this, SLOT(VAFiveSegmentChanged(bool)));
+    this->connect(this->ui->va_cubic, SIGNAL(toggled(bool)), this, SLOT(VACubicChanged(bool)));
+    this->connect(this->ui->plot_va, SIGNAL(toggled(bool)), this, SLOT(VAPlotChanged(bool)));
 
     this->connect(this->ui->show_3d, SIGNAL(clicked(bool)), this, SLOT(show3DProjection()));
 
@@ -46,6 +54,9 @@ TrajectoryWidget::TrajectoryWidget(QWidget *parent) :
 
 TrajectoryWidget::~TrajectoryWidget()
 {
+    if(this->calculator != NULL){
+        delete this->calculator;
+    }
     delete ui;
 }
 
@@ -71,6 +82,17 @@ void TrajectoryWidget::updateParameters(CircuitParameters* parameters){
     this->ui->input_uhmax->setValue(parameters->uStepMax);
     this->ui->input_n->setValue(parameters->n);
     this->ui->input_t_test->setValue(parameters->t_test);
+    if(parameters->vaChar == VACharacteristic::THREE_SEGMENT){
+        this->ui->va_three->setChecked(true);
+    }else if(parameters->vaChar == VACharacteristic::FIVE_SEGMENT){
+        this->ui->va_five->setChecked(true);
+    }else if(parameters->vaChar == VACharacteristic::CUBIC){
+        this->ui->va_cubic->setChecked(true);
+    }
+    this->ui->input_va_h0->setValue(parameters->va_h0);
+    this->ui->input_va_h1->setValue(parameters->va_h1);
+    this->ui->input_va_h2->setValue(parameters->va_h2);
+    this->ui->input_va_h3->setValue(parameters->va_h3);
 
     this->updatingParameters = false;
 }
@@ -97,6 +119,18 @@ void TrajectoryWidget::updateParametersByGui(){
     this->parameters->uStepMax = this->ui->input_uhmax->value();
     this->parameters->n = this->ui->input_n->value();
     this->parameters->t_test = this->ui->input_t_test->value();
+    this->parameters->va_h0 = this->ui->input_va_h0->value();
+    this->parameters->va_h1 = this->ui->input_va_h1->value();
+    this->parameters->va_h2 = this->ui->input_va_h2->value();
+    this->parameters->va_h3 = this->ui->input_va_h3->value();
+
+    if(this->ui->va_three->isChecked()){
+        this->parameters->vaChar = VACharacteristic::THREE_SEGMENT;
+    }else if(this->ui->va_five->isChecked()){
+        this->parameters->vaChar = VACharacteristic::FIVE_SEGMENT;
+    }else if(this->ui->va_cubic->isChecked()){
+        this->parameters->vaChar = VACharacteristic::CUBIC;
+    }
 
     emit parametersChanged(this->parameters);
 }
@@ -122,6 +156,12 @@ void TrajectoryWidget::initPlots(){
     iu1Plot->addPlottable(iu1EndPoint);
     iu1EndPoint->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssCrossCircle, 10));
     iu1EndPoint->setPen(QPen(QColor(192,16,16)));
+    QCPCurve *iu1VA = new QCPCurve(iu1Plot->xAxis, iu1Plot->yAxis);
+    QPen VAPen = QPen(QColor(16,192,16));
+    VAPen.setWidth(3);
+    iu1VA->setPen(VAPen);
+
+    iu1Plot->addPlottable(iu1VA);
     iu1Plot->xAxis->setLabel("u1 [V]");
     iu1Plot->yAxis->setLabel("i [A]");
     this->connect(iu1Plot, &QCustomPlot::mouseDoubleClick, this, &TrajectoryWidget::resetPlots);
@@ -178,11 +218,76 @@ void TrajectoryWidget::initPlots(){
     u1u2Plot->setAntialiasedElements(QCP::aeAll);
 }
 
+void TrajectoryWidget::setVACharacteristic(VACharacteristic vachar){
+    if(vachar == VACharacteristic::THREE_SEGMENT){
+        this->ui->input_m0->setEnabled(true);
+        this->ui->input_m1->setEnabled(true);
+        this->ui->input_B0->setDisabled(true);
+        this->ui->input_Bp->setDisabled(true);
+        this->ui->input_m2->setDisabled(true);
+        this->ui->input_va_h0->setDisabled(true);
+        this->ui->input_va_h1->setDisabled(true);
+        this->ui->input_va_h2->setDisabled(true);
+        this->ui->input_va_h3->setDisabled(true);
+        this->parameters->vaChar = VACharacteristic::THREE_SEGMENT;
+    }else if(vachar == VACharacteristic::FIVE_SEGMENT){
+        this->ui->input_m0->setEnabled(true);
+        this->ui->input_m1->setEnabled(true);
+        this->ui->input_m2->setEnabled(true);
+        this->ui->input_B0->setEnabled(true);
+        this->ui->input_Bp->setEnabled(true);
+        this->ui->input_va_h0->setDisabled(true);
+        this->ui->input_va_h1->setDisabled(true);
+        this->ui->input_va_h2->setDisabled(true);
+        this->ui->input_va_h3->setDisabled(true);
+        this->parameters->vaChar = VACharacteristic::FIVE_SEGMENT;
+    }else if(vachar == VACharacteristic::CUBIC){
+        this->ui->input_m0->setDisabled(true);
+        this->ui->input_m1->setDisabled(true);
+        this->ui->input_m2->setDisabled(true);
+        this->ui->input_B0->setDisabled(true);
+        this->ui->input_Bp->setDisabled(true);
+        this->ui->input_va_h0->setEnabled(true);
+        this->ui->input_va_h1->setEnabled(true);
+        this->ui->input_va_h2->setEnabled(true);
+        this->ui->input_va_h3->setEnabled(true);
+        this->parameters->vaChar = VACharacteristic::CUBIC;
+    }
+}
+
+void TrajectoryWidget::VAThreeSegmentChanged(bool checked){
+    if(checked){
+        this->setVACharacteristic(VACharacteristic::THREE_SEGMENT);
+    }
+}
+
+void TrajectoryWidget::VAFiveSegmentChanged(bool checked){
+    if(checked){
+        this->setVACharacteristic(VACharacteristic::FIVE_SEGMENT);
+    }
+}
+
+void TrajectoryWidget::VACubicChanged(bool checked){
+    if(checked){
+        this->setVACharacteristic(VACharacteristic::CUBIC);
+    }
+}
+
+void TrajectoryWidget::VAPlotChanged(bool checked){
+    QCPCurve* vaCurve = dynamic_cast<QCPCurve*>(this->ui->plot_iu1->plottable(3));
+    if(checked){
+        vaCurve->setVisible(true);
+    }else{
+        vaCurve->setVisible(false);
+    }
+    this->ui->plot_iu1->replot();
+}
+
 void TrajectoryWidget::redrawPlot(QCustomPlot* plot, Trajectory* result){
     QCPCurve* curve = dynamic_cast<QCPCurve*>(plot->plottable(0));
-         QCPGraph* startPoint = dynamic_cast<QCPGraph*>(plot->plottable(1));
-         QCPGraph* endPoint = dynamic_cast<QCPGraph*>(plot->plottable(2));
-         curve->clearData();
+     QCPGraph* startPoint = dynamic_cast<QCPGraph*>(plot->plottable(1));
+     QCPGraph* endPoint = dynamic_cast<QCPGraph*>(plot->plottable(2));
+     curve->clearData();
 
          const std::vector<Point3DT>* points = result->points;
 
@@ -218,6 +323,16 @@ void TrajectoryWidget::redrawPlot(QCustomPlot* plot, Trajectory* result){
                      rect->pen().setColor(QColor(255,0,0));
                  }
              }
+
+             QCPCurve* vaCurve = dynamic_cast<QCPCurve*>(plot->plottable(3));
+             vaCurve->clearData();
+             for(double d = -100; d < 100; d=d+0.1){
+                 vaCurve->addData(d, this->calculator->g(d));
+             }
+
+            if(!this->ui->plot_va->isChecked()){
+                vaCurve->setVisible(false);
+            }
          }else if(plot == this->ui->plot_iu2){
              for (std::vector<Point3DT>::const_iterator point = points->begin(); point != points->end(); ++point) {
                  if(point == points->begin()){
@@ -296,8 +411,8 @@ void TrajectoryWidget::show3DProjection(){
         bigSpiral->addData(point->i, point->u2, point->u1);
     }
 
-    bigSpiral->setColor(Qt::blue);
-    bigSpiral->setLineWidth(1);
+    bigSpiral->setColorFul(true);
+    bigSpiral->setLineWidth(3);
     window3D->addCurve(bigSpiral);
     window3D->setAxisEqual(true);
     window3D->xAxis().togglePlane();
@@ -521,9 +636,14 @@ void TrajectoryWidget::redrawResultTabe(Trajectory* result, int time){
 
 void TrajectoryWidget::stopAnimation(){
     this->animationTimer->stop();
+    this->ui->button_animate->setText(QString("Start animation"));
 }
 
 void TrajectoryWidget::animatePlots(){
+    if(this->animationTimer->isActive()){
+        this->stopAnimation();
+        return;
+    }
     this->resetPlotRanges();
 
     QCPCurve* iu1curve = dynamic_cast<QCPCurve*>(this->ui->plot_iu1->plottable(0));
@@ -538,6 +658,7 @@ void TrajectoryWidget::animatePlots(){
     this->nextAnimationPoint = this->currentResult->points->begin();
     this->animationStart = QDateTime::currentMSecsSinceEpoch();
     this->animationTimer->start(33);
+    this->ui->button_animate->setText(QString("Stop animation"));
 }
 
 void TrajectoryWidget::animationStep(){
@@ -577,9 +698,8 @@ int TrajectoryWidget::reCalculate(){
     }
     QTime clock;
     clock.start();
-    TrajectoryCalculator calculator = TrajectoryCalculator(this->parameters);
-
-    this->currentResult = calculator.calculateTrajectory(this->ui->input_i_0->value(), this->ui->input_u1_0->value(), this->ui->input_u2_0->value(), this->ui->input_nth->value(), this->ui->input_pmax->value());
+    this->calculator = new TrajectoryCalculator(this->parameters);
+    this->currentResult = calculator->calculateTrajectory(this->ui->input_i_0->value(), this->ui->input_u1_0->value(), this->ui->input_u2_0->value(), this->ui->input_nth->value(), this->ui->input_pmax->value());
     return clock.elapsed();
 }
 
@@ -591,8 +711,9 @@ void TrajectoryWidget::reCalculateAndReDraw(){
 }
 
 void TrajectoryWidget::reCalculateAndAnimate(){
-    this->stopAnimation();
-    this->reCalculate();
+    //this->stopAnimation();
+    int time = this->reCalculate();
+    this->redrawResultTabe(this->currentResult, time);
     this->animatePlots();
 }
 

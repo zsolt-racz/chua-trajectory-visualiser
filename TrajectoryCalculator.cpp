@@ -1,11 +1,11 @@
 #include "TrajectoryCalculator.h"
 
-TrajectoryCalculator::TrajectoryCalculator(double C1, double C2, double L, double Bp, double B0, double R, double ro, double I, double m0, double m1, double m2, double t_max,double h0, double iStepMax, double uStepMax, double n, double t_test) :
-    C1(C1), C2(C2), L(L), Bp(Bp), B0(B0), R(R), ro(ro), I(I), m0(m0), m1(m1), m2(m2), t_max(t_max), h0(h0), iStepMax(iStepMax), uStepMax(uStepMax), n(n), t_test(t_test) {
+TrajectoryCalculator::TrajectoryCalculator(double C1, double C2, double L, double Bp, double B0, double R, double ro, double I, double m0, double m1, double m2, double t_max,double h0, double iStepMax, double uStepMax, double n, double t_test, VACharacteristic vaChar, double va_h0, double va_h1, double va_h2, double va_h3) :
+    C1(C1), C2(C2), L(L), Bp(Bp), B0(B0), R(R), ro(ro), I(I), m0(m0), m1(m1), m2(m2), t_max(t_max), h0(h0), iStepMax(iStepMax), uStepMax(uStepMax), n(n), t_test(t_test), vaChar(vaChar),  va_h0(va_h0), va_h1(va_h1), va_h2(va_h2), va_h3(va_h3){
 }
 
 TrajectoryCalculator::TrajectoryCalculator(CircuitParameters* parameters) :
-    C1(parameters->C1), C2(parameters->C2), L(parameters->L), Bp(parameters->Bp), B0(parameters->B0), R(parameters->R), ro(parameters->ro), I(parameters->I), m0(parameters->m0), m1(parameters->m1), m2(parameters->m2), t_max(parameters->t_max), h0(parameters->h0), iStepMax(parameters->iStepMax), uStepMax(parameters->uStepMax), n(parameters->n), t_test(parameters->t_test) {
+    C1(parameters->C1), C2(parameters->C2), L(parameters->L), Bp(parameters->Bp), B0(parameters->B0), R(parameters->R), ro(parameters->ro), I(parameters->I), m0(parameters->m0), m1(parameters->m1), m2(parameters->m2), t_max(parameters->t_max), h0(parameters->h0), iStepMax(parameters->iStepMax), uStepMax(parameters->uStepMax), n(parameters->n), t_test(parameters->t_test), vaChar(parameters->vaChar), va_h0(parameters->va_h0), va_h1(parameters->va_h1), va_h2(parameters->va_h2), va_h3(parameters->va_h3) {
 }
 
 TrajectoryCalculator::~TrajectoryCalculator() {
@@ -97,6 +97,18 @@ void TrajectoryCalculator::calculateTrajectoryResult(std::vector<TrajectoryResul
             break;
     }
 
+
+    // Test the first point where wait == false
+    for(std::vector<TrajectoryTest>::const_iterator test = tests->cbegin(); test != tests->cend(); ++test){
+        if(test->wait == false && test->eval(u1, u2, i)){
+            result->t = 0;
+            result->test = &(*test);
+            result->divisionCount = 0;
+
+            return;
+        }
+    }
+
     double h = h0;
     double t;
 
@@ -137,7 +149,7 @@ void TrajectoryCalculator::calculateTrajectoryResult(std::vector<TrajectoryResul
 
             // Tests
             for(std::vector<TrajectoryTest>::const_iterator test = tests->cbegin(); test != tests->cend(); ++test){
-                if((test->isLC() || t > this->t_test) && test->eval(u1, u2, i)){
+                if((test->wait == false || t > this->t_test) && test->eval(u1, u2, i)){
                     result->t = t;
                     result->test = &(*test);
                     result->divisionCount = divisionCount;
@@ -250,8 +262,18 @@ CalculatedCrossSection* TrajectoryCalculator::parallelCalculateCrossSection(Cros
     return result;
 }
 
+inline double TrajectoryCalculator::g(double u1){
+    if(this->vaChar == VACharacteristic::THREE_SEGMENT){
+        return m1 * u1 + 0.5 * (m0 - m1)*(this->abs(u1 + 1) - this->abs(u1 - 1));
+    }else if(this->vaChar == VACharacteristic::FIVE_SEGMENT){
+        return m2 * u1 + 0.5 * (m1 - m0)*(this->abs(u1 - Bp) - this->abs(u1 + Bp)) + 0.5 * (m2 - m1)*(this->abs(u1 - B0) - this->abs(u1 + B0));
+    }else if(this->vaChar == VACharacteristic::CUBIC){
+        return this->va_h0 + this->va_h1 * u1 + this->va_h2 * u1 * u1 + this->va_h3 * u1 * u1 * u1;
+    }
+}
+
 inline double TrajectoryCalculator::fu1(double u1, double u2, double i) {
-    return ((u2 - u1) / R - (m2 * u1 + 0.5 * (m1 - m0)*(this->abs(u1 - Bp) - this->abs(u1 + Bp)) + 0.5 * (m2 - m1)*(this->abs(u1 - B0) - this->abs(u1 + B0))) - I) / C1;
+    return ((u2 - u1) / R - g(u1) - I) / C1;
 }
 
 inline double TrajectoryCalculator::fu2(double u1, double u2, double i) {

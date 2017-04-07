@@ -3,6 +3,7 @@
 #define NOMINMAX
 
 #include "ui_trajectorywidget.h"
+#include "vacharacteristic.h"
 #include <QWidget>
 #include <QTime>
 #include "TrajectoryCalculator.h"
@@ -35,7 +36,6 @@ public:
     void setTestTable(TestInputWidget* table);
 
     void updateParameters(CircuitParameters* parameters);
-
 private slots:
     void reCalculateAndReDraw();
     void stopAnimation();
@@ -54,13 +54,19 @@ private slots:
     void savePlotIU2ToPng();
     void savePlotU1U2ToPng();
     void show3DProjection();
+    void VAThreeSegmentChanged(bool checked);
+    void VAFiveSegmentChanged(bool checked);
+    void VACubicChanged(bool checked);
+    void VAPlotChanged(bool checked);
 
 private:
     Ui::TrajectoryWidget *ui;
     CircuitParameters* parameters = NULL;
     TestInputWidget* table = NULL;
     QPlot3D* window3d = NULL;
+    TrajectoryCalculator* calculator = NULL;
     bool updatingParameters = false;
+    void setVACharacteristic(VACharacteristic vachar);
     void initPlots();
     void redrawPlots(Trajectory* result);
     void redrawPlot(QCustomPlot* plot, Trajectory* result);

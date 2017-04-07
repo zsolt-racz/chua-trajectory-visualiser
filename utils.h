@@ -14,6 +14,7 @@ public:
     static QString formatNumber(double value);
     static QString formatNumber(double value, int precision);
     static QString formatNumber(int value);
+    static QString formatTime(int timeInMs);
     static double parseDouble(const QString text);
     static int parseInt(const QString text);
 };

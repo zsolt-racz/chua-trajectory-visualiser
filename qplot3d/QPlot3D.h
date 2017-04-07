@@ -23,6 +23,8 @@
 #include <QtCore>
 #include <QtOpenGL>
 
+#include "../Trajectory.h"
+
 
 /*!
 
@@ -85,11 +87,13 @@ class QCurve3D: public QObject{
   const QVector3D& value(int index) const { return mVertices[index]; }
   QRange range() const { return mRange; }
   QString name() const { return mName;}
+  bool colorful() const { return mColorful; }
 
   // Setters
   void setColor(QColor color) { mColor = color; }
   void setLineWidth(int value) { mLineWidth = value; }
   void setName(QString name) { mName = name; }
+  void setColorFul(bool colorful) { mColorful = colorful; }
 
   // Misc
   void addData(const double& x, const double& y, const double& z);
@@ -104,12 +108,13 @@ class QCurve3D: public QObject{
   const QVector3D& operator[](int i) const;
 
  protected:
-  void draw() const;
+  void draw(bool colorful) const;
 
  private:
   QString mName;
   QColor  mColor;
   int     mLineWidth;
+  bool    mColorful;
 
   QVector<QVector3D> mVertices;
   QRange mRange;
@@ -353,6 +358,8 @@ class QPlot3D: public QGLWidget {
    void rescaleAxis();
    void axisEqual();
    void axisTight();
+   void toggleColorfulness();
+   void loadTrajectory();
 
  protected:
   void initializeGL();
@@ -380,6 +387,7 @@ class QPlot3D: public QGLWidget {
    QVector3D mTranslate;
    QVector3D mRotation;
    QVector3D mScale;
+   bool mColorful = true;
 
    bool mShowAzimuthElevation, mShowLegend, mAxisEqual;
    QAxis mXAxis, mYAxis, mZAxis;

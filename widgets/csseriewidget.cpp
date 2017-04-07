@@ -257,7 +257,7 @@ void CsSerieWidget::saveCurrentResultToPng()
         return;
     }
 
-    this->ui->plot_cut->savePng(fileName, 0, 0, 1.2, -1);
+    this->ui->plot_cut->savePng(fileName, 0, 0, 3, -1);
 }
 
 void CsSerieWidget::exportCurrentResultToTxt()
@@ -282,6 +282,28 @@ void CsSerieWidget::exportCurrentResultToCsv()
     this->currentResult->writeToTxt(fileName.toStdString(), ",");
 }
 
+void CsSerieWidget::exportUndeterminedToTxt()
+{
+    QString fileName = QFileDialog::getSaveFileName(this, QString("Export undetermined points to TXT"), QString(), QString("Text files (*.txt)"));
+
+    if(fileName.isEmpty()){
+        return;
+    }
+
+    this->currentResult->writeToTxt(fileName.toStdString(), "\t", false, true);
+}
+
+void CsSerieWidget::exportUndeterminedToCsv()
+{
+    QString fileName = QFileDialog::getSaveFileName(this, QString("Export undetermined points to CSV"), QString(), QString("Comma-separated values (*.csv)"));
+
+    if(fileName.isEmpty()){
+        return;
+    }
+
+    this->currentResult->writeToTxt(fileName.toStdString(), ",", false, true);
+}
+
 
 void CsSerieWidget::contextMenuRequest(QPoint pos)
 {
@@ -289,7 +311,9 @@ void CsSerieWidget::contextMenuRequest(QPoint pos)
         QMenu *menu = new QMenu(this);
         menu->setAttribute(Qt::WA_DeleteOnClose);
         menu->addAction("Export to CSV", this, SLOT(exportCurrentResultToCsv()));
+        menu->addAction("Export undetermined points to CSV", this, SLOT(exportUndeterminedToCsv()));
         menu->addAction("Export to TXT", this, SLOT(exportCurrentResultToTxt()));
+        menu->addAction("Export undetermined points to TXT", this, SLOT(exportUndeterminedToTxt()));
         menu->addAction("Export to PNG", this, SLOT(saveCurrentResultToPng()));
         menu->popup(ui->plot_cut->mapToGlobal(pos));
     }
@@ -395,6 +419,7 @@ void CsSerieWidget::calculateCsSerie(CrossSectionType type, double xMin, double 
 
             if(!this->calculator->cancelled){
                 cut->writeToTxt(filePath, "\t");
+                cut->writeToTxt(directory + "/6.txt", "\t", true, true);
             }
 
             delete cut;
@@ -415,6 +440,7 @@ void CsSerieWidget::calculateParallelCsSerie(CrossSectionType type, double xMin,
 
             if(!this->calculator->cancelled){
                 cut->writeToTxt(filePath, "\t");
+                cut->writeToTxt(directory + "/6.txt", "\t", true, true);
             }
 
             delete cut;
@@ -515,7 +541,7 @@ void CsSerieWidget::updateUIByInfoFile(InfoFile infoFile){
         this->ui->input_u2_cs_u1i->setValue(infoFile.xSize);
         this->ui->input_u1_from_u1i->setValue(infoFile.yMin);
         this->ui->input_u1_to_u1i->setValue(infoFile.yMax);
-        this->ui->input_u1_points_u1i->setValue(infoFile.xSize);
+        this->ui->input_u1_points_u1i->setValue(infoFile.ySize);
         this->ui->input_i_from_u1i->setValue(infoFile.zMin);
         this->ui->input_i_to_u1i->setValue(infoFile.zMax);
         this->ui->input_i_points_u1i->setValue(infoFile.zSize);
@@ -649,7 +675,7 @@ void CsSerieWidget::calculate(CrossSectionType type, bool parallel){
     this->clock.start();
     this->progress = 0;
     this->lastProgress = 0;
-    this->updateProgressTimer.start(100);
+    this->updateProgressTimer.start(250);
 
     this->updateCsList();
 
@@ -674,7 +700,7 @@ void CsSerieWidget::cancelCalculation(){
     this->ui->button_cancel_u1u2->setDisabled(true);
 
     this->ui->time->setDisabled(true);
-    this->ui->time->setText("0:00");
+    this->ui->time->setText(Utils::formatTime(0));
 
 
     this->calculator->cancelled = true;
@@ -696,18 +722,12 @@ void CsSerieWidget::csCalculationFinished(){
 
 
     this->ui->time->setDisabled(true);
-    this->ui->time->setText("0:00");
+    this->ui->time->setText(Utils::formatTime(0));
 
     this->updateCsList();
     this->ui->progressBar->setDisabled(true);
     this->ui->progressBar->setValue(0);
     this->updateProgressTimer.stop();
-}
-
-QString CsSerieWidget::formatTime(int timeInMs){
-    int elapsedMins = timeInMs/1000/60;
-    int elapsedSeconds = timeInMs/1000 - std::floor(timeInMs/1000/60)*60;
-    return QString("%1:%2").arg(elapsedMins).arg(elapsedSeconds,2, 10, QChar('0'));
 }
 
 void CsSerieWidget::updateProgress()
@@ -717,7 +737,7 @@ void CsSerieWidget::updateProgress()
     }
 
     int elapsed = this->clock.elapsed();
-    QString formattedTime = this->formatTime(elapsed);
+    QString formattedTime = Utils::formatTime(elapsed);
     this->ui->time->setText(formattedTime);
 
     if(this->lastProgress < this->progress){
@@ -752,7 +772,7 @@ void CsSerieWidget::updateResultTable(CalculatedCrossSection* cut, int timeInMs)
     resolution->setText(QString("%1 x %2").arg(cut->columnCount).arg(cut->rowCount));
 
     QTableWidgetItem *time = new QTableWidgetItem;
-    time->setText(this->formatTime(timeInMs));
+    time->setText(Utils::formatTime(timeInMs));
 
     int allPoints = cut->columnCount * cut->rowCount;
 
@@ -772,6 +792,13 @@ void CsSerieWidget::updateResultTable(CalculatedCrossSection* cut, int timeInMs)
     und->setText(QString("%1% (%2)").arg(undPercent, 0, 'f', 2).arg(undPoints));
 
     this->ui->resultTable->setItem(0,0, depth);
+    if(cut->type == CrossSectionType::I_U1){
+        this->ui->resultTable->verticalHeaderItem(0)->setText(QString("u2"));
+    }else if(cut->type == CrossSectionType::I_U2){
+        this->ui->resultTable->verticalHeaderItem(0)->setText(QString("u1"));
+    }else if(cut->type == CrossSectionType::U2_U1){
+        this->ui->resultTable->verticalHeaderItem(0)->setText(QString("ui"));
+    }
     this->ui->resultTable->setItem(0,1, resolution);
     this->ui->resultTable->setItem(0,2, time);
     this->ui->resultTable->setItem(0,3, chaos);

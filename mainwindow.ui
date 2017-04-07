@@ -17,17 +17,16 @@
    </sizepolicy>
   </property>
   <property name="windowTitle">
-   <string>ChuaViz 0.98</string>
+   <string>ChuaViz 1.1</string>
   </property>
   <property name="styleSheet">
-   <string notr="true">QGroupBox,QLabel,QDoubleSpinBox,QSpinBox, QHeaderView,QTableWidget,QComboBox,QTabBar,QMenu::item{
+   <string notr="true">QGroupBox,QLabel,QDoubleSpinBox,QSpinBox, QHeaderView,QTableWidget,QComboBox,QTabBar,QMenu::item, QRadioButton,QCheckBox{
 font-size:11pt;
 }
 
 QPushButton{
 font-size:10.5pt;
-}
-</string>
+}</string>
   </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QGridLayout" name="gridLayout">
@@ -71,7 +70,7 @@ font-size:10.5pt;
      <x>0</x>
      <y>0</y>
      <width>1300</width>
-     <height>19</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuS_bo">
@@ -139,7 +138,7 @@ font-size:10.5pt;
     <string>Exit</string>
    </property>
    <property name="shortcut">
-    <string>Esc</string>
+    <string>Ctrl+Q</string>
    </property>
    <property name="menuRole">
     <enum>QAction::QuitRole</enum>

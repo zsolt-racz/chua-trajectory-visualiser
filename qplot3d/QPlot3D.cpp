@@ -144,6 +144,7 @@ QCurve3D::QCurve3D():
   mName(""),
   mColor(0,0,255),
   mLineWidth(1),
+  mColorful(false),
   mRange(std::numeric_limits<double>::max(),-std::numeric_limits<double>::max())
 {
 }
@@ -189,16 +190,42 @@ const QVector3D&  QCurve3D::operator[](int i) const {
   return value(i);
 }
 
-void QCurve3D::draw() const {
-  glVertexPointer(3,GL_FLOAT, 0, mVertices.constData());
 
-  glLineWidth(mLineWidth);
-  glColor3f(mColor.red()/255.0,mColor.green()/255.0,mColor.blue()/255.0);
-  glEnableClientState(GL_VERTEX_ARRAY);
-  //glDrawElements(GL_LINE_STRIP,mFaces.count(),GL_UNSIGNED_SHORT, (GLushort*) mFaces.constData());
-  glDrawArrays(GL_LINE_STRIP, 0, mVertices.count());
-  glDisableClientState(GL_VERTEX_ARRAY);
+
+void QCurve3D::draw(bool colorful) const {
+
+    glLineWidth(this->mLineWidth);
+    if(this->mColorful && colorful){
+       glBegin(GL_LINE_STRIP);
+
+       int count = mVertices.size();
+       int segmentSize = std::ceil(count / 360.0);
+
+       QVector<QVector3D>::const_iterator iterator = this->mVertices.cbegin();
+
+       for(int i = 0; i < 360; ++i){
+            QColor color;
+            color.setHsv(i, 255, 240);
+            color.convertTo(QColor::Spec::Rgb);
+            glColor3f(color.red()/255.0, color.green()/255.0, color.blue()/255.0);
+
+           for(int j = 0; j < segmentSize && iterator != this->mVertices.cend(); (++j, ++iterator)){
+               glVertex3f(iterator->x(), iterator->y(), iterator->z());
+           }
+       }
+       glEnd ();
+
+   }else{
+       glVertexPointer(3,GL_FLOAT, 0, mVertices.constData());
+
+       glColor3f(mColor.red()/255.0,mColor.green()/255.0,mColor.blue()/255.0);
+       glEnableClientState(GL_VERTEX_ARRAY);
+       glDrawArrays(GL_LINE_STRIP, 0, mVertices.count());
+       glDisableClientState(GL_VERTEX_ARRAY);
+   }
+
   glLineWidth(1);
+
 
 }
 
@@ -249,7 +276,7 @@ void QBox3D::draw() const{
         cubeFrame->setColor(QColor(this->color().red()*0.9, this->color().green()*0.9, this->color().blue()*0.9));
         cubeFrame->setLineWidth(this->borderWidth());
 
-        cubeFrame->draw();
+        cubeFrame->draw(false);
         delete cubeFrame;
     }
 }
@@ -682,7 +709,15 @@ void QPlot3D::showContextMenu(const QPoint& pos) {
   connect(a5, SIGNAL(triggered()), &mZAxis,SLOT(toggleAxisBox()));
   tMenu.addAction(a5);
 
-  QAction*  a6 = new QAction("Toggle Adjust Plane View",this);
+  QAction*  a6 = new QAction("Toggle colorful trajectory",this);
+  connect(a6, SIGNAL(triggered()), this,SLOT(toggleColorfulness()));
+  tMenu.addAction(a6);
+
+  QAction*  a7 = new QAction("Load trajectory from TXT",this);
+  connect(a7, SIGNAL(triggered()), this,SLOT(loadTrajectory()));
+  tMenu.addAction(a7);
+
+  /*QAction*  a6 = new QAction("Toggle Adjust Plane View",this);
   connect(a6, SIGNAL(triggered()), &mXAxis,SLOT(toggleAdjustView()));
   connect(a6, SIGNAL(triggered()), &mYAxis,SLOT(toggleAdjustView()));
   connect(a6, SIGNAL(triggered()), &mZAxis,SLOT(toggleAdjustView()));
@@ -690,7 +725,7 @@ void QPlot3D::showContextMenu(const QPoint& pos) {
 
   QAction*  a7 = new QAction("Toggle Axis Equal",this);
   connect(a7, SIGNAL(triggered()), this,SLOT(toggleAxisEqual()));
-  tMenu.addAction(a7);
+  tMenu.addAction(a7);*/
 
   tMenu.exec(globalPos);
   update();
@@ -730,7 +765,6 @@ void QPlot3D::paintGL() {
   mZAxis.draw();
 
 
-
   glEnable(GL_DEPTH_TEST);
   // DRAW BOXES
   const int nBoxes = mBoxes.size();
@@ -741,7 +775,7 @@ void QPlot3D::paintGL() {
   // DRAW CURVES
   const int nCurves = mCurves.size();
   for(int i = 0; i < nCurves; i++) {
-    mCurves[i]->draw();
+    mCurves[i]->draw(this->mColorful);
   }
 
 
@@ -875,7 +909,7 @@ void QPlot3D::resizeGL(int width, int height) {
 
   glMatrixMode(GL_PROJECTION);
   glLoadIdentity();
-  double zNear = 0.01;
+  double zNear = 1;
   double zFar  = 10000.0;
   double aspect = (double)width/(double)height;
   double fW = tan( 25*3.141592/180.0)*zNear;
@@ -1034,6 +1068,31 @@ void QPlot3D::axisTight() {
   mScale.setY( 10.0/delta.y());
   mScale.setZ( 10.0/delta.z());
   updateGL();
+}
+
+void QPlot3D::toggleColorfulness(){
+    this->mColorful = !this->mColorful;
+}
+
+void QPlot3D::loadTrajectory(){
+    QString fileName = QFileDialog::getOpenFileName(this, QString("Open trajectory file"), QString(), QString("Text files (*.txt);;All Files (*)"));
+
+    if(fileName.isEmpty()){
+        return;
+    }
+
+    Trajectory* trajectory = new Trajectory(fileName.toStdString());
+    QCurve3D* bigSpiral = new QCurve3D("Trajectory 2");
+    for (std::vector<Point3DT>::const_iterator point = trajectory->points->begin(); point != trajectory->points->end(); ++point) {
+        bigSpiral->addData(point->i, point->u2, point->u1);
+    }
+
+    delete trajectory;
+
+    bigSpiral->setColor(QColor(0,255,0));
+    bigSpiral->setColorFul(true);
+    bigSpiral->setLineWidth(3);
+    this->addCurve(bigSpiral);
 }
 
 QVector3D QPlot3D::cameraPositionInWorldCoordinates() const {

@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/images">
+        <file>res/chua-schema.png</file>
+    </qresource>
+</RCC>
