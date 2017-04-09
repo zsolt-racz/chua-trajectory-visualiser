@@ -59,7 +59,7 @@ public:
 
     bool hasPartialResult();
     PartiallyCalculatedCrossSection* partialResult();
-    inline double g(double u1);
+    double g(double u1);
 
 private:
     inline double fu1(double u1, double u2, double i);

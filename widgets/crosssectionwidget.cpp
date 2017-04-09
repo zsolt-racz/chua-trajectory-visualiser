@@ -330,6 +330,20 @@ void CrossSectionWidget::reDraw(CalculatedCrossSection* cut){
         }
     }
 
+    for(std::vector<TrajectoryTest>::const_iterator test = cut->cbeginTests(); test != cut->cendTests(); ++test){
+        if(test->isChaos()){
+            QCPItemRect* rect = new QCPItemRect(customPlot);
+            QPen pen = QPen(QColor(0,0,0));
+            pen.setWidth(2);
+            rect->setPen(pen);
+            customPlot->addItem(rect);
+            rect->topLeft->setCoords(test->u1Lo, test->iHi);
+            rect->bottomRight->setCoords(test->u1Hi, test->iLo);
+
+            //rect->pen().setColor(QColor(32,32,224));
+        }
+    }
+
     customPlot->replot();
 }
 
@@ -339,6 +353,20 @@ void CrossSectionWidget::reDrawPartial(PartiallyCalculatedCrossSection* cut){
     for (std::list<std::vector<TrajectoryResult>*>::const_iterator vector_iterator = cut->cbeginColumns(); vector_iterator != cut->cendColumns(); ++vector_iterator) {
         for (std::vector<TrajectoryResult>::const_iterator result_iterator = (*vector_iterator)->cbegin(); result_iterator != (*vector_iterator)->cend(); ++result_iterator) {
             this->colorMap->data()->setData(result_iterator->column, result_iterator->row, cut->getTestIndex(result_iterator->test));
+        }
+    }
+
+    for(std::vector<TrajectoryTest>::const_iterator test = cut->cbeginTests(); test != cut->cendTests(); ++test){
+        if(test->isChaos()){
+            QCPItemRect* rect = new QCPItemRect(customPlot);
+            QPen pen = QPen(QColor(0,0,0));
+            pen.setWidth(2);
+            rect->setPen(pen);
+            customPlot->addItem(rect);
+            rect->topLeft->setCoords(test->u1Lo, test->iHi);
+            rect->bottomRight->setCoords(test->u1Hi, test->iLo);
+
+            //rect->pen().setColor(QColor(32,32,224));
         }
     }
 

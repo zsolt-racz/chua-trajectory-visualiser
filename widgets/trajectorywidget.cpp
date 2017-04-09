@@ -43,6 +43,7 @@ TrajectoryWidget::TrajectoryWidget(QWidget *parent) :
     this->connect(this->ui->va_five, SIGNAL(toggled(bool)), this, SLOT(VAFiveSegmentChanged(bool)));
     this->connect(this->ui->va_cubic, SIGNAL(toggled(bool)), this, SLOT(VACubicChanged(bool)));
     this->connect(this->ui->plot_va, SIGNAL(toggled(bool)), this, SLOT(VAPlotChanged(bool)));
+    this->connect(this->ui->use_last, SIGNAL(toggled(bool)), this, SLOT(useLastChanged(bool)));
 
     this->connect(this->ui->show_3d, SIGNAL(clicked(bool)), this, SLOT(show3DProjection()));
 
@@ -283,6 +284,21 @@ void TrajectoryWidget::VAPlotChanged(bool checked){
     this->ui->plot_iu1->replot();
 }
 
+void TrajectoryWidget::useLastChanged(bool checked){
+    if(checked && this->currentResult != NULL){
+        this->setLastPointAsIC();
+    }
+}
+
+void TrajectoryWidget::setLastPointAsIC(){
+    if(this->currentResult != NULL && this->currentResult->points->size() > 0){
+        std::vector<Point3DT>::const_iterator lastPoint = this->currentResult->points->cend() - 1;
+        this->ui->input_u1_0->setValue(lastPoint->u1);
+        this->ui->input_u2_0->setValue(lastPoint->u2);
+        this->ui->input_i_0->setValue(lastPoint->i);
+    }
+}
+
 void TrajectoryWidget::redrawPlot(QCustomPlot* plot, Trajectory* result){
     QCPCurve* curve = dynamic_cast<QCPCurve*>(plot->plottable(0));
      QCPGraph* startPoint = dynamic_cast<QCPGraph*>(plot->plottable(1));
@@ -320,7 +336,7 @@ void TrajectoryWidget::redrawPlot(QCustomPlot* plot, Trajectory* result){
                      rect->topLeft->setCoords(test->u1Lo, test->iHi);
                      rect->bottomRight->setCoords(test->u1Hi, test->iLo);
 
-                     rect->pen().setColor(QColor(255,0,0));
+                     rect->pen().setColor(QColor(32,32,224));
                  }
              }
 
@@ -411,10 +427,10 @@ void TrajectoryWidget::show3DProjection(){
         bigSpiral->addData(point->i, point->u2, point->u1);
     }
 
-    bigSpiral->setColorFul(true);
+    bigSpiral->setColorFul(false);
     bigSpiral->setLineWidth(3);
     window3D->addCurve(bigSpiral);
-    window3D->setAxisEqual(true);
+    window3D->setAxisEqual(false);
     window3D->xAxis().togglePlane();
     window3D->yAxis().togglePlane();
     window3D->zAxis().togglePlane();
@@ -700,6 +716,9 @@ int TrajectoryWidget::reCalculate(){
     clock.start();
     this->calculator = new TrajectoryCalculator(this->parameters);
     this->currentResult = calculator->calculateTrajectory(this->ui->input_i_0->value(), this->ui->input_u1_0->value(), this->ui->input_u2_0->value(), this->ui->input_nth->value(), this->ui->input_pmax->value());
+    if(this->ui->use_last->isChecked()){
+        this->setLastPointAsIC();
+    }
     return clock.elapsed();
 }
 

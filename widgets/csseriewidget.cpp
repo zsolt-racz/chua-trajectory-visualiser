@@ -722,7 +722,7 @@ void CsSerieWidget::csCalculationFinished(){
 
 
     this->ui->time->setDisabled(true);
-    this->ui->time->setText(Utils::formatTime(0));
+    //this->ui->time->setText(Utils::formatTime(0));
 
     this->updateCsList();
     this->ui->progressBar->setDisabled(true);

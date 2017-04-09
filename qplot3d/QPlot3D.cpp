@@ -986,35 +986,6 @@ void QPlot3D::addBox(QBox3D* box){
   mBoxes.push_back(box);
   rescaleAxis();
   updateGL();
-    /*if(!fill){
-
-
-
-    }else{
-        QCurve3D* cube = new QCurve3D(name);
-        cube->setColor(color);
-        cube->setLineWidth(lineWidth);
-
-        cube->addData(xHi,yHi,zHi);
-        cube->addData(xHi,yLo,zHi);
-        cube->addData(xHi,yLo,zLo);
-        cube->addData(xHi,yHi,zLo);
-        cube->addData(xHi,yHi,zHi);
-        cube->addData(xLo,yHi,zHi);
-        cube->addData(xLo,yLo,zHi);
-        cube->addData(xLo,yLo,zHi);
-        cube->addData(xLo,yLo,zLo);
-        cube->addData(xLo,yHi,zLo);
-        cube->addData(xLo,yHi,zHi);
-        cube->addData(xLo,yLo,zHi);
-        cube->addData(xHi,yLo,zHi);
-        cube->addData(xHi,yLo,zLo);
-        cube->addData(xLo,yLo,zLo);
-        cube->addData(xLo,yHi,zLo);
-        cube->addData(xHi,yHi,zLo);
-
-        this->addCurve(cube);
-    }*/
 }
 
 bool QPlot3D::removeBox(QBox3D* box){
@@ -1082,15 +1053,35 @@ void QPlot3D::loadTrajectory(){
     }
 
     Trajectory* trajectory = new Trajectory(fileName.toStdString());
-    QCurve3D* bigSpiral = new QCurve3D("Trajectory 2");
+    QCurve3D* bigSpiral;
+    if(this->mCurves.length() == 1){
+        bigSpiral = new QCurve3D("Trajectory 2");
+        bigSpiral->setColor(QColor(32,224,32));
+    }else if(this->mCurves.length() == 2){
+        bigSpiral = new QCurve3D("Trajectory 3");
+        bigSpiral->setColor(QColor(224,32,32));
+    }else if(this->mCurves.length() == 3){
+        bigSpiral = new QCurve3D("Trajectory 4");
+        bigSpiral->setColor(QColor(224,224,32));
+    }else if(this->mCurves.length() == 4){
+        bigSpiral = new QCurve3D("Trajectory 5");
+        bigSpiral->setColor(QColor(32,32,32));
+    }else if(this->mCurves.length() == 5){
+        bigSpiral = new QCurve3D("Trajectory 6");
+        bigSpiral->setColor(QColor(32,224,224));
+    }else if(this->mCurves.length() == 6){
+        bigSpiral = new QCurve3D("Trajectory 7");
+        bigSpiral->setColor(QColor(224,0,224));
+    }
+
     for (std::vector<Point3DT>::const_iterator point = trajectory->points->begin(); point != trajectory->points->end(); ++point) {
         bigSpiral->addData(point->i, point->u2, point->u1);
     }
 
     delete trajectory;
 
-    bigSpiral->setColor(QColor(0,255,0));
-    bigSpiral->setColorFul(true);
+
+    bigSpiral->setColorFul(false);
     bigSpiral->setLineWidth(3);
     this->addCurve(bigSpiral);
 }

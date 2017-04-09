@@ -45,7 +45,7 @@ CalculatedCrossSection::CalculatedCrossSection(CrossSectionType type, double col
 
     this->results = std::vector<std::vector<TrajectoryResult>>(columnCount, std::vector<TrajectoryResult>(rowCount));
 
-    double depth;
+    double depth = 0;
     for (std::vector<std::vector<TrajectoryResult>>::iterator vector_iterator = this->begin(); vector_iterator != this->end(); ++vector_iterator) {
         for (std::vector<TrajectoryResult>::iterator result_iterator = vector_iterator->begin(); result_iterator != vector_iterator->end(); ++result_iterator) {
             double x, y, z, t, result, testIdx, divisionCount;
@@ -138,9 +138,17 @@ std::vector<std::vector<TrajectoryResult>>::const_iterator CalculatedCrossSectio
     return this->results.cend();
 }
 
+std::vector<TrajectoryTest>::const_iterator CalculatedCrossSection::cbeginTests(){
+    return this->tests->cbegin();
+}
+
+std::vector<TrajectoryTest>::const_iterator CalculatedCrossSection::cendTests(){
+    return this->tests->cend();
+}
+
 /** index starts at 1 **/
 int CalculatedCrossSection::getTestIndex(const TrajectoryTest test){
-    for(int i = 0; i < this->tests->size(); i++){
+    for(unsigned int i = 0; i < this->tests->size(); i++){
         if(this->tests->at(i) == test){
             return i + 1;
         }

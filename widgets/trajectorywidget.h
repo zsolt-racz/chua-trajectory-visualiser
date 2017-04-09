@@ -58,6 +58,7 @@ private slots:
     void VAFiveSegmentChanged(bool checked);
     void VACubicChanged(bool checked);
     void VAPlotChanged(bool checked);
+    void useLastChanged(bool checked);
 
 private:
     Ui::TrajectoryWidget *ui;
@@ -74,6 +75,7 @@ private:
     void resetPlotRanges();
     void zoomPlot(QWheelEvent* event);
     void redrawResultTabe(Trajectory* result, int time);
+    void setLastPointAsIC();
 
     int reCalculate();
     void animatePlots();

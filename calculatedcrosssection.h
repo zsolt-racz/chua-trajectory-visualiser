@@ -37,6 +37,11 @@ public:
     std::vector<std::vector<TrajectoryResult>>::const_iterator cend();
     int getTestIndex(const TrajectoryTest test);
     int getTestIndex(const TrajectoryTest* test);
+
+
+    std::vector<TrajectoryTest>::const_iterator cbeginTests();
+    std::vector<TrajectoryTest>::const_iterator cendTests();
+
 protected:
     std::vector<TrajectoryTest>* tests;
     std::vector<std::vector<TrajectoryResult>> results;

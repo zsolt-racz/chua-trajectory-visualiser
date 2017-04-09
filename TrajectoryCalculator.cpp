@@ -262,7 +262,7 @@ CalculatedCrossSection* TrajectoryCalculator::parallelCalculateCrossSection(Cros
     return result;
 }
 
-inline double TrajectoryCalculator::g(double u1){
+double TrajectoryCalculator::g(double u1){
     if(this->vaChar == VACharacteristic::THREE_SEGMENT){
         return m1 * u1 + 0.5 * (m0 - m1)*(this->abs(u1 + 1) - this->abs(u1 - 1));
     }else if(this->vaChar == VACharacteristic::FIVE_SEGMENT){
